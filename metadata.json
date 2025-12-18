@@ -1,0 +1,8 @@
+{
+  "name": "Copy of PediPulse AI - Pediatric Care Hub",
+  "description": "An all-in-one pediatric health assistant featuring AI symptom triage, growth tracking, weight-based dosage guidance, and developmental milestone monitoring.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
