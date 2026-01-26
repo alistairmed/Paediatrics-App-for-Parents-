@@ -1,16 +1,9 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { GrowthRecord } from '../types';
+import { useMedicalHistory } from '../context/MedicalHistoryContext';
 
-interface GrowthTrackerProps {
-  onWeightUpdate?: (weight: number) => void;
-  initialWeight?: number;
-  initialHeight?: number;
-}
-
-// Simplified WHO Weight-for-Age Data (approximate kg for simplified charting)
-// Age (mo): 0, 3, 6, 9, 12, 18, 24, 36, 48
 const WHO_WEIGHT_REF = [
   { age: 0, p3: 2.4, p50: 3.3, p97: 4.3 },
   { age: 3, p3: 5.0, p50: 6.4, p97: 8.0 },
@@ -23,39 +16,48 @@ const WHO_WEIGHT_REF = [
   { age: 48, p3: 12.7, p50: 16.3, p97: 21.2 },
 ];
 
-export const GrowthTracker: React.FC<GrowthTrackerProps> = ({ onWeightUpdate, initialWeight, initialHeight }) => {
-  const [records, setRecords] = useState<GrowthRecord[]>([]);
+export const GrowthTracker: React.FC = () => {
+  const { history, updateHistory } = useMedicalHistory();
+  const records = history.growthRecords || [];
+  const [showReferenceLines, setShowReferenceLines] = useState(true);
 
-  useEffect(() => {
-    if (records.length === 0 && (initialWeight || initialHeight)) {
-      setRecords([{
-        age: 0,
-        weight: initialWeight || 0,
-        height: initialHeight || 0,
-        date: new Date().toISOString().split('T')[0]
-      }]);
-    }
-  }, [initialWeight, initialHeight]);
-
-  const [newRecord, setNewRecord] = useState({ age: '', weight: '', height: '', head: '', date: new Date().toISOString().split('T')[0] });
+  const [newRecord, setNewRecord] = useState({ 
+    age: '', weight: '', height: '', head: '', 
+    date: new Date().toISOString().split('T')[0] 
+  });
 
   const handleAddRecord = () => {
+    const ageNum = Number(newRecord.age);
+    const weightNum = Number(newRecord.weight);
+    if (isNaN(ageNum) || isNaN(weightNum) || weightNum < 1 || weightNum > 150) {
+       alert("Please enter a realistic pediatric weight (2kg - 100kg).");
+       return;
+    }
     if (!newRecord.age || !newRecord.weight || !newRecord.height) return;
     const record: GrowthRecord = {
-      age: Number(newRecord.age),
-      weight: Number(newRecord.weight),
+      age: ageNum,
+      weight: weightNum,
       height: Number(newRecord.height),
       headCircumference: newRecord.head ? Number(newRecord.head) : undefined,
       date: newRecord.date
     };
     const updated = [...records, record].sort((a, b) => a.age - b.age);
-    setRecords(updated);
-    if (onWeightUpdate) onWeightUpdate(record.weight);
+    updateHistory({ growthRecords: updated });
     setNewRecord({ age: '', weight: '', height: '', head: '', date: new Date().toISOString().split('T')[0] });
   };
 
+  const velocity = useMemo(() => {
+    if (records.length < 2) return null;
+    const last = records[records.length - 1];
+    const prev = records[records.length - 2];
+    const weightDiffGrams = (last.weight - prev.weight) * 1000;
+    const timeDiffDays = (new Date(last.date).getTime() - new Date(prev.date).getTime()) / (1000 * 60 * 60 * 24);
+    
+    if (timeDiffDays === 0) return 0;
+    return Math.round(weightDiffGrams / timeDiffDays);
+  }, [records]);
+
   const chartData = useMemo(() => {
-    // Generate an array of ages to plot (union of WHO reference points and user data)
     const ages = Array.from(new Set([
       ...WHO_WEIGHT_REF.map(r => r.age), 
       ...records.map(r => r.age)
@@ -78,7 +80,6 @@ export const GrowthTracker: React.FC<GrowthTrackerProps> = ({ onWeightUpdate, in
   const currentPercentile = useMemo(() => {
     if (records.length === 0) return null;
     const last = records[records.length - 1];
-    // Simple interpolation/check against WHO P50
     const ref = WHO_WEIGHT_REF.reduce((prev, curr) => 
       Math.abs(curr.age - last.age) < Math.abs(prev.age - last.age) ? curr : prev
     );
@@ -92,101 +93,73 @@ export const GrowthTracker: React.FC<GrowthTrackerProps> = ({ onWeightUpdate, in
 
   return (
     <div className="space-y-6">
-      <header className="flex justify-between items-start">
+      <header className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-slate-800 tracking-tight">Growth Trajectory</h2>
+          <h2 className="text-3xl font-bold text-slate-800 tracking-tight italic">Growth <span className="text-indigo-600">Trajectory</span></h2>
           <p className="text-slate-500 font-medium">WHO Reference Percentiles integrated tracking.</p>
         </div>
-        {currentPercentile && (
-          <div className="bg-indigo-600 px-6 py-3 rounded-2xl text-white shadow-lg animate-in zoom-in-90">
-             <p className="text-[10px] font-black uppercase tracking-widest opacity-70">Current Weight Category</p>
-             <p className="text-lg font-black">{currentPercentile}</p>
-          </div>
-        )}
+        <div className="flex gap-2">
+           {velocity !== null && (
+              <div className={`px-6 py-2 rounded-xl text-white shadow-lg ${velocity < 0 ? 'bg-rose-600' : 'bg-indigo-600'}`}>
+                 <p className="text-[10px] font-black uppercase tracking-widest opacity-70 leading-none">Clinical Velocity</p>
+                 <p className="text-sm font-black mt-1">{velocity} g/day</p>
+              </div>
+           )}
+           <button onClick={() => setShowReferenceLines(!showReferenceLines)} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${showReferenceLines ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-100'}`}>
+              {showReferenceLines ? 'Hide WHO Lines' : 'Show WHO Lines'}
+           </button>
+           {currentPercentile && (
+              <div className="bg-emerald-600 px-6 py-2 rounded-xl text-white shadow-lg">
+                 <p className="text-[10px] font-black uppercase tracking-widest opacity-70 leading-none">Weight Category</p>
+                 <p className="text-sm font-black mt-1">{currentPercentile}</p>
+              </div>
+           )}
+        </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1 bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 self-start">
-          <h3 className="font-bold text-slate-800 mb-6">Log Measurement</h3>
+          <h3 className="font-bold text-slate-800 mb-6 uppercase text-[10px] tracking-widest">Log Measurement</h3>
           <div className="space-y-4">
             <div>
               <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-2">Age (months)</label>
-              <input 
-                type="number" 
-                value={newRecord.age}
-                onChange={e => setNewRecord({...newRecord, age: e.target.value})}
-                className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none focus:ring-2 focus:ring-blue-500 font-bold" 
-              />
+              <input type="number" value={newRecord.age} onChange={e => setNewRecord({...newRecord, age: e.target.value})} className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none focus:ring-2 focus:ring-blue-500 font-black text-slate-900" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-2">Weight (kg)</label>
-                <input 
-                  type="number" step="0.1" value={newRecord.weight}
-                  onChange={e => setNewRecord({...newRecord, weight: e.target.value})}
-                  className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-bold" 
-                />
+                <input type="number" step="0.1" value={newRecord.weight} onChange={e => setNewRecord({...newRecord, weight: e.target.value})} className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-black text-slate-900" />
               </div>
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-2">Height (cm)</label>
-                <input 
-                  type="number" step="0.1" value={newRecord.height}
-                  onChange={e => setNewRecord({...newRecord, height: e.target.value})}
-                  className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-bold" 
-                />
+                <input type="number" step="0.1" value={newRecord.height} onChange={e => setNewRecord({...newRecord, height: e.target.value})} className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-black text-slate-900" />
               </div>
             </div>
-            <button 
-              onClick={handleAddRecord}
-              className="w-full py-4 bg-blue-600 text-white font-black rounded-2xl shadow-xl hover:bg-blue-700 transition-all transform active:scale-95"
-            >
-              Log Measurement
-            </button>
+            <button onClick={handleAddRecord} className="w-full py-4 bg-blue-600 text-white font-black rounded-2xl shadow-xl hover:bg-blue-700 transition-all transform active:scale-95">Log Measurement</button>
           </div>
         </div>
 
         <div className="lg:col-span-3 space-y-6">
           <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 h-full min-h-[500px]">
             <h3 className="text-xl font-bold text-slate-800 mb-8 flex items-center gap-2">
-              <span className="text-blue-500">📉</span> WHO Percentile Chart
+              <span className="text-blue-500">📉</span> Interactive Trajectory
             </h3>
             <div className="h-[450px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis 
-                    dataKey="age" 
-                    label={{ value: 'Age (months)', position: 'insideBottom', offset: -10, fill: '#64748b', fontSize: 12, fontWeight: 700 }} 
-                    tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }} 
-                  />
-                  <YAxis 
-                    yAxisId="kg" 
-                    domain={['auto', 'auto']} 
-                    label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 12, fontWeight: 700 }} 
-                    tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '16px' }}
-                    labelFormatter={(label) => `Age: ${label} months`}
-                    formatter={(value, name) => [`${value} kg`, name]}
-                  />
+                  <XAxis dataKey="age" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }} />
+                  <YAxis yAxisId="kg" domain={['auto', 'auto']} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }} />
+                  <Tooltip contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '16px' }} />
                   <Legend verticalAlign="top" height={36}/>
                   
-                  {/* Reference Lines */}
-                  <Line yAxisId="kg" type="monotone" dataKey="p97_weight" stroke="#cbd5e1" strokeWidth={1} strokeDasharray="5 5" dot={false} name="WHO 97th Percentile" />
-                  <Line yAxisId="kg" type="monotone" dataKey="p50_weight" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="10 5" dot={false} name="WHO 50th (Mean)" />
-                  <Line yAxisId="kg" type="monotone" dataKey="p3_weight" stroke="#cbd5e1" strokeWidth={1} strokeDasharray="5 5" dot={false} name="WHO 3rd Percentile" />
+                  {showReferenceLines && <Line yAxisId="kg" type="monotone" dataKey="p97_weight" stroke="#cbd5e1" strokeWidth={1} strokeDasharray="5 5" dot={false} name="WHO 97th" />}
+                  {showReferenceLines && <Line yAxisId="kg" type="monotone" dataKey="p50_weight" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="10 5" dot={false} name="WHO 50th (Mean)" />}
+                  {showReferenceLines && <Line yAxisId="kg" type="monotone" dataKey="p3_weight" stroke="#cbd5e1" strokeWidth={1} strokeDasharray="5 5" dot={false} name="WHO 3rd" />}
                   
-                  {/* User Data */}
                   <Line yAxisId="kg" type="monotone" dataKey="weight" stroke="#3b82f6" strokeWidth={5} dot={{ r: 8, fill: '#3b82f6', strokeWidth: 4, stroke: '#fff' }} name="Child's Weight" animationDuration={1000} />
                 </LineChart>
               </ResponsiveContainer>
-            </div>
-            <div className="mt-8 bg-blue-50 p-6 rounded-3xl border border-blue-100 flex items-center gap-4">
-               <span className="text-2xl">🛡️</span>
-               <p className="text-blue-900 font-bold text-xs leading-relaxed italic">
-                 Reference curves based on standard WHO Child Growth Standards. Large variances from the 50th percentile or crossing curves (weight faltering) should be discussed with a Pediatrician.
-               </p>
             </div>
           </div>
         </div>

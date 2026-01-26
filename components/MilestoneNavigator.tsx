@@ -1,128 +1,189 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Milestone } from '../types';
-
-interface MilestoneNavigatorProps {
-  onLogRedFlag?: (description: string) => void;
-}
+import { useMedicalHistory } from '../context/MedicalHistoryContext';
 
 const INITIAL_DATA: Milestone[] = [
   // 6-8 WEEKS
-  { id: "6w-m1", ageRange: "6-8 Weeks", category: "Motor", description: "Lifts head briefly. Example: When lying on their tummy, they can clear their chin from the floor for a few seconds.", completed: false, isRedFlag: false },
-  { id: "6w-l1", ageRange: "6-8 Weeks", category: "Language", description: "Coos and gurgles. Example: Making little \"ooh\" and \"aah\" sounds when you talk to them.", completed: false, isRedFlag: false },
-  { id: "6w-s1", ageRange: "6-8 Weeks", category: "Social", description: "Social Smile. Example: Giving a real, intentional smile back at you when you smile or talk high-pitched to them.", completed: false, isRedFlag: false },
-  { id: "6w-c1", ageRange: "6-8 Weeks", category: "Cognitive", description: "Watches faces. Example: They focus their eyes on your face and might follow you briefly as you move.", completed: false, isRedFlag: false },
-  { id: "6w-rf-m1", ageRange: "6-8 Weeks", category: "Motor", description: "Concern: Unusually floppy or very stiff. Example: Their head falls back completely with no control, or their limbs are hard to move.", completed: false, isRedFlag: true },
-  { id: "6w-rf-l1", ageRange: "6-8 Weeks", category: "Language", description: "Concern: No vocalizations. Example: The baby is unusually quiet and does not make cooing sounds by 8 weeks.", completed: false, isRedFlag: true },
-  { id: "6w-rf-s1", ageRange: "6-8 Weeks", category: "Social", description: "Concern: No social smile. Example: Does not smile back at people by 8 weeks of age.", completed: false, isRedFlag: true },
-  { id: "6w-rf-c1", ageRange: "6-8 Weeks", category: "Cognitive", description: "Concern: Poor eye contact. Example: Does not look at your face or follow a moving toy with their eyes.", completed: false, isRedFlag: true },
+  { id: "6w-m1", ageRange: "6-8 Weeks", category: "Motor", description: "Lifts head briefly when prone. Example: Can clear chin from the floor for a few seconds.", completed: false, isRedFlag: false },
+  { id: "6w-m2", ageRange: "6-8 Weeks", category: "Social", description: "Responsive social smile. Example: Smiles back when you talk to or smile at them.", completed: false, isRedFlag: false },
+  { id: "6w-m3", ageRange: "6-8 Weeks", category: "Language", description: "Coos and makes gurgling sounds. Example: Makes 'ooh' and 'aah' noises when you talk.", completed: false, isRedFlag: false },
+  { id: "6w-m4", ageRange: "6-8 Weeks", category: "Cognitive", description: "Watches faces and follows with eyes. Example: Tracks your face briefly as you move.", completed: false, isRedFlag: false },
+  { id: "6w-rf1", ageRange: "6-8 Weeks", category: "Motor", description: "Red Flag: Persistent fisting. Example: Hands stay clenched in a tight fist most of the time.", completed: false, isRedFlag: true },
+  { id: "6w-rf2", ageRange: "6-8 Weeks", category: "Motor", description: "Red Flag: Floppy or Stiff. Example: Feels unusually 'loose' or 'hard' like a board when handled.", completed: false, isRedFlag: true },
+  { id: "6w-rf3", ageRange: "6-8 Weeks", category: "Social", description: "Red Flag: No social smile by 8 weeks. Example: Does not smile back at caregivers.", completed: false, isRedFlag: true },
+  { id: "6w-rf4", ageRange: "6-8 Weeks", category: "Language", description: "Red Flag: Not startled by noises. Example: Shows no reaction to sudden loud sounds.", completed: false, isRedFlag: true },
+  { id: "6w-rf5", ageRange: "6-8 Weeks", category: "Cognitive", description: "Red Flag: Vision concern. Example: Persistent squint or not following a face with eyes.", completed: false, isRedFlag: true },
 
   // 4 MONTHS
-  { id: "4m-m1", ageRange: "4 Months", category: "Motor", description: "Steady head. Example: Holds head upright without support when being held or sitting with help.", completed: false, isRedFlag: false },
-  { id: "4m-l1", ageRange: "4 Months", category: "Language", description: "Laughs aloud. Example: Making a clear \"ha-ha\" sound when tickled or playing.", completed: false, isRedFlag: false },
-  { id: "4m-s1", ageRange: "4 Months", category: "Social", description: "Copies expressions. Example: They might frown if you frown or smile back excitedly.", completed: false, isRedFlag: false },
-  { id: "4m-c1", ageRange: "4 Months", category: "Cognitive", description: "Reaches for toys. Example: Swings their arm towards a dangling toy and tries to grab it.", completed: false, isRedFlag: false },
-  { id: "4m-rf-m1", ageRange: "4 Months", category: "Motor", description: "Concern: Persistent head lag. Example: When pulled from lying to sitting, the head still flops backward significantly.", completed: false, isRedFlag: true },
-  { id: "4m-rf-l1", ageRange: "4 Months", category: "Language", description: "Concern: Does not coo or babble. Example: They aren't making a variety of sounds or responding to noises.", completed: false, isRedFlag: true },
-  { id: "4m-rf-s1", ageRange: "4 Months", category: "Social", description: "Concern: Uninterested in people. Example: Doesn't seem to notice or care when someone enters the room.", completed: false, isRedFlag: true },
-  { id: "4m-rf-c1", ageRange: "4 Months", category: "Cognitive", description: "Concern: Not bringing hands to mouth. Example: They haven't started the stage of sucking on fingers or toys for exploration.", completed: false, isRedFlag: true },
+  { id: "4m-m1", ageRange: "4 Months", category: "Motor", description: "Holds head steady, unsupported. Example: No longer 'bobbles' when being held upright.", completed: false, isRedFlag: false },
+  { id: "4m-m2", ageRange: "4 Months", category: "Motor", description: "Reaches for objects; grasps a rattle. Example: Tries to grab a toy hanging in front of them.", completed: false, isRedFlag: false },
+  { id: "4m-m3", ageRange: "4 Months", category: "Language", description: "Laughs out loud. Example: Makes happy squealing sounds.", completed: false, isRedFlag: false },
+  { id: "4m-m4", ageRange: "4 Months", category: "Social", description: "Turns head to sounds. Example: Looks toward a voice or rattle sound.", completed: false, isRedFlag: false },
+  { id: "4m-rf1", ageRange: "4 Months", category: "Motor", description: "Red Flag: Significant head lag. Example: Head drops back when being pulled to sit.", completed: false, isRedFlag: true },
+  { id: "4m-rf2", ageRange: "4 Months", category: "Social", description: "Red Flag: Not smiling at people. Example: Rarely or never makes eye contact or smiles at caregivers.", completed: false, isRedFlag: true },
+  { id: "4m-rf3", ageRange: "4 Months", category: "Language", description: "Red Flag: Not babbling. Example: Not making cooing sounds or responding to voices.", completed: false, isRedFlag: true },
 
   // 6 MONTHS
-  { id: "6m-m1", ageRange: "6 Months", category: "Motor", description: "Rolls over. Example: Moving from their tummy to their back, or back to tummy.", completed: false, isRedFlag: false },
-  { id: "6m-l1", ageRange: "6 Months", category: "Language", description: "Strings vowels together. Example: \"ah-eh-oh\" sounds and taking turns \"talking\" with you.", completed: false, isRedFlag: false },
-  { id: "6m-s1", ageRange: "6 Months", category: "Social", description: "Knows familiar faces. Example: Excitedly recognizes parents/caregivers and may be wary of strangers.", completed: false, isRedFlag: false },
-  { id: "6m-c1", ageRange: "6 Months", category: "Cognitive", description: "Passes things from hand to hand. Example: Holding a block in one hand and moving it to the other.", completed: false, isRedFlag: false },
-  { id: "6m-rf-m1", ageRange: "6 Months", category: "Motor", description: "Concern: Cannot sit with support. Example: Slumps over immediately even when propped up with pillows.", completed: false, isRedFlag: true },
-  { id: "6m-rf-l1", ageRange: "6 Months", category: "Language", description: "Concern: No vowel sounds. Example: They aren't making \"ah\", \"ee\", or \"oh\" sounds.", completed: false, isRedFlag: true },
-  { id: "6m-rf-s1", ageRange: "6 Months", category: "Social", description: "Concern: No eye contact. Example: They avoid looking at you during feeding or play.", completed: false, isRedFlag: true },
-  { id: "6m-rf-c1", ageRange: "6 Months", category: "Cognitive", description: "Concern: Not reaching for objects. Example: Shows no interest in toys placed within reach.", completed: false, isRedFlag: true },
+  { id: "6m-m1", ageRange: "6 Months", category: "Motor", description: "Rolls over in both directions. Example: From tummy to back and back to tummy.", completed: false, isRedFlag: false },
+  { id: "6m-m2", ageRange: "6 Months", category: "Motor", description: "Transfers objects between hands. Example: Moves a toy from one hand to the other.", completed: false, isRedFlag: false },
+  { id: "6m-m3", ageRange: "6 Months", category: "Language", description: "Babbles with consonants (ba, da, ga). Example: Strings sounds together like 'bababa'.", completed: false, isRedFlag: false },
+  { id: "6m-m4", ageRange: "6 Months", category: "Social", description: "Knows familiar faces. Example: Reaches out to be picked up by a parent.", completed: false, isRedFlag: false },
+  { id: "6m-rf1", ageRange: "6 Months", category: "Motor", description: "Red Flag: Hand preference. Example: Consistently uses only one hand for all reaching; other hand stays still.", completed: false, isRedFlag: true },
+  { id: "6m-rf2", ageRange: "6 Months", category: "Language", description: "Red Flag: Not turning to sounds. Example: No reaction when you speak from behind them.", completed: false, isRedFlag: true },
+  { id: "6m-rf3", ageRange: "6 Months", category: "Social", description: "Red Flag: No smiles or squeals. Example: Does not show outward signs of joy or social engagement.", completed: false, isRedFlag: true },
 
   // 9 MONTHS
-  { id: "9m-m1", ageRange: "9 Months", category: "Motor", description: "Sits independently. Example: Can sit on the floor for several minutes without using hands for balance.", completed: false, isRedFlag: false },
-  { id: "9m-l1", ageRange: "9 Months", category: "Language", description: "Understands \"No\". Example: Briefly stops what they are doing when you say \"No\" firmly.", completed: false, isRedFlag: false },
-  { id: "9m-s1", ageRange: "9 Months", category: "Social", description: "Clings to familiar adults. Example: Showing \"separation anxiety\" when you leave the room.", completed: false, isRedFlag: false },
-  { id: "9m-c1", ageRange: "9 Months", category: "Cognitive", description: "Looks for hidden things. Example: Lifting a cloth to find a toy you just hid underneath.", completed: false, isRedFlag: false },
-  { id: "9m-rf-m1", ageRange: "9 Months", category: "Motor", description: "Concern: Not sitting by 9 months. Example: Still needs to be held or propped up to stay upright.", completed: false, isRedFlag: true },
-  { id: "9m-rf-l1", ageRange: "9 Months", category: "Language", description: "Concern: No babbling. Example: Not using consonant sounds like \"ba-ba\" or \"da-da\".", completed: false, isRedFlag: true },
-  { id: "9m-rf-s1", ageRange: "9 Months", category: "Social", description: "Concern: Does not respond to name. Example: Doesn't look around when you call their name from across the room.", completed: false, isRedFlag: true },
-  { id: "9m-rf-c1", ageRange: "9 Months", category: "Cognitive", description: "Concern: No back-and-forth play. Example: Doesn't try to play peek-a-boo or \"copy\" sounds you make.", completed: false, isRedFlag: true },
+  { id: "9m-m1", ageRange: "9 Months", category: "Motor", description: "Sits without support. Example: Can play with a toy while sitting on the floor.", completed: false, isRedFlag: false },
+  { id: "9m-m2", ageRange: "9 Months", category: "Social", description: "Stranger anxiety begins. Example: Clings to familiar adults when new people are around.", completed: false, isRedFlag: false },
+  { id: "9m-m3", ageRange: "9 Months", category: "Language", description: "Understands 'No'. Example: Briefly stops what they are doing when you say no.", completed: false, isRedFlag: false },
+  { id: "9m-m4", ageRange: "9 Months", category: "Cognitive", description: "Plays Peek-a-boo. Example: Enjoys interactive games where items disappear.", completed: false, isRedFlag: false },
+  { id: "9m-rf1", ageRange: "9 Months", category: "Motor", description: "Red Flag: Not sitting independently. Example: Slumps over immediately if not supported.", completed: false, isRedFlag: true },
+  { id: "9m-rf2", ageRange: "9 Months", category: "Social", description: "Red Flag: No back-and-forth play. Example: Doesn't respond to peek-a-boo or imitate sounds.", completed: false, isRedFlag: true },
+  { id: "9m-rf3", ageRange: "9 Months", category: "Language", description: "Red Flag: Not responding to name. Example: Doesn't look around when called.", completed: false, isRedFlag: true },
 
   // 12 MONTHS
-  { id: "12m-m1", ageRange: "12 Months", category: "Motor", description: "Pulls to stand. Example: Uses the couch or your legs to get themselves up onto their feet.", completed: false, isRedFlag: false },
-  { id: "12m-l1", ageRange: "12 Months", category: "Language", description: "Uses simple gestures. Example: Waving \"bye-bye\" or shaking their head \"no\".", completed: false, isRedFlag: false },
-  { id: "12m-s1", ageRange: "12 Months", category: "Social", description: "Points to show interest. Example: Pointing at a dog in the park to get you to look at it too.", completed: false, isRedFlag: false },
-  { id: "12m-c1", ageRange: "12 Months", category: "Cognitive", description: "Explores things in different ways. Example: Shaking, banging, and throwing toys to see what happens.", completed: false, isRedFlag: false },
-  { id: "12m-rf-m1", ageRange: "12 Months", category: "Motor", description: "Concern: Not crawling. Example: They aren't moving across the floor by 12 months (crawling or bottom-shuffling).", completed: false, isRedFlag: true },
-  { id: "12m-rf-l1", ageRange: "12 Months", category: "Language", description: "Concern: No single words. Example: Hasn't said clear words like \"mama\", \"dada\", or \"bottle\" yet.", completed: false, isRedFlag: true },
-  { id: "12m-rf-s1", ageRange: "12 Months", category: "Social", description: "Concern: No waving or pointing. Example: Does not use hands to communicate basic needs or interest.", completed: false, isRedFlag: true },
-  { id: "12m-rf-c1", ageRange: "12 Months", category: "Cognitive", description: "Concern: Doesn't search for hidden objects. Example: Shows no interest in finding a toy that went behind a cushion.", completed: false, isRedFlag: true },
+  { id: "12m-m1", ageRange: "12 Months", category: "Motor", description: "Pulls up to stand and 'cruises'. Example: Walks while holding furniture.", completed: false, isRedFlag: false },
+  { id: "12m-m2", ageRange: "12 Months", category: "Motor", description: "Fine pincer grasp. Example: Picks up a single pea with tips of fingers.", completed: false, isRedFlag: false },
+  { id: "12m-m3", ageRange: "12 Months", category: "Language", description: "1-3 specific words. Example: Uses 'Dada' or 'Mama' correctly for parents.", completed: false, isRedFlag: false },
+  { id: "12m-m4", ageRange: "12 Months", category: "Social", description: "Points to show interest. Example: Points at a bird to get your attention.", completed: false, isRedFlag: false },
+  { id: "12m-rf1", ageRange: "12 Months", category: "Social", description: "Red Flag: No pointing or waving. Example: Does not use gestures to communicate.", completed: false, isRedFlag: true },
+  { id: "12m-rf2", ageRange: "12 Months", category: "Language", description: "Red Flag: No words. Example: Has no recognizable single words like 'cat' or 'juice'.", completed: false, isRedFlag: true },
+  { id: "12m-rf3", ageRange: "12 Months", category: "Motor", description: "Red Flag: Not pulling to stand. Example: Does not try to stand even with support.", completed: false, isRedFlag: true },
 
   // 18 MONTHS
-  { id: "18m-m1", ageRange: "18 Months", category: "Motor", description: "Walks independently. Example: Can walk across a room without holding onto anything or falling frequently.", completed: false, isRedFlag: false },
-  { id: "18m-l1", ageRange: "18 Months", category: "Language", description: "Says several single words. Example: Having a vocabulary of 10-20 words they use consistently.", completed: false, isRedFlag: false },
-  { id: "18m-s1", ageRange: "18 Months", category: "Social", description: "Pretend play. Example: Pretending to feed a teddy bear or \"talk\" on a toy phone.", completed: false, isRedFlag: false },
-  { id: "18m-c1", ageRange: "18 Months", category: "Cognitive", description: "Points to body parts. Example: Can point to their nose or hair when you ask \"Where is your...?\"", completed: false, isRedFlag: false },
-  { id: "18m-rf-m1", ageRange: "18 Months", category: "Motor", description: "Concern: Not walking by 18 months. Example: Still prefers crawling or needs to hold hands to walk.", completed: false, isRedFlag: true },
-  { id: "18m-rf-l1", ageRange: "18 Months", category: "Language", description: "Concern: Fewer than 6 words. Example: They only use 1 or 2 words or just grunt to get what they want.", completed: false, isRedFlag: true },
-  { id: "18m-rf-s1", ageRange: "18 Months", category: "Social", description: "Concern: No shared attention. Example: Doesn't look at what you point to, or doesn't look at you for your reaction.", completed: false, isRedFlag: true },
-  { id: "18m-rf-c1", ageRange: "18 Months", category: "Cognitive", description: "Concern: Does not understand simple commands. Example: Can't follow \"give me the ball\" even with a gesture.", completed: false, isRedFlag: true },
+  { id: "18m-m1", ageRange: "18 Months", category: "Motor", description: "Walks alone independently. Example: Walks across a room without holding on.", completed: false, isRedFlag: false },
+  { id: "18m-m2", ageRange: "18 Months", category: "Language", description: "Says several single words (10-25). Example: Names common objects like 'ball' or 'milk'.", completed: false, isRedFlag: false },
+  { id: "18m-m3", ageRange: "18 Months", category: "Social", description: "Simple pretend play. Example: Pretends to feed a doll.", completed: false, isRedFlag: false },
+  { id: "18m-m4", ageRange: "18 Months", category: "Cognitive", description: "Follows 1-step commands. Example: 'Give me the toy'.", completed: false, isRedFlag: false },
+  { id: "18m-rf1", ageRange: "18 Months", category: "Motor", description: "Red Flag: Not walking independently. Example: Still needs hand-holding to take steps.", completed: false, isRedFlag: true },
+  { id: "18m-rf2", ageRange: "18 Months", category: "Language", description: "Red Flag: Less than 6–10 words. Example: Vocabulary is extremely limited for this age.", completed: false, isRedFlag: true },
+  { id: "18m-rf3", ageRange: "18 Months", category: "Social", description: "Red Flag: No joint attention. Example: Doesn't look where you point or show you things.", completed: false, isRedFlag: true },
+  { id: "18m-rf4", ageRange: "18 Months", category: "Cognitive", description: "Red Flag: Not following instructions. Example: Fails to understand simple requests like 'Come here'.", completed: false, isRedFlag: true },
 
   // 2 YEARS
-  { id: "2y-m1", ageRange: "2 Years", category: "Motor", description: "Runs and kicks. Example: Can run fairly smoothly and swing a leg to kick a large ball.", completed: false, isRedFlag: false },
-  { id: "2y-l1", ageRange: "2 Years", category: "Language", description: "Two-word phrases. Example: Saying \"More milk\", \"Dada go\", or \"Big car\".", completed: false, isRedFlag: false },
-  { id: "2y-s1", ageRange: "2 Years", category: "Social", description: "Shows independence. Example: Might say \"No!\" or try to do things like putting on shoes by themselves.", completed: false, isRedFlag: false },
-  { id: "2y-c1", ageRange: "2 Years", category: "Cognitive", description: "Follows 2-step instructions. Example: \"Pick up the block and put it in the box.\"", completed: false, isRedFlag: false },
-  { id: "2y-rf-m1", ageRange: "2 Years", category: "Motor", description: "Concern: Persistent toe-walking. Example: Walks on tip-toes most of the time rather than flat-footed.", completed: false, isRedFlag: true },
-  { id: "2y-rf-l1", ageRange: "2 Years", category: "Language", description: "Concern: Not joining two words. Example: Still only using single words and has a small vocabulary (<50 words).", completed: false, isRedFlag: true },
-  { id: "2y-rf-s1", ageRange: "2 Years", category: "Social", description: "Concern: Unusual social behaviors. Example: Extreme tantrums or showing no interest in other children.", completed: false, isRedFlag: true },
-  { id: "2y-rf-c1", ageRange: "2 Years", category: "Cognitive", description: "Concern: Cannot follow simple 1-step directions. Example: Doesn't seem to understand \"come here\" or \"sit down\".", completed: false, isRedFlag: true },
+  { id: "2y-m1", ageRange: "2 Years", category: "Motor", description: "Kicks a ball; runs well. Example: Can swing leg to kick a stationary ball.", completed: false, isRedFlag: false },
+  { id: "2y-m2", ageRange: "2 Years", category: "Language", description: "Says 2-word phrases. Example: 'More milk' or 'Doggy bark'.", completed: false, isRedFlag: false },
+  { id: "2y-m3", ageRange: "2 Years", category: "Social", description: "Parallel play. Example: Plays near other children happily.", completed: false, isRedFlag: false },
+  { id: "2y-m4", ageRange: "2 Years", category: "Cognitive", description: "Follows 2-step commands. Example: 'Get your shoes and put them on'.", completed: false, isRedFlag: false },
+  { id: "2y-rf1", ageRange: "2 Years", category: "Language", description: "Red Flag: Less than 50 words. Example: Very limited vocabulary for a 2-year-old.", completed: false, isRedFlag: true },
+  { id: "2y-rf2", ageRange: "2 Years", category: "Language", description: "Red Flag: No 2-word phrases. Example: Only uses single words to communicate.", completed: false, isRedFlag: true },
+  { id: "2y-rf3", ageRange: "2 Years", category: "Social", description: "Red Flag: Poor eye contact. Example: Rarely looks you in the eye during requests.", completed: false, isRedFlag: true },
+  { id: "2y-rf4", ageRange: "2 Years", category: "Social", description: "Red Flag: No interest in others. Example: Doesn't notice or want to play near other children.", completed: false, isRedFlag: true },
 
   // 3 YEARS
-  { id: "3y-m1", ageRange: "3 Years", category: "Motor", description: "Climbs well. Example: Can walk up and down stairs alternating feet (one foot per step).", completed: false, isRedFlag: false },
-  { id: "3y-l1", ageRange: "3 Years", category: "Language", description: "3-word sentences. Example: \"I want juice\" or \"Dog is big\". Strangers can understand them half the time.", completed: false, isRedFlag: false },
-  { id: "3y-s1", ageRange: "3 Years", category: "Social", description: "Takes turns. Example: Can wait a short time for their turn during a simple game with others.", completed: false, isRedFlag: false },
-  { id: "3y-c1", ageRange: "3 Years", category: "Cognitive", description: "Does puzzles. Example: Can complete a 3-4 piece wooden inset puzzle.", completed: false, isRedFlag: false },
-  { id: "3y-rf-m1", ageRange: "3 Years", category: "Motor", description: "Concern: Clumsiness. Example: Frequently falls over or has great difficulty handling small toys/crayons.", completed: false, isRedFlag: true },
-  { id: "3y-rf-l1", ageRange: "3 Years", category: "Language", description: "Concern: Very unclear speech. Example: Family members have trouble understanding what the child is saying.", completed: false, isRedFlag: true },
-  { id: "3y-rf-s1", ageRange: "3 Years", category: "Social", description: "Concern: Does not play with others. Example: Always plays alone and resists any interaction with peers.", completed: false, isRedFlag: true },
-  { id: "3y-rf-c1", ageRange: "3 Years", category: "Cognitive", description: "Concern: Cannot follow 2-step related instructions. Example: Fails to \"get your shoes and bring them to me.\"", completed: false, isRedFlag: true },
+  { id: "3y-m1", ageRange: "3 Years", category: "Motor", description: "Rides a tricycle; climbs stairs alternating feet. Example: One foot per step like an adult.", completed: false, isRedFlag: false },
+  { id: "3y-m2", ageRange: "3 Years", category: "Language", description: "3-word sentences. Example: 'I want juice'.", completed: false, isRedFlag: false },
+  { id: "3y-m3", ageRange: "3 Years", category: "Social", description: "Takes turns in games. Example: Understands waiting for their turn.", completed: false, isRedFlag: false },
+  { id: "3y-m4", ageRange: "3 Years", category: "Cognitive", description: "Make-believe play. Example: Pretends a block is a phone.", completed: false, isRedFlag: false },
+  { id: "3y-rf1", ageRange: "3 Years", category: "Language", description: "Red Flag: Speech unintelligible to family. Example: Parents struggle to understand the child's needs.", completed: false, isRedFlag: true },
+  { id: "3y-rf2", ageRange: "3 Years", category: "Social", description: "Red Flag: No pretend play. Example: Does not engage in imaginative play.", completed: false, isRedFlag: true },
+  { id: "3y-rf3", ageRange: "3 Years", category: "Motor", description: "Red Flag: Frequent falling. Example: Falls down much more often than peers.", completed: false, isRedFlag: true },
 
   // 4 YEARS
-  { id: "4y-m1", ageRange: "4 Years", category: "Motor", description: "Hops on one foot. Example: Can balance on one leg and take a small hop without falling.", completed: false, isRedFlag: false },
-  { id: "4y-l1", ageRange: "4 Years", category: "Language", description: "Tells stories. Example: Can describe what happened at preschool or a birthday party using 4-5 word sentences.", completed: false, isRedFlag: false },
-  { id: "4y-s1", ageRange: "4 Years", category: "Social", description: "Prefers group play. Example: Actively joins in with other children to play \"house\" or \"tag\".", completed: false, isRedFlag: false },
-  { id: "4y-c1", ageRange: "4 Years", category: "Cognitive", description: "Names colors and numbers. Example: Can correctly identify red, blue, green and count 4-5 objects.", completed: false, isRedFlag: false },
-  { id: "4y-rf-m1", ageRange: "4 Years", category: "Motor", description: "Concern: Cannot hold a crayon with fingers/thumb (still uses whole fist).", completed: false, isRedFlag: true },
-  { id: "4y-rf-l1", ageRange: "4 Years", category: "Language", description: "Concern: Cannot tell a simple story. Example: Cannot put together a sentence longer than 2-3 words.", completed: false, isRedFlag: true },
-  { id: "4y-rf-s1", ageRange: "4 Years", category: "Social", description: "Concern: Extreme aggression or isolation. Example: Regularly hits/bites or has no concept of sharing/cooperation.", completed: false, isRedFlag: true },
-  { id: "4y-rf-c1", ageRange: "4 Years", category: "Cognitive", description: "Concern: Cannot follow 3-part instructions. Example: Unable to \"Go to your room, get your coat, and put it on the table.\"", completed: false, isRedFlag: true },
+  { id: "4y-m1", ageRange: "4 Years", category: "Motor", description: "Hops on one foot. Example: Can balance on one leg for a few seconds.", completed: false, isRedFlag: false },
+  { id: "4y-m2", ageRange: "4 Years", category: "Language", description: "Tells a simple story. Example: Describes what happened at the park.", completed: false, isRedFlag: false },
+  { id: "4y-m3", ageRange: "4 Years", category: "Social", description: "Cooperative play. Example: Plays with others to build a tower.", completed: false, isRedFlag: false },
+  { id: "4y-m4", ageRange: "4 Years", category: "Cognitive", description: "Knows some colors and numbers. Example: Correct identifies 'red' or 'blue'.", completed: false, isRedFlag: false },
+  { id: "4y-rf1", ageRange: "4 Years", category: "Language", description: "Red Flag: Unintelligible to strangers. Example: People outside the family cannot understand the child.", completed: false, isRedFlag: true },
+  { id: "4y-rf2", ageRange: "4 Years", category: "Social", description: "Red Flag: Very withdrawn. Example: Shows no interest in playing with other children.", completed: false, isRedFlag: true },
 
-  // LOSS OF SKILLS
-  { id: "loss-skills", ageRange: "All Ages", category: "Cognitive", description: "CRITICAL CONCERN: Loss of any skill. Example: A child who used to say 10 words now says none, or a child who used to walk now only crawls.", completed: false, isRedFlag: true },
+  // 5 YEARS
+  { id: "5y-m1", ageRange: "5 Years", category: "Motor", description: "Draws a person with 6 parts. Example: Head, body, arms, legs.", completed: false, isRedFlag: false },
+  { id: "5y-m2", ageRange: "5 Years", category: "Language", description: "Speaks clearly using full sentences. Example: Easy for anyone to understand.", completed: false, isRedFlag: false },
+  { id: "5y-rf1", ageRange: "5 Years", category: "Language", description: "Red Flag: Difficulty telling a story. Example: Cannot describe a simple sequence of events.", completed: false, isRedFlag: true },
+  { id: "5y-rf2", ageRange: "5 Years", category: "Cognitive", description: "Red Flag: Unable to concentrate for 5 mins. Example: Flits between activities without finishing.", completed: false, isRedFlag: true },
+
+  // 6 YEARS
+  { id: "6y-m1", ageRange: "6 Years", category: "Motor", description: "Prints first name; copies a triangle. Example: Can write their own name clearly.", completed: false, isRedFlag: false },
+  { id: "6y-m2", ageRange: "6 Years", category: "Social", description: "Distinguishes fantasy from reality. Example: Understands cartoons aren't real.", completed: false, isRedFlag: false },
+  { id: "6y-rf1", ageRange: "6 Years", category: "Cognitive", description: "Red Flag: Significant literacy difficulty. Example: Cannot recognize any letters or count to 10.", completed: false, isRedFlag: true },
+
+  // ALL AGES / CRITICAL (Consensus Safety Markers)
+  { id: "loss-skills", ageRange: "All Ages", category: "Cognitive", description: "CRITICAL RED FLAG: Loss of any previously acquired skill. Example: Stopped talking or stopped walking.", completed: false, isRedFlag: true },
+  { id: "global-delay", ageRange: "All Ages", category: "Cognitive", description: "CRITICAL RED FLAG: Significant delay in multiple domains (Motor, Social, Language).", completed: false, isRedFlag: true },
+  { id: "sensory-concern", ageRange: "All Ages", category: "Social", description: "CRITICAL RED FLAG: Persistent parent concern about hearing or vision.", completed: false, isRedFlag: true },
 ];
 
-export const MilestoneNavigator: React.FC<MilestoneNavigatorProps> = ({ onLogRedFlag }) => {
-  const [milestones, setMilestones] = useState<Milestone[]>(INITIAL_DATA);
+export const MilestoneNavigator: React.FC = () => {
+  const { history, updateHistory, addClinicalEvent } = useMedicalHistory();
   const [activeAge, setActiveAge] = useState('6-8 Weeks');
   const [showRedFlags, setShowRedFlags] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState<'All' | 'Motor' | 'Cognitive' | 'Social' | 'Language'>('All');
+  const [showAddCustom, setShowAddCustom] = useState(false);
+  const [customMilestone, setCustomMilestone] = useState<Partial<Milestone>>({ description: '', category: 'Motor' });
+
+  useEffect(() => {
+    if (!history.milestones || history.milestones.length === 0) {
+      updateHistory({ milestones: INITIAL_DATA });
+    }
+  }, [history.milestones, updateHistory]);
+
+  const milestones = history.milestones || [];
+  const ageGroups = ['6-8 Weeks', '4 Months', '6 Months', '9 Months', '12 Months', '18 Months', '2 Years', '3 Years', '4 Years', '5 Years', '6 Years', 'All Ages'];
+  const domains = [
+    { name: 'All', icon: '🌟' },
+    { name: 'Motor', icon: '🏃' },
+    { name: 'Cognitive', icon: '🧠' },
+    { name: 'Social', icon: '🫂' },
+    { name: 'Language', icon: '💬' }
+  ];
+
+  const completionStats = useMemo(() => {
+    return ageGroups.reduce((acc, age) => {
+      const group = milestones.filter(m => m.ageRange === age && !m.isRedFlag);
+      const completed = group.filter(m => m.completed).length;
+      acc[age] = { completed, total: group.length };
+      return acc;
+    }, {} as Record<string, { completed: number; total: number }>);
+  }, [milestones]);
 
   const toggleMilestone = (id: string) => {
     const updated = milestones.map(m => m.id === id ? { ...m, completed: !m.completed } : m);
-    setMilestones(updated);
+    updateHistory({ milestones: updated });
     
     const item = updated.find(x => x.id === id);
-    if (item?.isRedFlag && item.completed && onLogRedFlag) {
-      onLogRedFlag(`Developmental Concern (${item.ageRange}): ${item.description.split('. Example:')[0]}`);
+    if (item?.isRedFlag && item.completed) {
+      addClinicalEvent({ 
+        source: 'Developmental Alert', 
+        description: `Clinical Red Flag Identified (${item.ageRange}): ${item.description.split('. Example:')[0]}`, 
+        date: new Date().toLocaleDateString(), 
+        severity: 'High' 
+      });
     }
   };
 
-  const ageGroups = ['6-8 Weeks', '4 Months', '6 Months', '9 Months', '12 Months', '18 Months', '2 Years', '3 Years', '4 Years', 'All Ages'];
+  const updateNotes = (id: string, notes: string) => {
+    const updated = milestones.map(m => m.id === id ? { ...m, notes } : m);
+    updateHistory({ milestones: updated });
+  };
+
+  const handleAddCustom = () => {
+    if (!customMilestone.description) return;
+    const newM: Milestone = {
+      id: crypto.randomUUID(),
+      ageRange: activeAge,
+      category: customMilestone.category as any,
+      description: customMilestone.description,
+      completed: true,
+      isRedFlag: false,
+      notes: ''
+    };
+    updateHistory({ milestones: [...milestones, newM] });
+    setCustomMilestone({ description: '', category: 'Motor' });
+    setShowAddCustom(false);
+  };
 
   const filteredData = useMemo(() => {
-    return milestones.filter(m => m.ageRange === activeAge && m.isRedFlag === showRedFlags);
-  }, [milestones, activeAge, showRedFlags]);
+    return milestones.filter(m => 
+      m.ageRange === activeAge && 
+      m.isRedFlag === showRedFlags &&
+      (selectedDomain === 'All' || m.category === selectedDomain)
+    );
+  }, [milestones, activeAge, showRedFlags, selectedDomain]);
 
   const CategoryBadge = ({ category }: { category: string }) => {
+    const domain = domains.find(d => d.name === category);
     const colors: Record<string, string> = {
       Motor: 'bg-blue-50 text-blue-600 border-blue-100',
       Language: 'bg-purple-50 text-purple-600 border-purple-100',
@@ -130,103 +191,222 @@ export const MilestoneNavigator: React.FC<MilestoneNavigatorProps> = ({ onLogRed
       Cognitive: 'bg-amber-50 text-amber-600 border-amber-100',
     };
     return (
-      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${colors[category] || 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+      <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border shadow-sm flex items-center gap-1.5 ${colors[category] || 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+        <span>{domain?.icon}</span>
         {category}
       </span>
     );
   };
 
   return (
-    <div className="space-y-6 pb-20">
-      <header className="px-1">
-        <h2 className="text-3xl font-black text-slate-800 tracking-tight italic">Milestone <span className="text-teal-600">Screen</span></h2>
-        <p className="text-slate-500 text-xs font-medium italic leading-tight mt-1">Standardized developmental tracking (QCH Guidelines).</p>
+    <div className="space-y-6 pb-32 animate-in fade-in duration-500 max-w-4xl mx-auto">
+      {/* Mobile-Optimized Sticky Header */}
+      <header className="sticky top-0 z-50 bg-[#FBFBFE]/95 backdrop-blur-xl border-b border-slate-100 px-4 py-4 -mx-4 md:static md:bg-transparent md:border-none md:p-0 md:m-0">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-3">
+             <div className="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-xl shadow-lg rotate-[-3deg]">✨</div>
+             <h2 className="text-2xl font-black text-slate-800 tracking-tighter italic">Milestone <span className="text-teal-600">Sync</span></h2>
+          </div>
+          <button 
+            onClick={() => setShowAddCustom(!showAddCustom)}
+            className="bg-teal-50 text-teal-600 p-2.5 rounded-xl border border-teal-100 shadow-sm active:scale-95 transition-all"
+            title="Add Observation"
+          >
+            {showAddCustom ? <span className="text-sm font-black">Cancel</span> : <span className="text-xl">➕</span>}
+          </button>
+        </div>
       </header>
 
-      {/* Sticky Age Group Selector */}
-      <nav className="sticky top-[58px] md:top-0 z-40 bg-[#FBFBFE]/80 backdrop-blur-md py-2 overflow-x-auto no-scrollbar">
-        <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm min-w-max">
-          {ageGroups.map(age => (
-            <button
-              key={age}
-              onClick={() => setActiveAge(age)}
-              className={`px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${
-                activeAge === age ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'
-              }`}
-            >
-              {age}
-            </button>
-          ))}
+      {/* Quick Source Link */}
+      <div className="px-4 flex flex-wrap items-center gap-2">
+        <p className="text-slate-400 text-[10px] font-bold italic">Standardized Clinical Markers</p>
+        <div className="flex gap-1.5">
+          <a href="https://www.childrens.health.qld.gov.au/..." target="_blank" className="text-[8px] font-black text-teal-600 bg-teal-50 px-2 py-0.5 rounded uppercase tracking-widest border border-teal-100">QCH Flags ↗</a>
+          <a href="https://www.pedscases.com/..." target="_blank" className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-widest border border-blue-100">PedsCases ↗</a>
+        </div>
+      </div>
+
+      {/* Floating Entry Panel */}
+      {showAddCustom && (
+        <div className="fixed inset-x-4 top-20 z-[60] bg-white p-6 rounded-[2.5rem] border-2 border-teal-100 shadow-2xl animate-in slide-in-from-top-4 space-y-6 md:relative md:top-0 md:inset-x-0 md:bg-teal-50/50">
+           <h3 className="text-lg font-black text-teal-900 italic tracking-tight">Log Private Observation for {activeAge}</h3>
+           <div className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-teal-600 uppercase tracking-widest ml-3">Observation</label>
+                <input 
+                  placeholder="e.g. Points to birds, says 'Dada'..." 
+                  value={customMilestone.description}
+                  onChange={e => setCustomMilestone({...customMilestone, description: e.target.value})}
+                  className="w-full p-4 rounded-xl bg-white border-2 border-teal-200 font-black text-slate-900 outline-none shadow-inner focus:border-teal-500"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-teal-600 uppercase tracking-widest ml-3">Category</label>
+                <select 
+                  value={customMilestone.category}
+                  onChange={e => setCustomMilestone({...customMilestone, category: e.target.value as any})}
+                  className="w-full p-4 rounded-xl bg-white border-2 border-teal-200 font-black text-slate-900 outline-none shadow-inner appearance-none"
+                >
+                  <option>Motor</option>
+                  <option>Social</option>
+                  <option>Language</option>
+                  <option>Cognitive</option>
+                </select>
+              </div>
+              <button onClick={handleAddCustom} className="w-full py-4 bg-teal-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Synchronize ✨</button>
+           </div>
+        </div>
+      )}
+
+      {/* Age Horizontal Selection */}
+      <nav className="overflow-x-auto no-scrollbar py-2 -mx-4 px-4 bg-[#FBFBFE]">
+        <div className="flex gap-2 min-w-max">
+          {ageGroups.map(age => {
+            const stats = completionStats[age] || { completed: 0, total: 0 };
+            const isActive = activeAge === age;
+            const progress = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
+            return (
+              <button 
+                key={age} 
+                onClick={() => setActiveAge(age)} 
+                className={`relative px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all overflow-hidden border-2 ${
+                  isActive 
+                    ? 'bg-teal-600 text-white border-teal-600 shadow-lg scale-105' 
+                    : 'bg-white text-slate-400 border-slate-100 hover:border-teal-100'
+                }`}
+              >
+                <div className="relative z-10 flex flex-col items-center gap-1">
+                  <span>{age}</span>
+                  {stats.total > 0 && <span className="opacity-60 text-[8px]">{stats.completed}/{stats.total}</span>}
+                </div>
+                {isActive && (
+                  <div className="absolute bottom-0 left-0 h-1 bg-teal-300 opacity-50 transition-all duration-700" style={{ width: `${progress}%` }} />
+                )}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
-      <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm max-w-sm">
-        <button 
-          onClick={() => setShowRedFlags(false)}
-          className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
-            !showRedFlags ? 'bg-indigo-50 text-indigo-700' : 'text-slate-400'
-          }`}
-        >
-          Typical
-        </button>
-        <button 
-          onClick={() => setShowRedFlags(true)}
-          className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
-            showRedFlags ? 'bg-rose-50 text-rose-700' : 'text-slate-400'
-          }`}
-        >
-          Concerns
-        </button>
+      {/* Filter Segmented Control */}
+      <div className="px-4 space-y-4">
+         <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner">
+            <button onClick={() => setShowRedFlags(false)} className={`flex-1 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${!showRedFlags ? 'bg-white text-teal-700 shadow-md' : 'text-slate-400'}`}>Standard Progress</button>
+            <button onClick={() => setShowRedFlags(true)} className={`flex-1 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${showRedFlags ? 'bg-rose-900 text-white shadow-md' : 'text-slate-400'}`}>Clinical Red Flags</button>
+         </div>
+
+         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+            {domains.map(d => (
+              <button 
+                key={d.name} 
+                onClick={() => setSelectedDomain(d.name as any)}
+                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 flex items-center gap-2 ${selectedDomain === d.name ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-white border-slate-50 text-slate-400'}`}
+              >
+                <span>{d.icon}</span>
+                {d.name}
+              </button>
+            ))}
+         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 animate-in slide-in-from-bottom-4">
-        {filteredData.map(m => (
-          <button
-            key={m.id}
-            onClick={() => toggleMilestone(m.id)}
-            className={`p-5 rounded-3xl border-2 text-left transition-all relative overflow-hidden h-full flex flex-col justify-between ${
-              m.completed 
-                ? (showRedFlags ? 'bg-rose-50 border-rose-200 shadow-sm' : 'bg-emerald-50 border-emerald-200 shadow-sm')
-                : 'bg-white border-slate-100 hover:border-indigo-100 shadow-sm hover:shadow-md'
-            }`}
-          >
-            <div>
-              <div className="flex justify-between items-start mb-4">
-                <CategoryBadge category={m.category} />
-                <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all ${
-                  m.completed 
-                    ? (showRedFlags ? 'bg-rose-600 border-rose-600 text-white' : 'bg-emerald-600 border-emerald-600 text-white')
-                    : 'border-slate-100'
-                }`}>
-                  {m.completed && <span className="text-sm font-black">✓</span>}
+      {/* Card Grid - Adaptive Columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 animate-in slide-in-from-bottom-4">
+        {filteredData.length > 0 ? filteredData.map(m => {
+          const parts = m.description.split('. Example:');
+          const title = parts[0];
+          const example = parts[1];
+
+          return (
+            <div 
+              key={m.id}
+              className={`rounded-[2rem] border-2 transition-all flex flex-col group ${
+                m.completed 
+                  ? (showRedFlags ? 'bg-rose-100 border-rose-900 shadow-rose-200 shadow-lg' : 'bg-emerald-50 border-emerald-300 shadow-md') 
+                  : 'bg-white border-slate-100 shadow-sm'
+              }`}
+            >
+              <div className="p-5 flex flex-col h-full gap-4 relative overflow-hidden">
+                {showRedFlags && (
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-rose-200/20 rotate-45 translate-x-10 -translate-y-10"></div>
+                )}
+
+                <div className="flex justify-between items-start z-10">
+                  <div className="flex flex-col gap-2">
+                    <CategoryBadge category={m.category} />
+                    {m.isRedFlag && (
+                        <span className="bg-rose-800 text-white text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full w-fit shadow-sm">Urgent Alert</span>
+                    )}
+                  </div>
+                  <button 
+                    onClick={() => toggleMilestone(m.id)}
+                    className={`w-11 h-11 rounded-[1rem] border-2 flex items-center justify-center transition-all z-10 ${
+                      m.completed 
+                        ? (showRedFlags ? 'bg-rose-900 border-white text-white rotate-[360deg] shadow-lg' : 'bg-emerald-600 border-white text-white rotate-[360deg] shadow-lg') 
+                        : 'bg-slate-50 border-slate-100 text-slate-200 hover:border-teal-200 active:scale-90 shadow-inner'
+                    }`}
+                  >
+                    {m.completed ? <span className="font-black text-xl">✓</span> : null}
+                  </button>
                 </div>
-              </div>
-              
-              <div className="space-y-3">
-                <p className={`text-base font-black leading-tight tracking-tight ${m.completed ? 'opacity-80' : 'text-slate-800'}`}>
-                  {m.description.split('. Example:')[0]}
-                </p>
-                {!m.completed && (
-                  <p className="text-[11px] font-bold italic text-slate-500 leading-tight">
-                    {m.description.includes('. Example:') ? m.description.split('. Example:')[1] : ''}
+                
+                <div className="flex-1 space-y-3 z-10">
+                  <p className={`text-lg font-black leading-tight tracking-tight italic ${showRedFlags ? 'text-rose-950 underline decoration-rose-300' : 'text-slate-800'}`}>
+                    {title}
                   </p>
+                  {example && (
+                    <div className={`p-3 rounded-2xl border ${showRedFlags ? 'bg-white/40 border-rose-200' : 'bg-slate-50 border-slate-100'}`}>
+                        <p className={`text-[10px] font-bold italic leading-snug ${showRedFlags ? 'text-rose-800' : 'text-slate-500'}`}>
+                        "{example}"
+                        </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className={`pt-4 border-t z-10 space-y-2 ${showRedFlags ? 'border-rose-200' : 'border-slate-100'}`}>
+                   <label className={`text-[8px] font-black uppercase tracking-widest ml-2 ${showRedFlags ? 'text-rose-400' : 'text-slate-400'}`}>Journal Entry</label>
+                   <textarea 
+                    value={m.notes || ''}
+                    onChange={e => updateNotes(m.id, e.target.value)}
+                    placeholder="Capture the moment..."
+                    className={`w-full h-20 p-4 rounded-2xl border font-bold italic text-xs outline-none focus:ring-2 transition-all shadow-inner resize-none ${
+                        showRedFlags ? 'bg-white/60 border-rose-100 focus:ring-rose-100 text-rose-900' : 'bg-white/50 border-slate-50 focus:ring-teal-100/50 text-slate-600'
+                    }`}
+                   />
+                </div>
+
+                {m.isRedFlag && !m.completed && (
+                  <div className="flex items-center gap-2 text-rose-600 font-black text-[8px] uppercase tracking-widest pt-2 border-t border-rose-200 bg-rose-50/80 p-4 rounded-2xl z-10">
+                    <span className="text-xl animate-pulse">🚨</span>
+                    <span className="leading-tight">Clinical Action Recommended if Observed.</span>
+                  </div>
                 )}
               </div>
             </div>
-
-            {m.isRedFlag && !m.completed && (
-              <div className="mt-4 flex items-center gap-1.5 text-rose-500 font-black text-[9px] uppercase">
-                <span className="animate-pulse text-base">⚠️</span>
-                Review if observed
-              </div>
-            )}
-            {m.isRedFlag && m.completed && (
-              <div className="mt-4 flex items-center gap-1.5 text-rose-900 font-black text-[9px] uppercase bg-rose-100/50 p-2 rounded-xl border border-rose-100">
-                <span>📍</span> Logged for Clinical Review
-              </div>
-            )}
-          </button>
-        ))}
+          );
+        }) : (
+          <div className="col-span-full py-24 flex flex-col items-center justify-center bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[2.5rem] text-center opacity-60">
+            <span className="text-6xl mb-6 grayscale">🌱</span>
+            <div className="max-w-xs space-y-1">
+                <p className="font-black text-sm uppercase tracking-widest text-slate-500">No matching markers</p>
+                <p className="text-[10px] text-slate-400 font-bold italic">Try a different domain filter.</p>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {/* Bottom Expert Insight (Mobile Optimized) */}
+      <div className="px-4">
+        <div className="bg-slate-900 p-8 rounded-[3rem] text-white flex flex-col gap-6 shadow-xl relative overflow-hidden border-b-[12px] border-slate-950">
+          <div className="absolute top-0 right-0 -mr-10 -mt-10 w-48 h-48 bg-indigo-600 rounded-full opacity-10 blur-3xl"></div>
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-3xl shrink-0 border border-white/10 shadow-inner">📜</div>
+            <h4 className="text-xl font-black italic uppercase tracking-tighter text-indigo-100 leading-none">Clinical Consensus</h4>
+          </div>
+          <p className="text-indigo-50/70 text-sm font-medium italic leading-relaxed relative z-10">
+            "Developmental red flags represent high-specificity indicators for pediatric review. Loss of any previously acquired skill is an absolute red flag requiring urgent evaluation."
+          </p>
+          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400 pt-4 border-t border-white/5">PediPulse Pipeline • QCH + PedsCases</p>
+        </div>
       </div>
     </div>
   );

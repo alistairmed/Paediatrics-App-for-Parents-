@@ -1,11 +1,7 @@
 
-import React, { useState } from 'react';
-
-interface BondingJournalProps {
-  observations: string;
-  onUpdate: (val: string) => void;
-  childName?: string;
-}
+import React, { useState, useCallback } from 'react';
+import { useChildProfile } from '../context/ChildProfileContext';
+import { useMedicalHistory } from '../context/MedicalHistoryContext';
 
 const ATTACHMENT_PROMPTS = [
   { category: "Delight", prompt: "Describe a moment today where you felt pure delight in watching your child just 'be' themselves." },
@@ -21,9 +17,17 @@ const OBSERVATION_CHECKLIST = [
   { id: 'sr', category: 'Reunion', label: 'Greets me with joy or immediate seeking of comfort after being away.', icon: '✨' },
 ];
 
-export const BondingJournal: React.FC<BondingJournalProps> = ({ observations, onUpdate, childName }) => {
+export const BondingJournal: React.FC = () => {
+  const { childProfile } = useChildProfile();
+  const { history, updateHistory } = useMedicalHistory();
   const [activePromptIdx, setActivePromptIdx] = useState(0);
   const [selectedObservations, setSelectedObservations] = useState<Set<string>>(new Set());
+
+  const handleUpdate = useCallback((val: string) => {
+    updateHistory({ bondingNotes: val });
+  }, [updateHistory]);
+
+  const observations = history.bondingNotes || '';
 
   const toggleObservation = (id: string) => {
     const next = new Set(selectedObservations);
@@ -31,10 +35,9 @@ export const BondingJournal: React.FC<BondingJournalProps> = ({ observations, on
     else next.add(id);
     setSelectedObservations(next);
     
-    // Also append the label to the text observations for clinical sync if not already there
     const obs = OBSERVATION_CHECKLIST.find(o => o.id === id);
     if (obs && !observations.includes(obs.label)) {
-      onUpdate(`${observations}\n\n[Observation: ${obs.category}] ${obs.label}`.trim());
+      handleUpdate(`${observations}\n\n[Observation: ${obs.category}] ${obs.label}`.trim());
     }
   };
 
@@ -42,7 +45,7 @@ export const BondingJournal: React.FC<BondingJournalProps> = ({ observations, on
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-20">
       <header className="flex flex-col md:flex-row justify-between items-start gap-6">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tight italic">Bonding <span className="text-rose-500">& Attachment</span></h2>
+          <h2 className="text-4xl font-black text-slate-800 tracking-tight italic">Bonding <span className="text-rose-600">& Attachment</span></h2>
           <p className="text-slate-500 font-medium max-w-2xl mt-2 italic">
             Documenting the "Invisible" work of connection. These insights help clinicians understand your child's social-emotional health.
           </p>
@@ -54,8 +57,6 @@ export const BondingJournal: React.FC<BondingJournalProps> = ({ observations, on
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* Left Column: Structured Observations */}
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm space-y-6">
             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Attachment Behaviors</h4>
@@ -95,7 +96,6 @@ export const BondingJournal: React.FC<BondingJournalProps> = ({ observations, on
           </div>
         </div>
 
-        {/* Right Column: Reflective Journaling */}
         <div className="lg:col-span-8 space-y-6">
           <div className="bg-white p-10 rounded-[4rem] border border-rose-100 shadow-2xl relative overflow-hidden flex flex-col">
             <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-rose-500 rounded-full opacity-5 blur-[100px] pointer-events-none"></div>
@@ -132,30 +132,23 @@ export const BondingJournal: React.FC<BondingJournalProps> = ({ observations, on
 
             <textarea 
               value={observations} 
-              onChange={e => onUpdate(e.target.value)} 
+              onChange={e => handleUpdate(e.target.value)} 
               className="w-full min-h-[400px] p-8 rounded-[3rem] border-2 border-slate-50 outline-none bg-slate-50/20 font-bold text-slate-700 text-xl leading-relaxed shadow-inner italic focus:ring-4 focus:ring-rose-100 focus:border-rose-100 transition-all z-10"
-              placeholder={`Share your thoughts about ${childName || 'your child'} here...`}
+              placeholder={`Share your thoughts about ${childProfile?.name || 'your child'} here...`}
             />
 
             <div className="mt-8 flex items-center justify-between relative z-10 pt-4 border-t border-slate-50">
                <div className="flex items-center gap-2 text-rose-400">
                   <span className="text-xl">✨</span>
-                  <p className="text-[9px] font-black uppercase tracking-[0.2em]">Auto-syncing to clinical summary</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em]">Synchronized to Clinical Hub</p>
                </div>
                <button 
-                onClick={() => onUpdate('')}
+                onClick={() => handleUpdate('')}
                 className="text-[10px] font-black text-slate-300 uppercase hover:text-rose-500 transition-colors"
                >
                  Clear Journal
                </button>
             </div>
-          </div>
-
-          <div className="bg-amber-50 p-8 rounded-[3rem] border border-amber-100 flex items-start gap-5">
-             <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm shrink-0">💡</div>
-             <p className="text-amber-900 text-sm font-medium leading-relaxed italic">
-               <strong>Tip:</strong> Don't feel you have to write much. Even a few bullet points about a "moment of connection" can help your Pediatrician or Clinical Psychologist see the strength of your relationship.
-             </p>
           </div>
         </div>
       </div>

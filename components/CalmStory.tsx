@@ -80,38 +80,40 @@ export const CalmStory: React.FC = () => {
   return (
     <div className="space-y-6">
       <header>
-        <h2 className="text-2xl font-bold text-slate-800">CalmCast Stories</h2>
-        <p className="text-slate-500">Instant soothing stories for doctor visits or bedtime.</p>
+        <h2 className="text-3xl font-black text-slate-800 italic tracking-tight">CalmCast <span className="text-indigo-600">Stories</span></h2>
+        <p className="text-slate-500 text-sm font-medium">Instant soothing stories for doctor visits or bedtime.</p>
       </header>
 
-      <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 max-w-2xl">
-        <div className="space-y-6">
+      <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-slate-100 max-w-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-12 -mt-12 w-48 h-48 bg-indigo-50 rounded-full opacity-50 blur-3xl -z-10"></div>
+        
+        <div className="space-y-8 relative z-10">
           <div>
-            <label className="block text-sm font-medium text-slate-500 mb-2">Who is the story for?</label>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-2">Who is the story for?</label>
             <input 
               type="text" 
               value={childName}
               onChange={e => setChildName(e.target.value)}
-              placeholder="Child's name"
-              className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none" 
+              placeholder="Enter child's name..."
+              className="w-full p-6 rounded-2xl border-2 border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-none bg-indigo-50/30 text-indigo-950 font-black text-lg placeholder-indigo-300 transition-all shadow-inner" 
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-500 mb-3">Choose a Theme</label>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-2">Choose a Magical Theme</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {themes.map(t => (
                 <button
                   key={t.name}
                   onClick={() => setTheme(t.name)}
-                  className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${
+                  className={`p-5 rounded-3xl border-2 flex flex-col items-center gap-3 transition-all ${
                     theme === t.name 
-                      ? 'bg-indigo-50 border-indigo-500 text-indigo-700' 
-                      : 'border-slate-100 text-slate-400 hover:border-slate-200'
+                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl scale-105' 
+                      : 'bg-white border-slate-50 text-slate-400 hover:border-indigo-100 hover:bg-slate-50'
                   }`}
                 >
-                  <span className="text-3xl">{t.icon}</span>
-                  <span className="text-xs font-bold uppercase">{t.name}</span>
+                  <span className="text-4xl filter drop-shadow-md">{t.icon}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest">{t.name}</span>
                 </button>
               ))}
             </div>
@@ -120,31 +122,30 @@ export const CalmStory: React.FC = () => {
           <button 
             onClick={handleGenerate}
             disabled={loading || !childName}
-            className={`w-full py-4 bg-indigo-500 text-white font-bold rounded-2xl hover:bg-indigo-600 shadow-md transition-all flex items-center justify-center gap-2 ${
-              loading ? 'bg-slate-300' : ''
+            className={`w-full py-6 rounded-[2rem] font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
+              loading || !childName ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700'
             }`}
           >
             {loading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Creating magic...
+                <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                Brewing Magic...
               </>
             ) : (
               <>
-                <span>🔊</span> Generate Calm Story
+                <span className="text-xl">🔊</span> Play CalmCast Story
               </>
             )}
           </button>
         </div>
       </div>
 
-      <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 flex items-center gap-4">
-        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-sm">
+      <div className="bg-indigo-50 p-8 rounded-[2.5rem] border border-indigo-100 flex items-center gap-6 max-w-2xl">
+        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-indigo-50 shrink-0">
           💡
         </div>
-        <p className="text-blue-800 text-sm italic">
-          "Try generating a story when your child feels anxious about a vaccination. 
-          Use their favorite animals in the theme!"
+        <p className="text-indigo-800 text-sm font-bold italic leading-relaxed">
+          "Try generating a story when your child feels anxious about a check-up. Use their favorite animals in the theme to build a positive clinical association."
         </p>
       </div>
     </div>
