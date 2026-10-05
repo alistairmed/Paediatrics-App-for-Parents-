@@ -1,4 +1,16 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+interface VercelRequest {
+  method?: string;
+  body?: any;
+  headers?: Record<string, string | string[] | undefined>;
+}
+
+interface VercelResponse {
+  setHeader(name: string, value: string): void;
+  status(code: number): {
+    json(body: any): void;
+    end(): void;
+  };
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS

@@ -101,9 +101,9 @@ const CEWTEscalationChart: React.FC<{ data: CEWTRow[] }> = ({ data }) => {
           <div className="flex-1 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={chartData}>
-                <ReferenceArea y1={0} y2={1} fill="rgba(255,255,255,0.02)" />
-                <ReferenceArea y1={1} y2={4} fill="rgba(251, 191, 36, 0.05)" label={{ position: 'insideTopLeft', value: 'Yellow Zone', fill: '#fbbf24', fontSize: 8, fontWeight: 900 }} />
-                <ReferenceArea y1={4} y2={12} fill="rgba(225, 29, 72, 0.08)" label={{ position: 'insideTopLeft', value: 'Red Zone', fill: '#e11d48', fontSize: 8, fontWeight: 900 }} />
+                <ReferenceArea {...({ y1: 0, y2: 1, fill: "rgba(255,255,255,0.02)" } as any)} />
+                <ReferenceArea {...({ y1: 1, y2: 4, fill: "rgba(251, 191, 36, 0.05)", label: { position: 'insideTopLeft', value: 'Yellow Zone', fill: '#fbbf24', fontSize: 8, fontWeight: 900 } } as any)} />
+                <ReferenceArea {...({ y1: 4, y2: 12, fill: "rgba(225, 29, 72, 0.08)", label: { position: 'insideTopLeft', value: 'Red Zone', fill: '#e11d48', fontSize: 8, fontWeight: 900 } } as any)} />
                 
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontWeight: 900 }} />

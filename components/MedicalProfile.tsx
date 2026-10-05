@@ -142,6 +142,20 @@ export const MedicalProfile: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  const currentSection = useMemo(() => {
+    switch (activeView) {
+      case 'history': return 'history';
+      case 'developmental': return 'dev';
+      case 'medications': return 'meds';
+      case 'careteam': return 'mdt';
+      case 'diagnostics': return 'diagnostics';
+      case 'reports': return 'reports';
+      case 'devices': return 'gear';
+      case 'familyhistory': return 'family';
+      default: return 'overview';
+    }
+  }, [activeView]);
+
   const matchesFilter = (
     textFields: (string | undefined)[],
     dateField?: string
@@ -280,20 +294,6 @@ export const MedicalProfile: React.FC = () => {
   const [newIssue, setNewIssue] = useState<Partial<Condition>>({ name: '', status: 'Active' });
   const [newInvestigation, setNewInvestigation] = useState<Partial<Investigation>>({ name: '', result: '', date: new Date().toISOString().split('T')[0] });
   const [newRelative, setNewRelative] = useState<Partial<GenogramMember>>({ relation: 'Father', sex: 'Male', isAlive: true, condition: '' });
-
-  const currentSection = useMemo(() => {
-    switch (activeView) {
-      case 'history': return 'history';
-      case 'developmental': return 'dev';
-      case 'medications': return 'meds';
-      case 'careteam': return 'mdt';
-      case 'diagnostics': return 'diagnostics';
-      case 'reports': return 'reports';
-      case 'devices': return 'gear';
-      case 'familyhistory': return 'family';
-      default: return 'overview';
-    }
-  }, [activeView]);
 
   const addRelative = () => {
     if (newRelative.relation) {
