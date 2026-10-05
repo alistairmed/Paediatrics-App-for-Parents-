@@ -1,7 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { getParentingAdvice } from '../services/gemini';
-import { GoogleGenAI } from "@google/genai";
+import { getParentingAdvice, explainMedicalTerm, GeminiError } from '../services/gemini';
 
 const COMMON_CHALLENGES = [
   { id: 'resilience', label: 'Building Resilience', icon: '🌈' },
@@ -189,10 +187,12 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
   const [challenge, setChallenge] = useState('');
   const [loading, setLoading] = useState(false);
   const [advice, setAdvice] = useState<{ text: string; sources: any[] } | null>(null);
+  const [adviceError, setAdviceError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'tips' | 'mentalhealth' | 'clinical' | 'literacy'>('literacy');
   
   const [searchQuery, setSearchQuery] = useState('');
   const [aiTermExplanation, setAiTermExplanation] = useState<{ text: string, sources: any[] } | null>(null);
+  const [termError, setTermError] = useState<string | null>(null);
   const [literacyLoading, setLiteracyLoading] = useState(false);
   const [literacyCategory, setLiteracyCategory] = useState('All');
 
@@ -210,12 +210,18 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
     
     setLoading(true);
     setAdvice(null);
+    setAdviceError(null);
     setActiveTab('tips');
     try {
       const res = await getParentingAdvice(age, finalChallenge);
       setAdvice(res);
-    } catch (error) {
-      alert("Error generating advice.");
+    } catch (error: any) {
+      console.error(error);
+      if (error instanceof GeminiError) {
+        setAdviceError(error.message);
+      } else {
+        setAdviceError(error?.message || "Error generating advice. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -225,26 +231,17 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
     if (!searchQuery.trim()) return;
     setLiteracyLoading(true);
     setAiTermExplanation(null);
+    setTermError(null);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `Explain the medical term or condition "${searchQuery}" for a parent with a child in the "${age}" group. 
-        Use simple, supportive language.
-        Format your response clearly with:
-        1. Simple Definition
-        2. Common Symptoms
-        3. Actionable Advice
-        4. When to seek urgent care.
-        Reference reliable Australian sources (RCH Melbourne, Raising Children Network).`,
-        config: { tools: [{ googleSearch: {} }] }
-      });
-      setAiTermExplanation({
-        text: response.text || '',
-        sources: response.candidates?.[0]?.groundingMetadata?.groundingChunks || []
-      });
-    } catch (e) {
-      alert("Error explaining term.");
+      const res = await explainMedicalTerm(searchQuery, age);
+      setAiTermExplanation(res);
+    } catch (e: any) {
+      console.error(e);
+      if (e instanceof GeminiError) {
+        setTermError(e.message);
+      } else {
+        setTermError(e?.message || "Error explaining term.");
+      }
     } finally {
       setLiteracyLoading(false);
     }
@@ -315,6 +312,20 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 </div>
              </div>
           </section>
+
+          {termError && (
+            <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
+              <p className="font-black text-rose-800 text-sm">⚠️ {termError}</p>
+              <div className="flex gap-3">
+                <button onClick={handleExplainTerm} className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all">
+                  Try Again
+                </button>
+                <button onClick={() => setTermError(null)} className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest">
+                  Browse Verified Terms Below
+                </button>
+              </div>
+            </div>
+          )}
 
           {aiTermExplanation && (
             <div className="bg-white p-12 rounded-[4rem] border-l-[20px] border-l-emerald-600 shadow-2xl animate-in zoom-in-95 relative overflow-hidden flex flex-col">
@@ -460,6 +471,20 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 <div className="space-y-2">
                   <p className="font-black text-slate-800 uppercase tracking-widest text-sm">Reviewing Clinical Frameworks...</p>
                   <p className="text-slate-400 text-xs font-bold italic">Synthesizing evidence-based strategies for your child's age group.</p>
+                </div>
+              </div>
+            ) : adviceError ? (
+              <div className="bg-white p-10 rounded-[3rem] border border-rose-200 shadow-xl space-y-6">
+                <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
+                  <p className="font-black text-rose-800 text-sm">⚠️ {adviceError}</p>
+                  <div className="flex gap-3">
+                    <button onClick={() => handleGetAdvice()} className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all">
+                      Try Again
+                    </button>
+                    <button onClick={() => setActiveTab('clinical')} className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest">
+                      Browse Clinical Frameworks
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : advice ? (

@@ -279,27 +279,27 @@ export const ScreeningTool: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 pb-24 animate-in fade-in duration-700">
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+    <div className="space-y-8 sm:space-y-10 pb-28 animate-in fade-in duration-700">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 sm:gap-6">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tighter italic leading-none">Clinical <span className="text-teal-600">Screening</span></h2>
-          <p className="text-slate-500 font-medium italic mt-2">Validated pediatric assessment tools for pre-specialist review.</p>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter italic leading-none">Clinical <span className="text-teal-600">Screening</span></h2>
+          <p className="text-slate-500 font-medium italic mt-2 text-xs sm:text-sm">Validated pediatric assessment tools for pre-specialist review.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full md:w-auto">
             {viewState !== 'hub' && (
-                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null);}} className="bg-white border border-slate-200 px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-sm">Return to Hub</button>
+                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm min-h-[44px]">Return to Hub</button>
             )}
             {viewState === 'hub' && (
-                <button onClick={handleStartFinder} className="bg-teal-600 text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-teal-700 active:scale-95 transition-all">Start Test Finder ✨</button>
+                <button onClick={handleStartFinder} className="w-full md:w-auto bg-teal-600 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl hover:bg-teal-700 active:scale-95 transition-all min-h-[44px]">Start Test Finder ✨</button>
             )}
         </div>
       </header>
 
       {viewState === 'finder' && (
-        <div className="bg-white p-10 rounded-[4rem] border border-teal-100 shadow-2xl space-y-12 animate-in zoom-in-95">
+        <div className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] border border-teal-100 shadow-2xl space-y-8 sm:space-y-12 animate-in zoom-in-95">
             <div className="text-center space-y-2">
-                <h3 className="text-3xl font-black text-slate-800 italic uppercase">Clinical Decision Support</h3>
-                <p className="text-slate-500 font-medium italic">Answer 2 simple questions to find the appropriate tool for your child.</p>
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-800 italic uppercase">Clinical Decision Support</h3>
+                <p className="text-slate-500 font-medium italic text-xs sm:text-sm">Answer 2 simple questions to find the appropriate tool for your child.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -310,17 +310,17 @@ export const ScreeningTool: React.FC = () => {
                             if (!finderPath.age) setFinderPath({ age: opt.id });
                             else handleSelectTest(opt.test);
                         }}
-                        className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 hover:border-teal-500 hover:bg-teal-50 transition-all text-center group"
+                        className="bg-slate-50 p-6 sm:p-8 rounded-[2rem] border border-slate-100 hover:border-teal-500 hover:bg-teal-50 transition-all text-center group min-h-[44px]"
                     >
-                        <p className="text-lg font-black text-slate-800 group-hover:text-teal-900">{opt.label}</p>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Select Option <span>→</span></p>
+                        <p className="text-base sm:text-lg font-black text-slate-800 group-hover:text-teal-900">{opt.label}</p>
+                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Select Option <span>→</span></p>
                     </button>
                 ))}
             </div>
             
             {finderPath.age && (
                 <div className="flex justify-center">
-                    <button onClick={() => setFinderPath({})} className="text-[10px] font-black uppercase text-slate-400 hover:text-teal-600">← Back to Start</button>
+                    <button onClick={() => setFinderPath({})} className="text-xs font-black uppercase text-slate-400 hover:text-teal-600 min-h-[44px]">← Back to Start</button>
                 </div>
             )}
         </div>
@@ -371,7 +371,7 @@ export const ScreeningTool: React.FC = () => {
             </section>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {Object.values(SCREENING_MODS).map((mod) => {
               const assignment = assignedTests.find(t => t.testId === mod.id);
               const isPending = assignment?.status === 'pending';
@@ -379,21 +379,21 @@ export const ScreeningTool: React.FC = () => {
               if (isPending && pendingRequests.length > 0) return null; 
 
               return (
-                <div key={mod.id} className="bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative flex flex-col justify-between">
+                <div key={mod.id} className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative flex flex-col justify-between">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
                         <div className="flex items-center gap-2">
                           <span className="text-2xl">{getDomainIcon(mod.domain)}</span>
-                          <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${getDomainColor(mod.domain)}`}>
+                          <span className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs font-black uppercase tracking-widest border ${getDomainColor(mod.domain)}`}>
                               {mod.domain}
                           </span>
                         </div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase">Age: {mod.ageRange}</span>
+                        <span className="text-xs font-black text-slate-400 uppercase">Age: {mod.ageRange}</span>
                     </div>
-                    <h3 className="text-3xl font-black text-slate-800 tracking-tight leading-none">{mod.name}</h3>
-                    <p className="text-sm text-slate-500 font-medium italic leading-relaxed">{mod.description}</p>
+                    <h3 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight leading-none">{mod.name}</h3>
+                    <p className="text-xs sm:text-sm text-slate-500 font-medium italic leading-relaxed">{mod.description}</p>
                   </div>
-                  <button onClick={() => handleSelectTest(mod.id)} className="mt-8 py-5 bg-slate-900 text-white rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg group-hover:bg-teal-600 transition-all">Start Assessment</button>
+                  <button onClick={() => handleSelectTest(mod.id)} className="mt-6 sm:mt-8 py-4 sm:py-5 min-h-[44px] bg-slate-900 text-white rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-[0.15em] shadow-lg group-hover:bg-teal-600 transition-all">Start Assessment</button>
                 </div>
               );
             })}

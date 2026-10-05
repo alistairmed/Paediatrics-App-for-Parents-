@@ -1,9 +1,8 @@
-
 import React, { useState, useMemo } from 'react';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { generateHandoverData } from '../clinical/handover';
-import { jsPDF } from 'jspdf';
+import { analyzeMedicalProfile, GeminiError } from '../services/gemini';
 
 export const HandoverSummary: React.FC = () => {
   const { history, latestWeight } = useMedicalHistory();
@@ -11,6 +10,13 @@ export const HandoverSummary: React.FC = () => {
   const [reviewStep, setReviewStep] = useState<'review' | 'view'>('review');
   const [excludedLogs, setExcludedLogs] = useState<Set<string>>(new Set());
   const [isVerified, setIsVerified] = useState(false);
+
+  // AI ISBAR Synthesis State
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiSummary, setAiSummary] = useState<{ text: string; sources: any[] } | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [manualSummary, setManualSummary] = useState<string>('');
+  const [showManualFallback, setShowManualFallback] = useState(false);
 
   const handover = useMemo(() => 
     generateHandoverData(childProfile, history, childAge, latestWeight),
@@ -31,6 +37,25 @@ export const HandoverSummary: React.FC = () => {
       return;
     }
     setReviewStep('view');
+  };
+
+  const handleGenerateAiISBAR = async () => {
+    setAiLoading(true);
+    setAiError(null);
+    try {
+      const res = await analyzeMedicalProfile({ childProfile, history, childAge, latestWeight });
+      setAiSummary(res);
+    } catch (err: any) {
+      console.error(err);
+      if (err instanceof GeminiError) {
+        setAiError(err.message);
+      } else {
+        setAiError(err?.message || "Failed to generate AI ISBAR synthesis.");
+      }
+      setShowManualFallback(true);
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   return (
@@ -75,6 +100,65 @@ export const HandoverSummary: React.FC = () => {
              </div>
           </div>
 
+          {/* AI ISBAR Narrative Generator */}
+          <div className="bg-white p-10 rounded-[3.5rem] border border-indigo-100 shadow-xl space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h3 className="text-2xl font-black text-slate-800 italic">AI Clinical ISBAR Synthesis</h3>
+                <p className="text-slate-500 text-xs font-bold italic">Generate an automated clinical narrative powered by Gemini AI.</p>
+              </div>
+              <button
+                onClick={handleGenerateAiISBAR}
+                disabled={aiLoading}
+                className="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-indigo-700 transition-all flex items-center gap-2"
+              >
+                {aiLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Synthesizing...
+                  </>
+                ) : (
+                  <>✨ Generate AI Narrative</>
+                )}
+              </button>
+            </div>
+
+            {aiError && (
+              <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
+                <p className="font-black text-rose-800 text-sm">⚠️ {aiError}</p>
+                <div className="flex gap-3">
+                  <button onClick={handleGenerateAiISBAR} className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all">
+                    Try Again
+                  </button>
+                  <button onClick={() => setShowManualFallback(true)} className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest">
+                    Write Narrative Manually
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {aiSummary && (
+              <div className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100 space-y-3">
+                <p className="text-xs font-black uppercase tracking-widest text-indigo-700">Synthesized ISBAR Narrative</p>
+                <div className="text-slate-800 text-sm font-medium italic whitespace-pre-wrap leading-relaxed">
+                  {aiSummary.text}
+                </div>
+              </div>
+            )}
+
+            {(showManualFallback || manualSummary) && (
+              <div className="space-y-2 pt-2">
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-2">Manual Clinical Notes / Custom Handover Remarks</label>
+                <textarea
+                  value={manualSummary}
+                  onChange={e => setManualSummary(e.target.value)}
+                  placeholder="Enter custom clinical notes or additional handover details manually..."
+                  className="w-full h-32 p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 font-bold text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            )}
+          </div>
+
           <div className="bg-indigo-50 p-8 rounded-[3rem] border border-indigo-100 flex items-center gap-6">
              <input 
               type="checkbox" 
@@ -99,6 +183,22 @@ export const HandoverSummary: React.FC = () => {
                  <div><p className="text-[10px] font-black text-slate-400 uppercase">Weight</p><p className="text-xl font-black">{handover.identification.weight}</p></div>
               </div>
            </section>
+
+           {aiSummary && (
+             <section className="space-y-4">
+                <h3 className="text-indigo-600 font-black uppercase text-[10px] tracking-[0.3em] border-b border-indigo-50 pb-2">AI ISBAR Narrative Synthesis</h3>
+                <div className="p-6 bg-indigo-50/40 rounded-3xl border border-indigo-100 text-slate-800 text-sm font-bold italic leading-relaxed whitespace-pre-wrap">
+                  {aiSummary.text}
+                </div>
+             </section>
+           )}
+
+           {manualSummary && (
+             <section className="space-y-4">
+                <h3 className="text-slate-600 font-black uppercase text-[10px] tracking-[0.3em] border-b border-slate-100 pb-2">Caregiver Remarks</h3>
+                <p className="p-6 bg-slate-50 rounded-3xl text-slate-800 text-sm font-bold italic">{manualSummary}</p>
+             </section>
+           )}
 
            {/* S - SITUATION */}
            <section className="space-y-4">

@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useMemo } from 'react';
-import { analyzeSymptoms } from '../services/gemini';
+import { analyzeSymptoms, GeminiError } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useConnectivity } from '../hooks/useConnectivity';
@@ -31,6 +30,7 @@ export const SymptomChecker: React.FC = () => {
   const [duration, setDuration] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ text: string; sources: any[] } | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -52,7 +52,6 @@ export const SymptomChecker: React.FC = () => {
       durationDays: duration ? parseInt(duration) : undefined,
       environment: mode
     };
-    // Unified engine now handles IMCI danger signs internally based on mode
     return evaluateRedFlags(input);
   }, [ageMonths, temp, description, duration, mode]);
 
@@ -68,10 +67,11 @@ export const SymptomChecker: React.FC = () => {
   const handleAnalyze = async () => {
     if (!description.trim() && !image) return;
     if (!isOnline) {
-      alert("Offline Mode: AI Triage requires an internet connection for detailed synthesis.");
+      setErrorMsg("Offline Mode: AI Triage requires an internet connection for detailed synthesis.");
       return;
     }
     setLoading(true);
+    setErrorMsg(null);
     setSaved(false);
     try {
       const res = await analyzeSymptoms(
@@ -90,9 +90,13 @@ export const SymptomChecker: React.FC = () => {
         redFlags: activeRedFlags.map(rf => rf.id),
         disclaimerShown: true
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Error reviewing symptoms.");
+      if (error instanceof GeminiError) {
+        setErrorMsg(error.message);
+      } else {
+        setErrorMsg(error?.message || "Error reviewing symptoms. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -112,12 +116,6 @@ export const SymptomChecker: React.FC = () => {
       alert("Triage result successfully synced to Medical Hub logs.");
     }
   };
-
-  const triageLevel = useMemo(() => {
-    if (activeRedFlags.some(f => f.severity === 'Urgent')) return { color: 'bg-rose-600', text: 'Emergency Action', width: 'w-full', icon: '🚨' };
-    if (activeRedFlags.length > 0) return { color: 'bg-amber-500', text: 'Clinical Review Needed', width: 'w-2/3', icon: '⚠️' };
-    return { color: 'bg-emerald-500', text: 'Supportive Care / Home', width: 'w-1/3', icon: '✅' };
-  }, [activeRedFlags]);
 
   const inputClass = "w-full p-5 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none font-black text-slate-900 shadow-sm transition-all placeholder:text-slate-500";
   const labelClass = "text-[11px] font-black text-slate-700 uppercase tracking-widest ml-2 mb-1 block";
@@ -216,6 +214,15 @@ export const SymptomChecker: React.FC = () => {
               <div className="relative w-full max-w-md mx-auto animate-in zoom-in-95 pt-4">
                 <img src={image} alt="Symptom" className="w-full h-80 object-cover rounded-[2.5rem] border-4 border-white shadow-2xl" />
                 <button onClick={() => setImage(null)} className="absolute top-8 right-4 bg-white text-rose-600 w-12 h-12 rounded-full flex items-center justify-center shadow-2xl font-black text-xl border-2 border-rose-100 hover:bg-rose-50 transition-colors">✕</button>
+              </div>
+            )}
+
+            {errorMsg && (
+              <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3 mt-6">
+                <p className="font-black text-rose-800 text-sm">⚠️ {errorMsg}</p>
+                <button onClick={handleAnalyze} className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all">
+                  Try Again
+                </button>
               </div>
             )}
 

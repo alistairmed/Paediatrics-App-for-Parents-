@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Vaccination } from '../types';
-import { getVaccineAdvice } from '../services/gemini';
+import { getVaccineAdvice, GeminiError } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 
@@ -88,6 +87,7 @@ export const VaccineTracker: React.FC = () => {
   
   const [info, setInfo] = useState<{ name: string; text: string; sources: any[] } | null>(null);
   const [loadingInfo, setLoadingInfo] = useState(false);
+  const [infoError, setInfoError] = useState<{ name: string; message: string } | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [syncedIds, setSyncedIds] = useState<Set<string>>(new Set());
   const [showAddCustom, setShowAddCustom] = useState(false);
@@ -152,11 +152,18 @@ export const VaccineTracker: React.FC = () => {
 
   const handleFetchInfo = async (name: string) => {
     setLoadingInfo(true);
+    setInfoError(null);
+    setInfo(null);
     try {
       const advice = await getVaccineAdvice(name);
       setInfo({ name, text: advice.text, sources: advice.sources });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      if (e instanceof GeminiError) {
+        setInfoError({ name, message: e.message });
+      } else {
+        setInfoError({ name, message: e?.message || "Failed to load AI advice for this vaccine." });
+      }
     } finally {
       setLoadingInfo(false);
     }
@@ -351,6 +358,34 @@ export const VaccineTracker: React.FC = () => {
               <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-4xl">🔬</div>
               <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Analyzing National Guidelines...</p>
             </div>
+          ) : infoError ? (
+            <div className="bg-white p-8 rounded-[3rem] border border-rose-200 shadow-xl sticky top-8 space-y-4">
+              <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
+                <p className="font-black text-rose-800 text-sm">⚠️ {infoError.message}</p>
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => handleFetchInfo(infoError.name)} 
+                    className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all"
+                  >
+                    Try Again
+                  </button>
+                  <button 
+                    onClick={() => {
+                      const found = schedule.find(x => x.name === infoError.name);
+                      setInfo({
+                        name: infoError.name,
+                        text: found ? found.description : "Official NIP guidance: Consult your GP or Maternal and Child Health Nurse for routine immunisation advice.",
+                        sources: [{ web: { uri: "https://www.health.gov.au/topics/immunisation", title: "Australian Government Department of Health Immunisation" } }]
+                      });
+                      setInfoError(null);
+                    }} 
+                    className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest"
+                  >
+                    View Standard Summary
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : info ? (
             <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-2xl sticky top-8 animate-in slide-in-from-right-4 max-h-[85vh] overflow-y-auto border-l-[20px] border-l-indigo-600 relative overflow-hidden">
               <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-500 rounded-full opacity-5 blur-[100px]"></div>
@@ -360,7 +395,7 @@ export const VaccineTracker: React.FC = () => {
                 {info.text}
               </div>
               
-              {/* Fix: Display mandatory grounding sources when Google Search is used */}
+              {/* Display mandatory grounding sources when Google Search is used */}
               {info.sources.length > 0 && (
                 <div className="mt-8 pt-6 border-t border-slate-50 space-y-4 relative z-10">
                   <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Grounding Sources</p>

@@ -5,6 +5,7 @@ import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useRole } from '../context/RoleContext';
 import { calculateCEWT, getAgeGroup, CEWTRow } from '../clinical/cewt';
+import { SearchFilterBar } from './SearchFilterBar';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart, Line, Bar, ReferenceLine, ReferenceArea, Legend
 } from 'recharts';
@@ -225,6 +226,59 @@ export const AcuteTracker: React.FC = () => {
   const [value, setValue] = useState('');
   const [notes, setNotes] = useState('');
   const [selectedMed, setSelectedMed] = useState<'Paracetamol' | 'Ibuprofen'>('Paracetamol');
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const categoryOptions = useMemo(() => [
+    { value: 'all', label: 'All Types' },
+    { value: 'Fluid', label: '🥤 Fluid' },
+    { value: 'Temperature', label: '🌡️ Temperature' },
+    { value: 'Output', label: '🚽 Output' },
+    { value: 'Medication', label: '💊 Medication' },
+    ...(role === 'clinician' ? [{ value: 'Vitals', label: '🩺 Vitals' }] : [])
+  ], [role]);
+
+  const rawLogs = history.acuteLogs || [];
+
+  const filteredAcuteLogs = useMemo(() => {
+    return rawLogs.filter(entry => {
+      if (role === 'parent' && entry.type === 'Vitals') return false;
+
+      if (selectedCategory && selectedCategory !== 'all' && entry.type !== selectedCategory) {
+        return false;
+      }
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchValue = entry.value?.toLowerCase().includes(q);
+        const matchNotes = entry.notes?.toLowerCase().includes(q);
+        const matchMed = entry.medicationName?.toLowerCase().includes(q);
+        const matchType = entry.type?.toLowerCase().includes(q);
+        if (!matchValue && !matchNotes && !matchMed && !matchType) return false;
+      }
+
+      if (startDate || endDate) {
+        const entryDate = new Date(entry.timestamp);
+        if (!isNaN(entryDate.getTime())) {
+          if (startDate) {
+            const start = new Date(startDate);
+            start.setHours(0, 0, 0, 0);
+            if (entryDate < start) return false;
+          }
+          if (endDate) {
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999);
+            if (entryDate > end) return false;
+          }
+        }
+      }
+
+      return true;
+    });
+  }, [rawLogs, role, selectedCategory, searchQuery, startDate, endDate]);
 
   const [obs, setObs] = useState({
     rr: '', effort: 'Normal', o2: '', hr: '', bp: '', crt: 'Normal', temp: '', avpu: 'A'
@@ -482,8 +536,24 @@ export const AcuteTracker: React.FC = () => {
 
           <div className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm space-y-8">
               <h3 className="text-3xl font-black text-slate-800 tracking-tighter italic ml-4 leading-none">Recovery Timeline</h3>
+
+              <SearchFilterBar
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                startDate={startDate}
+                onStartDateChange={setStartDate}
+                endDate={endDate}
+                onEndDateChange={setEndDate}
+                totalCount={rawLogs.filter(e => role === 'clinician' || e.type !== 'Vitals').length}
+                filteredCount={filteredAcuteLogs.length}
+                placeholder="Search logs by keyword, value, notes..."
+                categories={categoryOptions}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+              />
+
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 no-scrollbar">
-                 {history.acuteLogs?.length ? history.acuteLogs.filter(e => role === 'clinician' || e.type !== 'Vitals').map(entry => (
+                 {filteredAcuteLogs.length ? filteredAcuteLogs.map(entry => (
                     <div key={entry.id} className={`p-6 rounded-[2.5rem] border transition-all flex items-center justify-between group ${entry.clinicianLogged ? 'bg-slate-900 text-white border-slate-800 shadow-xl' : 'bg-white border-slate-100 shadow-sm'}`}>
                        <div className="flex items-center gap-8">
                           <span className={`text-[10px] font-black w-14 shrink-0 uppercase ${entry.clinicianLogged ? 'text-indigo-400' : 'text-slate-400'}`}>{formatLogTime(entry.timestamp)}</span>
@@ -496,7 +566,9 @@ export const AcuteTracker: React.FC = () => {
                        <button onClick={() => deleteEntry(entry.id)} className="opacity-0 group-hover:opacity-100 text-rose-500 p-4 font-black text-sm transition-all hover:scale-125">✕</button>
                     </div>
                  )) : (
-                    <div className="py-24 text-center text-slate-200 font-black uppercase text-xs italic">No entries on record.</div>
+                    <div className="py-24 text-center text-slate-300 font-black uppercase text-xs italic">
+                      {rawLogs.length ? 'No acute log entries match your filter criteria.' : 'No entries on record.'}
+                    </div>
                  )}
               </div>
           </div>

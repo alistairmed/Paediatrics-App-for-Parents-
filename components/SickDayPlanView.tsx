@@ -118,36 +118,36 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
   };
 
   return (
-    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-20">
-      <header className="flex flex-col md:flex-row justify-between items-start gap-4">
+    <div className="space-y-8 sm:space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-28">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 italic tracking-tight">Sick Day <span className="text-rose-600">Action Plan</span></h2>
-          <p className="text-slate-500 font-medium italic mt-1">Personalized clinical guidelines for acute illness management.</p>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 italic tracking-tight">Sick Day <span className="text-rose-600">Action Plan</span></h2>
+          <p className="text-slate-500 font-medium italic mt-1 text-xs sm:text-sm">Personalized clinical guidelines for acute illness management.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <button 
                 onClick={copyPlanToClipboard}
-                className="px-6 py-4 bg-indigo-50 text-indigo-800 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-100 shadow-sm transition-all flex items-center gap-2"
+                className="flex-1 md:flex-none px-4 py-3 min-h-[44px] bg-indigo-50 text-indigo-800 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-100 shadow-sm transition-all flex items-center justify-center gap-2"
             >
                 <span>📋</span> Copy Text
             </button>
             <button 
                 onClick={() => planPhotoRef.current?.click()}
-                className="px-6 py-4 bg-white border-2 border-slate-300 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 text-slate-900 shadow-sm transition-all flex items-center gap-2"
+                className="flex-1 md:flex-none px-4 py-3 min-h-[44px] bg-white border-2 border-slate-300 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2"
             >
-                <span>📷</span> {history.sickDayPlan.planPhoto ? 'Update Photo' : 'Capture Physical Plan'}
+                <span>📷</span> {history.sickDayPlan.planPhoto ? 'Update Photo' : 'Capture Photo'}
             </button>
             <input type="file" accept="image/*" capture="environment" className="hidden" ref={planPhotoRef} onChange={handlePlanPhotoUpload} />
         </div>
       </header>
 
       {role === 'clinician' && (
-        <section className="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl space-y-6">
+        <section className="bg-slate-900 p-5 sm:p-10 rounded-[2rem] sm:rounded-[3rem] text-white shadow-2xl space-y-6">
            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 className="text-xl font-black italic tracking-tighter">Clinician Plan Workbench</h3>
+              <h3 className="text-lg sm:text-xl font-black italic tracking-tighter">Clinician Plan Workbench</h3>
               <div className="flex flex-wrap gap-2">
                  {Object.keys(SICK_DAY_TEMPLATES).map(k => (
-                    <button key={k} onClick={() => handleApplySickDayTemplate(k)} className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[8px] font-black uppercase border border-white/10 transition-all">
+                    <button key={k} onClick={() => handleApplySickDayTemplate(k)} className="px-3 py-2 min-h-[36px] bg-white/10 hover:bg-white/20 rounded-lg text-xs font-black uppercase border border-white/10 transition-all">
                       {k.replace('_', ' ')}
                     </button>
                  ))}
@@ -157,57 +157,57 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
             value={draftText}
             onChange={e => setDraftText(e.target.value)}
             placeholder="DRAFTING AREA: Paste your hospital discharge macros or raw plan text here to copy/paste into specific fields below..."
-            className="w-full h-32 bg-white/5 rounded-2xl p-6 font-bold italic text-indigo-100 border border-white/10 shadow-inner outline-none focus:bg-white/10 transition-all text-sm"
+            className="w-full h-32 bg-white/5 rounded-2xl p-4 sm:p-6 font-bold italic text-indigo-100 border border-white/10 shadow-inner outline-none focus:bg-white/10 transition-all text-sm"
            />
-           <div className="flex justify-between items-center px-4">
-              <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Workspace for clinical drafting only</p>
-              <button onClick={() => setDraftText('')} className="text-[9px] font-black text-slate-500 uppercase hover:text-white">Clear Draft</button>
+           <div className="flex justify-between items-center px-2">
+              <p className="text-xs font-black text-indigo-400 uppercase tracking-widest">Workspace for clinical drafting only</p>
+              <button onClick={() => setDraftText('')} className="text-xs font-black text-slate-400 uppercase hover:text-white min-h-[44px] flex items-center">Clear Draft</button>
            </div>
         </section>
       )}
 
-      <div className="bg-rose-600 p-8 sm:p-12 rounded-[4rem] text-white shadow-2xl relative overflow-hidden">
+      <div className="bg-rose-600 p-5 sm:p-12 rounded-[2.5rem] sm:rounded-[4rem] text-white shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-[80px]"></div>
         
-        <div className="relative z-10 space-y-10">
-            <div className="grid grid-cols-1 gap-8">
+        <div className="relative z-10 space-y-6 sm:space-y-10">
+            <div className="grid grid-cols-1 gap-6 sm:gap-8">
                 {/* EMERGENCY / AMBULANCE SECTION */}
-                <div className="bg-white p-10 rounded-[3rem] border-l-[24px] border-l-rose-800 space-y-8 shadow-2xl text-slate-800">
-                    <div className="flex items-center gap-4">
-                       <span className="text-5xl animate-pulse">🚑</span>
+                <div className="bg-white p-5 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-l-[12px] sm:border-l-[24px] border-l-rose-800 space-y-6 sm:space-y-8 shadow-2xl text-slate-800">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                       <span className="text-3xl sm:text-5xl animate-pulse">🚑</span>
                        <div>
-                          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-rose-600 leading-none">Emergency Threshold</p>
-                          <h3 className="text-2xl font-black italic tracking-tighter uppercase mt-1">When to call an ambulance (000)</h3>
+                          <p className="text-xs font-black uppercase tracking-widest text-rose-600 leading-none">Emergency Threshold</p>
+                          <h3 className="text-lg sm:text-2xl font-black italic tracking-tighter uppercase mt-1">When to call an ambulance (000)</h3>
                        </div>
                     </div>
 
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest ml-4">Critical Triggers (Specific to this child)</label>
+                        <label className="text-xs font-black text-rose-500 uppercase tracking-widest ml-1">Critical Triggers (Specific to this child)</label>
                         <textarea 
                           value={history.sickDayPlan.ambulanceTriggers} 
                           onChange={e => updateSickDayField('ambulanceTriggers', e.target.value)}
-                          className="w-full h-32 p-6 rounded-2xl bg-rose-50 text-rose-900 font-black text-lg italic outline-none border border-rose-100 shadow-inner focus:ring-4 focus:ring-rose-200 transition-all placeholder:text-rose-200"
+                          className="w-full h-32 p-4 sm:p-6 rounded-2xl bg-rose-50 text-rose-900 font-black text-base sm:text-lg italic outline-none border border-rose-100 shadow-inner focus:ring-4 focus:ring-rose-200 transition-all placeholder:text-rose-200"
                           placeholder="e.g. Seizure > 5 mins, cyanosis, stridor at rest, unable to wake..."
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div className="space-y-2">
-                           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Specific Danger Signs</p>
+                           <p className="text-xs font-black uppercase tracking-widest text-slate-500 ml-1">Specific Danger Signs</p>
                            <textarea 
                              value={history.sickDayPlan.dangerSigns} 
                              onChange={e => updateSickDayField('dangerSigns', e.target.value)}
-                             className="w-full h-28 p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm italic outline-none border border-slate-100 shadow-inner"
+                             className="w-full h-28 p-4 sm:p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm italic outline-none border border-slate-100 shadow-inner"
                              placeholder="e.g. Tracheal tug, non-blanching rash, lethargy..."
                            />
                         </div>
                         <div className="space-y-2">
-                           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Carer Actions Needed</p>
+                           <p className="text-xs font-black uppercase tracking-widest text-slate-500 ml-1">Carer Actions Needed</p>
                            <textarea 
                              value={history.sickDayPlan.carerActions} 
                              onChange={e => updateSickDayField('carerActions', e.target.value)}
-                             className="w-full h-28 p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm italic outline-none border border-slate-100 shadow-inner"
+                             className="w-full h-28 p-4 sm:p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm italic outline-none border border-slate-100 shadow-inner"
                              placeholder="e.g. Recovery position, keep upright, administer EpiPen..."
                            />
                         </div>

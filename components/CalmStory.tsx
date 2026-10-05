@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { generateCalmingStory } from '../services/gemini';
+import { generateCalmingStory, GeminiError } from '../services/gemini';
 
 // Audio decoding helpers as per guidelines
 function decode(base64: string) {
@@ -36,10 +35,16 @@ export const CalmStory: React.FC = () => {
   const [childName, setChildName] = useState('');
   const [theme, setTheme] = useState('Gentle Forest');
   const [loading, setLoading] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showManualStory, setShowManualStory] = useState(false);
 
   const handleGenerate = async () => {
     if (!childName) return;
     setLoading(true);
+    setErrorMessage(null);
+    setIsPlaying(false);
+
     try {
       const base64Audio = await generateCalmingStory(childName, theme);
       if (base64Audio) {
@@ -59,12 +64,19 @@ export const CalmStory: React.FC = () => {
         source.connect(outputAudioContext.destination);
         source.start();
         
-        setLoading(false);
-        alert("A soothing story is now playing!");
+        setIsPlaying(true);
+      } else {
+        throw new Error("No audio payload returned from story generator.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Error generating story.");
+      if (error instanceof GeminiError) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage(error?.message || "Failed to generate audio story. Please try again.");
+      }
+      setShowManualStory(true);
+    } finally {
       setLoading(false);
     }
   };
@@ -76,6 +88,22 @@ export const CalmStory: React.FC = () => {
     { name: 'Space Journey', icon: '🚀' },
     { name: 'Secret Garden', icon: '🌸' },
   ];
+
+  const getFallbackStoryText = () => {
+    const name = childName || "little star";
+    switch (theme) {
+      case 'Under the Sea':
+        return `Once upon a time in a soft, glowing underwater world, ${name} drifted through a calm turquoise ocean. Friendly sea turtles swam by slowly, floating through giant kelp forests. Every breath was steady and deep, like the quiet rise and fall of gentle ocean waves...`;
+      case 'Cloud Kingdom':
+        return `High above the treetop hills, ${name} stepped onto a fluffy, warm cloud blanket. The sky was brushed with lavender and rose gold. Every step felt weightless and peaceful, wrapping ${name} in soft, quiet comfort...`;
+      case 'Space Journey':
+        return `In a quiet spaceship floating smoothly past twinkling stars, ${name} looked out the window at the distant velvet night. Galaxies spun slowly like giant silver pinwheels, guiding ${name} into a restful, dreamy slumber...`;
+      case 'Secret Garden':
+        return `Inside a hidden garden filled with sweet jasmine and glowing fireflies, ${name} rested on a bed of cool green moss. Wind chimes chimed softly in the warm evening breeze, keeping ${name} safe and peaceful...`;
+      default:
+        return `Deep in the quiet emerald forest, the ancient pine trees whispered softly as the twilight settled. ${name} rested comfortably beside a gentle babbling brook. The leaves rustled with a soothing rhythm: inhale calm, exhale rest...`;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -119,6 +147,36 @@ export const CalmStory: React.FC = () => {
             </div>
           </div>
 
+          {isPlaying && (
+            <div className="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6 space-y-2 flex items-center gap-4">
+              <span className="text-3xl animate-pulse">🔊</span>
+              <div>
+                <p className="font-black text-emerald-900 text-sm">A soothing audio story is playing now!</p>
+                <p className="text-emerald-700 text-xs font-bold italic">Adjust volume on your device to keep it calm and comfortable.</p>
+              </div>
+            </div>
+          )}
+
+          {errorMessage && (
+            <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
+              <p className="font-black text-rose-800 text-sm">⚠️ {errorMessage}</p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={handleGenerate} 
+                  className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all"
+                >
+                  Try Again
+                </button>
+                <button 
+                  onClick={() => setShowManualStory(true)} 
+                  className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest"
+                >
+                  Read Manual Story Instead
+                </button>
+              </div>
+            </div>
+          )}
+
           <button 
             onClick={handleGenerate}
             disabled={loading || !childName}
@@ -137,6 +195,28 @@ export const CalmStory: React.FC = () => {
               </>
             )}
           </button>
+
+          {(showManualStory || !errorMessage) && (
+            <div className="pt-4 border-t border-slate-100">
+              <button 
+                onClick={() => setShowManualStory(!showManualStory)} 
+                className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline flex items-center gap-2"
+              >
+                📖 {showManualStory ? 'Hide Read-Aloud Bedtime Story' : 'Read a Calm Bedtime Story Manually'}
+              </button>
+
+              {showManualStory && (
+                <div className="mt-4 p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 space-y-3">
+                  <h4 className="font-black text-indigo-950 text-sm uppercase tracking-widest">
+                    {theme} Bedtime Tale for {childName || 'Child'}
+                  </h4>
+                  <p className="text-slate-800 font-bold italic leading-relaxed text-sm">
+                    {getFallbackStoryText()}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

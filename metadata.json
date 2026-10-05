@@ -1,9 +1,11 @@
 {
   "name": "PediPulse AI",
-  "description": "An all-in-one pediatric health assistant featuring AI symptom triage, growth tracking, weight-based dosage guidance, and developmental milestone monitoring.",
+  "description": "An Australian paediatric health record and parent support tool featuring growth tracking, developmental milestone monitoring, Australian NIP vaccine schedule, ISBAR summaries, and AI parent support.",
   "requestFramePermissions": [
     "camera",
     "microphone"
   ],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

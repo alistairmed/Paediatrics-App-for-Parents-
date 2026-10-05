@@ -80,28 +80,28 @@ export const ChildProfileSetup: React.FC = () => {
     }, 1000);
   };
 
-  const inputClass = "w-full p-5 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none font-black text-slate-900 text-lg transition-all placeholder:text-slate-400 shadow-sm";
-  const labelClass = "block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-2 mb-1";
+  const inputClass = "w-full p-4 sm:p-5 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none font-black text-slate-900 text-base sm:text-lg transition-all placeholder:text-slate-400 shadow-sm min-h-[44px]";
+  const labelClass = "block text-xs font-black text-slate-700 uppercase tracking-widest ml-1 mb-1.5";
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-700 pb-20">
-      <header className="text-center space-y-4">
-        <div className="w-24 h-24 bg-indigo-600 text-white rounded-[2rem] flex items-center justify-center text-5xl mx-auto mb-6 shadow-2xl rotate-3 transition-transform hover:rotate-0 cursor-default">🩺</div>
-        <h2 className="text-4xl font-black text-slate-800 tracking-tight italic">
+    <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-700 pb-28">
+      <header className="text-center space-y-3 sm:space-y-4">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-indigo-600 text-white rounded-[2rem] flex items-center justify-center text-4xl sm:text-5xl mx-auto mb-4 sm:mb-6 shadow-2xl rotate-3 transition-transform hover:rotate-0 cursor-default">🩺</div>
+        <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight italic">
           {childProfile ? 'Profile Edit' : 'Clinical Onboarding'}
         </h2>
-        <p className="text-slate-600 font-bold italic">Persistence for clinical baseline and alerts.</p>
+        <p className="text-slate-600 font-bold italic text-sm sm:text-base">Persistence for clinical baseline and alerts.</p>
         
         {!childProfile && !isSuccess && (
-          <div className="pt-4">
-            <button onClick={handleSkip} className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-indigo-600 border-2 border-slate-200 px-8 py-3 rounded-2xl transition-all">Skip →</button>
+          <div className="pt-2 sm:pt-4">
+            <button onClick={handleSkip} className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 hover:text-indigo-600 border-2 border-slate-200 px-6 sm:px-8 py-3 rounded-2xl transition-all min-h-[44px]">Skip →</button>
           </div>
         )}
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-10">
-        <section className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
+        <section className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-200 shadow-xl space-y-6 sm:space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             <div className="space-y-1">
               <label className={labelClass}>Child's Name</label>
               <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Full Name" className={inputClass} />
@@ -122,7 +122,7 @@ export const ChildProfileSetup: React.FC = () => {
         </section>
 
         <div className="space-y-4">
-          <button type="submit" disabled={isSaving || validationErrors.length > 0} className={`w-full py-7 text-white font-black rounded-[2.5rem] shadow-2xl transition-all transform active:scale-95 text-base uppercase tracking-[0.2em] flex items-center justify-center gap-3 ${isSuccess ? 'bg-emerald-500' : (validationErrors.length > 0 ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700')}`}>
+          <button type="submit" disabled={isSaving || validationErrors.length > 0} className={`w-full py-5 sm:py-7 min-h-[48px] text-white font-black rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl transition-all transform active:scale-95 text-sm sm:text-base uppercase tracking-[0.2em] flex items-center justify-center gap-3 ${isSuccess ? 'bg-emerald-500' : (validationErrors.length > 0 ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700')}`}>
             {isSuccess ? 'Profile Ready ✓' : isSaving ? 'Saving...' : 'Sync Registry ✨'}
           </button>
         </div>

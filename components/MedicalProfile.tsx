@@ -5,6 +5,7 @@ import { analyzeMedicalProfile, analyzeMedicalReport } from '../services/gemini'
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useRole } from '../context/RoleContext';
 import { useNavigation } from '../context/NavigationContext';
+import { SearchFilterBar } from './SearchFilterBar';
 
 const GenogramIcon: React.FC<{ member: GenogramMember }> = ({ member }) => {
   const isMale = member.sex === 'Male';
@@ -78,43 +79,45 @@ const GenogramViz: React.FC<{ members: GenogramMember[] }> = ({ members }) => {
   const g3 = members.filter(m => m.relation === 'Sibling' || m.isIndex);
 
   return (
-    <div className="relative p-8 rounded-[3rem] bg-indigo-950/20 backdrop-blur-xl border border-white/5 shadow-inner min-w-[500px] space-y-12">
-      <div className="flex justify-between w-full px-4">
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex gap-4">
-             {g1Paternal.length > 0 ? g1Paternal.map(m => <GenogramIcon key={m.id} member={m} />) : <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />}
+    <div className="overflow-x-auto max-w-full pb-4">
+      <div className="relative p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] bg-indigo-950/20 backdrop-blur-xl border border-white/5 shadow-inner min-w-[480px] space-y-12">
+        <div className="flex justify-between w-full px-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex gap-4">
+               {g1Paternal.length > 0 ? g1Paternal.map(m => <GenogramIcon key={m.id} member={m} />) : <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />}
+            </div>
+            <p className="text-xs font-black text-indigo-400 uppercase">Paternal Line</p>
           </div>
-          <p className="text-[8px] font-black text-indigo-400 uppercase">Paternal Line</p>
-        </div>
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex gap-4">
-             {g1Maternal.length > 0 ? g1Maternal.map(m => <GenogramIcon key={m.id} member={m} />) : <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex gap-4">
+               {g1Maternal.length > 0 ? g1Maternal.map(m => <GenogramIcon key={m.id} member={m} />) : <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />}
+            </div>
+            <p className="text-xs font-black text-rose-400 uppercase">Maternal Line</p>
           </div>
-          <p className="text-[8px] font-black text-rose-400 uppercase">Maternal Line</p>
         </div>
+
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" preserveAspectRatio="none">
+          <line x1="25%" y1="15%" x2="40%" y2="40%" stroke="white" strokeWidth="2" strokeDasharray="5 5" />
+          <line x1="75%" y1="15%" x2="60%" y2="40%" stroke="white" strokeWidth="2" strokeDasharray="5 5" />
+          <line x1="50%" y1="55%" x2="50%" y2="80%" stroke="white" strokeWidth="2" />
+          <line x1="20%" y1="80%" x2="80%" y2="80%" stroke="white" strokeWidth="2" />
+        </svg>
+
+        <GenerationRow title="Parental Generation">
+          {g2.length > 0 ? g2.map(m => <GenogramIcon key={m.id} member={m} />) : (
+            <div className="flex gap-4">
+               <div className="w-12 h-12 rounded-none border border-dashed border-white/10" />
+               <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />
+            </div>
+          )}
+        </GenerationRow>
+
+        <GenerationRow title="Index Generation">
+          {g3.length > 0 ? g3.map(m => <GenogramIcon key={m.id} member={m} />) : (
+             <GenogramIcon member={{ id: 'pt-idx', relation: 'Patient', sex: 'Other', isAlive: true, isIndex: true }} />
+          )}
+        </GenerationRow>
       </div>
-
-      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" preserveAspectRatio="none">
-        <line x1="25%" y1="15%" x2="40%" y2="40%" stroke="white" strokeWidth="2" strokeDasharray="5 5" />
-        <line x1="75%" y1="15%" x2="60%" y2="40%" stroke="white" strokeWidth="2" strokeDasharray="5 5" />
-        <line x1="50%" y1="55%" x2="50%" y2="80%" stroke="white" strokeWidth="2" />
-        <line x1="20%" y1="80%" x2="80%" y2="80%" stroke="white" strokeWidth="2" />
-      </svg>
-
-      <GenerationRow title="Parental Generation">
-        {g2.length > 0 ? g2.map(m => <GenogramIcon key={m.id} member={m} />) : (
-          <div className="flex gap-4">
-             <div className="w-12 h-12 rounded-none border border-dashed border-white/10" />
-             <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />
-          </div>
-        )}
-      </GenerationRow>
-
-      <GenerationRow title="Index Generation">
-        {g3.length > 0 ? g3.map(m => <GenogramIcon key={m.id} member={m} />) : (
-           <GenogramIcon member={{ id: 'pt-idx', relation: 'Patient', sex: 'Other', isAlive: true, isIndex: true }} />
-        )}
-      </GenerationRow>
     </div>
   );
 };
@@ -133,6 +136,142 @@ export const MedicalProfile: React.FC = () => {
   // Shared reusable styles to fix the "white on white" issue
   const inputClass = "w-full p-4 rounded-2xl bg-white border border-slate-300 font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 transition-all placeholder:text-slate-400 shadow-sm";
   const textAreaClass = "w-full p-6 rounded-[2.5rem] bg-white border border-slate-300 outline-none font-bold italic text-slate-900 focus:ring-4 focus:ring-indigo-50 shadow-inner resize-none transition-all placeholder:text-slate-400";
+
+  // Search & Date Range Filter State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const matchesFilter = (
+    textFields: (string | undefined)[],
+    dateField?: string
+  ) => {
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const hasMatch = textFields.some(f => f && f.toLowerCase().includes(q));
+      if (!hasMatch) return false;
+    }
+
+    if (startDate || endDate) {
+      if (!dateField) return true;
+      const d = new Date(dateField);
+      if (!isNaN(d.getTime())) {
+        if (startDate) {
+          const s = new Date(startDate);
+          s.setHours(0, 0, 0, 0);
+          if (d < s) return false;
+        }
+        if (endDate) {
+          const e = new Date(endDate);
+          e.setHours(23, 59, 59, 999);
+          if (d > e) return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const filteredConditions = useMemo(() => {
+    return (history.conditions || []).filter(c =>
+      matchesFilter([c.name, c.status], c.dateDiagnosed)
+    );
+  }, [history.conditions, searchQuery, startDate, endDate]);
+
+  const filteredMedications = useMemo(() => {
+    return (history.currentMedications || []).filter(m =>
+      matchesFilter([m.name, m.dose, m.instructions, m.indication], m.startDate)
+    );
+  }, [history.currentMedications, searchQuery, startDate, endDate]);
+
+  const filteredSpecialists = useMemo(() => {
+    return (history.specialists || []).filter(s =>
+      matchesFilter([s.name, s.specialty, s.hospital, s.goals])
+    );
+  }, [history.specialists, searchQuery, startDate, endDate]);
+
+  const filteredInvestigations = useMemo(() => {
+    return (history.investigations || []).filter(inv =>
+      matchesFilter([inv.name, inv.result, inv.category], inv.date)
+    );
+  }, [history.investigations, searchQuery, startDate, endDate]);
+
+  const filteredReports = useMemo(() => {
+    return (history.medicalReports || []).filter(rep =>
+      matchesFilter([rep.specialist, rep.summary, ...(rep.actionItems || [])], rep.date)
+    );
+  }, [history.medicalReports, searchQuery, startDate, endDate]);
+
+  const filteredDevices = useMemo(() => {
+    return (history.devices || []).filter(d =>
+      matchesFilter([d.type, d.model, d.size], d.prescribeDate)
+    );
+  }, [history.devices, searchQuery, startDate, endDate]);
+
+  const filteredFamilyMembers = useMemo(() => {
+    return (history.familyHistory.members || []).filter(m =>
+      matchesFilter([m.relation, m.condition, m.sex])
+    );
+  }, [history.familyHistory.members, searchQuery, startDate, endDate]);
+
+  const currentSectionFilterData = useMemo(() => {
+    switch (currentSection) {
+      case 'history':
+        return {
+          total: (history.conditions || []).length,
+          filtered: filteredConditions.length,
+          placeholder: 'Search diagnoses and problem history...'
+        };
+      case 'meds':
+        return {
+          total: (history.currentMedications || []).length,
+          filtered: filteredMedications.length,
+          placeholder: 'Search medications, doses, indications...'
+        };
+      case 'mdt':
+        return {
+          total: (history.specialists || []).length,
+          filtered: filteredSpecialists.length,
+          placeholder: 'Search specialists, specialties, hospitals...'
+        };
+      case 'diagnostics':
+        return {
+          total: (history.investigations || []).length,
+          filtered: filteredInvestigations.length,
+          placeholder: 'Search lab tests, radiology findings...'
+        };
+      case 'reports':
+        return {
+          total: (history.medicalReports || []).length,
+          filtered: filteredReports.length,
+          placeholder: 'Search specialist letters, action items...'
+        };
+      case 'gear':
+        return {
+          total: (history.devices || []).length,
+          filtered: filteredDevices.length,
+          placeholder: 'Search medical gear, technology...'
+        };
+      case 'family':
+        return {
+          total: (history.familyHistory.members || []).length,
+          filtered: filteredFamilyMembers.length,
+          placeholder: 'Search family relations, conditions...'
+        };
+      default:
+        return null;
+    }
+  }, [
+    currentSection,
+    history,
+    filteredConditions,
+    filteredMedications,
+    filteredSpecialists,
+    filteredInvestigations,
+    filteredReports,
+    filteredDevices,
+    filteredFamilyMembers
+  ]);
 
   // Form States
   const [newMed, setNewMed] = useState<Partial<Medication>>({ name: '', dose: '', instructions: '', indication: '' });
@@ -261,6 +400,22 @@ export const MedicalProfile: React.FC = () => {
       </header>
 
       <div className="bg-white rounded-[4rem] border border-slate-100 shadow-2xl min-h-[600px] p-6 md:p-12 relative overflow-hidden">
+        
+        {currentSectionFilterData && (
+          <div className="mb-8">
+            <SearchFilterBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              startDate={startDate}
+              onStartDateChange={setStartDate}
+              endDate={endDate}
+              onEndDateChange={setEndDate}
+              totalCount={currentSectionFilterData.total}
+              filteredCount={currentSectionFilterData.filtered}
+              placeholder={currentSectionFilterData.placeholder}
+            />
+          </div>
+        )}
         
         {currentSection === 'overview' && (
           <div className="space-y-12 animate-in zoom-in-95">
@@ -440,9 +595,9 @@ export const MedicalProfile: React.FC = () => {
                   </div>
                </div>
                
-               {history.familyHistory.members?.length > 0 && (
+               {(history.familyHistory.members?.length || 0) > 0 && (
                  <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 border-t border-slate-200">
-                   {history.familyHistory.members.map(member => (
+                   {filteredFamilyMembers.map(member => (
                      <div key={member.id} className="bg-white p-6 rounded-3xl border border-slate-200 flex items-center justify-between group hover:shadow-lg transition-all shadow-sm">
                         <div className="flex items-center gap-5">
                            <div className={`w-10 h-10 ${member.sex === 'Male' ? 'rounded-none' : 'rounded-full'} ${member.condition ? 'bg-rose-500' : 'bg-slate-200'} shrink-0 shadow-inner border border-slate-400 flex items-center justify-center relative`}>
@@ -492,7 +647,7 @@ export const MedicalProfile: React.FC = () => {
                 <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-widest border border-indigo-100">Live Registry</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {(history.conditions || []).map(issue => (
+                {filteredConditions.map(issue => (
                   <div key={issue.id} className="bg-slate-50 p-8 rounded-[3rem] border border-slate-200 relative group shadow-sm hover:shadow-md transition-all">
                     <button onClick={() => updateHistory({ conditions: history.conditions?.filter(x => x.id !== issue.id) })} className="absolute top-6 right-6 text-slate-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity p-2 font-black">✕</button>
                     <p className="font-black text-2xl text-slate-900 tracking-tighter mb-3 leading-none italic">{issue.name}</p>
@@ -527,7 +682,7 @@ export const MedicalProfile: React.FC = () => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
-                {history.currentMedications.map(m => (
+                {filteredMedications.map(m => (
                   <div key={m.id} className="bg-emerald-50/50 p-10 rounded-[3.5rem] border border-emerald-100 relative group shadow-sm hover:shadow-2xl transition-all">
                     <div className="space-y-6">
                       <p className="text-4xl font-black text-emerald-900 tracking-tighter leading-none italic">{m.name}</p>
@@ -568,7 +723,7 @@ export const MedicalProfile: React.FC = () => {
                 <h3 className="text-3xl font-black text-slate-900 italic tracking-tight">Professional MDT Hub</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {history.specialists.map(s => (
+                {filteredSpecialists.map(s => (
                     <div key={s.id} className="p-10 rounded-[3.5rem] border-2 bg-white border-slate-100 text-slate-900 shadow-sm transition-all hover:shadow-lg">
                       <div className="space-y-8">
                          <div>
@@ -604,7 +759,7 @@ export const MedicalProfile: React.FC = () => {
                 <h3 className="text-3xl font-black text-slate-900 italic tracking-tight">Investigation Results</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
-                {(history.investigations || []).map(inv => (
+                {filteredInvestigations.map(inv => (
                   <div key={inv.id} className="bg-blue-50/50 p-10 rounded-[3.5rem] border border-blue-100 relative group shadow-sm hover:shadow-2xl transition-all">
                     <button onClick={() => updateHistory({ investigations: history.investigations?.filter(x => x.id !== inv.id) })} className="absolute top-10 right-10 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity p-2">✕</button>
                     <div className="space-y-6">
@@ -641,7 +796,7 @@ export const MedicalProfile: React.FC = () => {
                 <input type="file" ref={reportInputRef} onChange={handleReportUpload} accept="image/*" className="hidden" />
               </div>
               <div className="space-y-6">
-                {(history.medicalReports || []).map(rep => (
+                {filteredReports.map(rep => (
                   <div key={rep.id} className="bg-slate-50 p-10 rounded-[3.5rem] border border-slate-100 flex flex-col md:flex-row gap-10 hover:shadow-md transition-all">
                     <div className="w-full md:w-32 h-44 bg-white rounded-[2rem] border border-slate-200 flex flex-col items-center justify-center p-4 shadow-inner shrink-0 group relative overflow-hidden">
                        <span className="text-5xl mb-2">✉️</span>
@@ -672,7 +827,7 @@ export const MedicalProfile: React.FC = () => {
             <section className="space-y-10">
               <h3 className="text-3xl font-black text-slate-900 italic tracking-tight px-4">Medical Gear & Technology</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
-                {(history.devices || []).map(d => (
+                {filteredDevices.map(d => (
                   <div key={d.id} className="bg-amber-50/50 p-10 rounded-[3.5rem] border border-amber-100 relative group shadow-sm hover:shadow-2xl transition-all">
                     <button onClick={() => updateHistory({ devices: history.devices.filter(x => x.id !== d.id) })} className="absolute top-10 right-10 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity p-2">✕</button>
                     <div className="space-y-6">
