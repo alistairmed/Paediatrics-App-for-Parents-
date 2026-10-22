@@ -264,32 +264,35 @@ export interface MedicalHistory {
   investigations?: Investigation[];
 }
 
-export type ViewType = 
-  | 'dashboard' 
-  | 'symptoms' 
-  | 'growth' 
-  | 'dosage' 
-  | 'milestones' 
-  | 'stories' 
-  | 'vaccines' 
-  | 'screening' 
-  | 'profile' 
-  | 'history'
-  | 'medications'
-  | 'careteam'
-  | 'diagnostics'
-  | 'reports' 
-  | 'devices'
-  | 'familyhistory'
-  | 'developmental'
-  | 'redbook' 
-  | 'parenting' 
-  | 'setup' 
-  | 'bonding' 
-  | 'acutelogs' 
-  | 'appointments' 
-  | 'handover' 
-  | 'governance' 
-  | 'ethics' 
-  | 'regulatory' 
-  | 'sickday';
+export const VIEW_TYPES = [
+  'dashboard',
+  'symptoms',
+  'growth',
+  'dosage',
+  'milestones',
+  'stories',
+  'vaccines',
+  'screening',
+  'profile',
+  'history',
+  'medications',
+  'careteam',
+  'diagnostics',
+  'reports',
+  'devices',
+  'familyhistory',
+  'developmental',
+  'redbook',
+  'parenting',
+  'setup',
+  'bonding',
+  'acutelogs',
+  'appointments',
+  'handover',
+  'governance',
+  'ethics',
+  'regulatory',
+  'sickday',
+] as const;
+
+export type ViewType = typeof VIEW_TYPES[number];

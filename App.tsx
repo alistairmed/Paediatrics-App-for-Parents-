@@ -99,7 +99,7 @@ const AppContent: React.FC = () => {
     const isReady = !!childProfile || hasSkippedSetup;
     
     if (!isReady && !publicViews.includes(activeView)) {
-      navigateTo('setup');
+      navigateTo('setup', { replace: true });
     } else if (isReady && activeView === 'setup' && !childProfile) {
       // If we are at setup but have already skipped, dashboard is home
       // But if we have a childProfile, we stay on setup only if manually clicked (for editing)
@@ -144,9 +144,9 @@ const AppContent: React.FC = () => {
   return (
     <Layout activeView={activeView} onNavigate={navigateTo}>
       <DisclaimerModal />
-      <div className="bg-rose-50 border-b border-rose-100 px-6 py-3 text-center mb-8 rounded-2xl shadow-sm space-y-1">
-        <p className="text-[10px] font-black text-rose-600 uppercase tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
-        <p className="text-[9px] text-rose-500 italic font-bold">Data remains on this device • Replaces no clinical judgment.</p>
+      <div className="bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-sm space-y-1">
+        <p className="text-[10px] font-black text-rose-600 uppercase tracking-wider sm:tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
+        <p className="hidden sm:block text-[9px] text-rose-500 italic font-bold">Data remains on this device • Replaces no clinical judgment.</p>
       </div>
       <Suspense fallback={<ViewLoading />}>
         {ViewComponent}

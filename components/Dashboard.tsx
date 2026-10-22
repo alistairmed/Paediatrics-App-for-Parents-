@@ -48,14 +48,14 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 sm:space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-28">
-      <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] text-white shadow-2xl relative overflow-hidden group">
+      <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 p-5 sm:p-10 rounded-[2rem] sm:rounded-[4rem] text-white shadow-2xl relative overflow-hidden group">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 sm:gap-8">
-           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/20 rounded-[2rem] sm:rounded-[2.5rem] flex items-center justify-center text-4xl sm:text-5xl shadow-inner border border-white/10 rotate-[-4deg] shrink-0">🏠</div>
+           <div className="hidden sm:flex w-24 h-24 bg-white/20 rounded-[2.5rem] items-center justify-center text-4xl sm:text-5xl shadow-inner border border-white/10 rotate-[-4deg] shrink-0">🏠</div>
            <div className="text-center md:text-left">
               <p className="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2">{hasSkippedSetup ? 'GUEST REGISTRY ACTIVE' : 'PEDI-PULSE REGISTRY ACTIVE'}</p>
               <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter leading-none mb-3 sm:mb-4">Welcome Home, {childProfile?.name?.split(' ')[0] || 'Guest'}.</h2>
-              <p className="text-indigo-100 font-medium italic opacity-90 max-w-lg text-xs sm:text-base">
+              <p className="hidden sm:block text-indigo-100 font-medium italic opacity-90 max-w-lg text-base">
                 Your clinical workstation is initialized. Use the quick actions below to track wellness, or explore the Medical Hub for deeper history.
               </p>
               {hasSkippedSetup && (
