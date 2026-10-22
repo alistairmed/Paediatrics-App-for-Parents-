@@ -7,6 +7,7 @@ import { ChildProfileProvider, useChildProfile } from './context/ChildProfileCon
 import { MedicalHistoryProvider, useMedicalHistory } from './context/MedicalHistoryContext';
 import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
+import { ToastProvider } from './context/ToastContext';
 import { ViewType } from './types';
 
 // Each screen is loaded on demand so the first page doesn't download the whole app.
@@ -157,15 +158,17 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <NavigationProvider>
-      <EnvironmentProvider>
-        <GovernanceProvider>
-          <ChildProfileProvider>
-            <MedicalHistoryProvider>
-              <AppContent />
-            </MedicalHistoryProvider>
-          </ChildProfileProvider>
-        </GovernanceProvider>
-      </EnvironmentProvider>
+      <ToastProvider>
+        <EnvironmentProvider>
+          <GovernanceProvider>
+            <ChildProfileProvider>
+              <MedicalHistoryProvider>
+                <AppContent />
+              </MedicalHistoryProvider>
+            </ChildProfileProvider>
+          </GovernanceProvider>
+        </EnvironmentProvider>
+      </ToastProvider>
     </NavigationProvider>
   );
 };

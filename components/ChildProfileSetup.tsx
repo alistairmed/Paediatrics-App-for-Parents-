@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { ChildProfile, Medication } from '../types';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useNavigation } from '../context/NavigationContext';
+import { useToast } from '../context/ToastContext';
 
 export const ChildProfileSetup: React.FC = () => {
   const { childProfile, setChildProfile, setHasSkippedSetup } = useChildProfile();
   const { navigateTo } = useNavigation();
+  const { showToast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -49,7 +51,7 @@ export const ChildProfileSetup: React.FC = () => {
 
     const weightNum = parseFloat(weight);
     if (weight && (weightNum < 2 || weightNum > 150)) {
-       alert("Please enter a realistic pediatric weight (2 kg to 150 kg).");
+       showToast("Please enter a realistic weight between 2 kg and 150 kg.", 'error');
        return;
     }
 

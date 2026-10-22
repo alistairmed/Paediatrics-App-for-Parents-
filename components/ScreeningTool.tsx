@@ -2,6 +2,8 @@
 import React, { useState, useMemo } from 'react';
 import { analyzeScreening } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
+import { useToast } from '../context/ToastContext';
+import { useNavigation } from '../context/NavigationContext';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
@@ -181,6 +183,8 @@ const FINDER_STEPS = {
 
 export const ScreeningTool: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
+  const { showToast } = useToast();
+  const { navigateTo } = useNavigation();
   const [viewState, setViewState] = useState<'hub' | 'finder' | 'test'>('hub');
   const [finderPath, setFinderPath] = useState<{ age?: string; domain?: string }>({});
   const [activeModKey, setActiveModKey] = useState<string | null>(null);
@@ -217,7 +221,7 @@ export const ScreeningTool: React.FC = () => {
 
   const handleSelectTest = (id: string) => {
     if (id === 'dev_milestones') {
-        alert("Redirecting to Development Milestones module...");
+        navigateTo('milestones');
         return;
     }
     setActiveModKey(id);
@@ -233,7 +237,7 @@ export const ScreeningTool: React.FC = () => {
       const result = await analyzeScreening(activeMod.name, responses);
       setAnalysis(result);
     } catch (e) {
-      alert("Error analyzing assessment.");
+      showToast("Couldn't analyse the assessment. Please try again.", 'error');
     } finally {
       setLoading(false);
     }

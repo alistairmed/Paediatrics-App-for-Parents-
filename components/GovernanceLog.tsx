@@ -1,14 +1,18 @@
 
 import React from 'react';
 import { useGovernance } from '../context/GovernanceContext';
+import { useToast } from '../context/ToastContext';
 
 export const GovernanceLog: React.FC = () => {
   const { log, clearLog } = useGovernance();
+  const { showToast } = useToast();
 
   const copyEntry = (entry: any) => {
     const text = `PEDIPULSE GOVERNANCE ENTRY\nType: ${entry.eventType}\nTimestamp: ${new Date(entry.timestamp).toLocaleString()}\nInput: ${entry.inputSummary}\nOutput: ${entry.outputSummary}\nRed Flags: ${entry.redFlags?.join(', ') || 'None'}`;
-    navigator.clipboard.writeText(text);
-    alert("Entry copied to clipboard for clinical review.");
+    navigator.clipboard.writeText(text).then(
+      () => showToast("Entry copied to the clipboard."),
+      () => showToast("Couldn't copy to the clipboard.", 'error')
+    );
   };
 
   return (

@@ -7,6 +7,7 @@ import { useGovernance } from '../context/GovernanceContext';
 import { useEnvironment } from '../context/EnvironmentContext';
 import { evaluateRedFlags } from '../clinical/redFlags';
 import { ageInMonths } from '../clinical/age';
+import { useToast } from '../context/ToastContext';
 
 const RED_FLAGS_LIST = [
   { text: "Difficulty Breathing", sub: "Grunting, wheezing, or chest sucking in", icon: "🫁" },
@@ -21,6 +22,7 @@ export const SymptomChecker: React.FC = () => {
   const { addAcuteLog } = useMedicalHistory();
   const { childProfile } = useChildProfile();
   const { addEntry } = useGovernance();
+  const { showToast } = useToast();
   const { mode } = useEnvironment();
   const isOnline = useConnectivity();
   
@@ -104,7 +106,7 @@ export const SymptomChecker: React.FC = () => {
         media: image || undefined
       });
       setSaved(true);
-      alert("Triage result successfully synced to Medical Hub logs.");
+      showToast("Triage result saved to the Acute Log.");
     }
   };
 

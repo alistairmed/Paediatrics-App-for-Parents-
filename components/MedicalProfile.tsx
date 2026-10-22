@@ -5,6 +5,7 @@ import { analyzeMedicalProfile, analyzeMedicalReport } from '../services/gemini'
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useNavigation } from '../context/NavigationContext';
 import { SearchFilterBar } from './SearchFilterBar';
+import { useToast } from '../context/ToastContext';
 
 const GenogramIcon: React.FC<{ member: GenogramMember }> = ({ member }) => {
   const isMale = member.sex === 'Male';
@@ -124,6 +125,7 @@ const GenogramViz: React.FC<{ members: GenogramMember[] }> = ({ members }) => {
 export const MedicalProfile: React.FC = () => {
   const { history, updateHistory, pendingEvents } = useMedicalHistory();
   const { activeView } = useNavigation();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [showCeasedMeds, setShowCeasedMeds] = useState(false);
@@ -350,10 +352,10 @@ export const MedicalProfile: React.FC = () => {
               conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString() }))],
               currentMedications: [...(history.currentMedications || []), ...(result.foundMedications || []).map((m: any) => ({ ...m, id: crypto.randomUUID(), startDate: new Date().toISOString() }))]
             });
-            alert("Specialist letter integrated into registry.");
+            showToast("Specialist letter added to the record.");
           }
         } catch (error) {
-          alert("Error analyzing report.");
+          showToast("Couldn't read the letter. Please try again.", 'error');
         } finally {
           setReportLoading(false);
         }
@@ -368,7 +370,7 @@ export const MedicalProfile: React.FC = () => {
       const result = await analyzeMedicalProfile({ history, linkedEvents: pendingEvents });
       setAiAnalysis(result);
     } catch (e) {
-      alert("Error generating handover.");
+      showToast("Couldn't generate the handover. Please try again.", 'error');
     } finally {
       setLoading(false);
     }

@@ -3,10 +3,12 @@ import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { generateHandoverData } from '../clinical/handover';
 import { analyzeMedicalProfile, GeminiError } from '../services/gemini';
+import { useToast } from '../context/ToastContext';
 
 export const HandoverSummary: React.FC = () => {
   const { history, latestWeight } = useMedicalHistory();
   const { childProfile, childAge } = useChildProfile();
+  const { showToast } = useToast();
   const [reviewStep, setReviewStep] = useState<'review' | 'view'>('review');
   const [excludedLogs, setExcludedLogs] = useState<Set<string>>(new Set());
   const [isVerified, setIsVerified] = useState(false);
@@ -33,7 +35,7 @@ export const HandoverSummary: React.FC = () => {
 
   const handleFinalize = () => {
     if (!isVerified) {
-      alert("Please review and verify the clinical content before finalising.");
+      showToast("Please review and verify the content before finalising.", 'info');
       return;
     }
     setReviewStep('view');

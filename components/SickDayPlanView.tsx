@@ -2,9 +2,11 @@
 import React, { useRef } from 'react';
 import { SickDayPlan } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
+import { useToast } from '../context/ToastContext';
 
 export const SickDayPlanView: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
+  const { showToast } = useToast();
   const planPhotoRef = useRef<HTMLInputElement>(null);
 
   const handlePlanPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,8 +55,10 @@ RESCUE MEDS: ${p.emergencyMeds || 'None'}
 FLUID REQS: ${p.fluidRequirements || 'Standard'}
 -------------------------------------------`;
     
-    navigator.clipboard.writeText(text);
-    alert("Full plan copied to clipboard. Ready for hospital handover or clinical documentation.");
+    navigator.clipboard.writeText(text).then(
+      () => showToast("Full plan copied to the clipboard, ready to paste into a handover."),
+      () => showToast("Couldn't copy to the clipboard.", 'error')
+    );
   };
 
   return (
