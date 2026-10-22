@@ -1,4 +1,5 @@
 
+export type UserRole = 'parent' | 'clinician';
 export type EnvironmentMode = 'standard' | 'low-resource';
 
 export interface ClinicalEvent {
@@ -8,6 +9,48 @@ export interface ClinicalEvent {
   date: string;
   severity: 'Low' | 'Medium' | 'High';
   media?: string;
+}
+
+export interface ConsultationNote {
+  id: string;
+  date: string;
+  clinicianName: string;
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+}
+
+export interface ClinicalFindings {
+  history: string;
+  examination: string;
+  vitals: {
+    hr?: string;
+    rr?: string;
+    temp?: string;
+    o2?: string;
+    bp?: string;
+  };
+}
+
+export interface AssignedTest {
+  testId: string;
+  assignedDate: string;
+  status: 'pending' | 'completed';
+  priority?: 'Routine' | 'High' | 'Urgent';
+  dueDate?: string;
+  clinicianNote?: string;
+  isCustom?: boolean;
+  customTitle?: string;
+}
+
+export interface ReasoningLog {
+  id: string;
+  date: string;
+  framework: string;
+  inputContext: string;
+  analysis: string;
+  sources: any[];
 }
 
 export interface AttachmentAnalysis {
@@ -53,6 +96,7 @@ export interface AcuteLogEntry {
   notes?: string;
   media?: string;
   isChallengeEntry?: boolean;
+  clinicianLogged?: boolean;
   medicationName?: string; // New: Tracks specific drug for interval checks
 }
 
@@ -230,6 +274,7 @@ export interface Condition {
   dateDiagnosed?: string;
   status: 'Active' | 'Resolved' | 'Under Investigation';
   notes?: string;
+  clinicianVerified?: boolean;
 }
 
 export interface Investigation {
@@ -262,6 +307,9 @@ export interface MedicalHistory {
   milestones?: Milestone[];
   conditions?: Condition[];
   investigations?: Investigation[];
+  formalConsults?: ConsultationNote[];
+  assignedTests?: AssignedTest[];
+  reasoningLogs?: ReasoningLog[];
 }
 
 export const VIEW_TYPES = [
@@ -293,6 +341,9 @@ export const VIEW_TYPES = [
   'ethics',
   'regulatory',
   'sickday',
+  'consults',
+  'assignments',
+  'reasoning',
 ] as const;
 
 export type ViewType = typeof VIEW_TYPES[number];

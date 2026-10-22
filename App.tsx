@@ -5,6 +5,7 @@ import { ChildProfileSetup } from './components/ChildProfileSetup';
 import { NavigationProvider, useNavigation } from './context/NavigationContext';
 import { ChildProfileProvider, useChildProfile } from './context/ChildProfileContext';
 import { MedicalHistoryProvider, useMedicalHistory } from './context/MedicalHistoryContext';
+import { RoleProvider } from './context/RoleContext';
 import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
 import { ToastProvider } from './context/ToastContext';
@@ -30,6 +31,7 @@ const GovernanceLog = lazy(() => import('./components/GovernanceLog').then(m => 
 const EthicsSafety = lazy(() => import('./components/EthicsSafety').then(m => ({ default: m.EthicsSafety })));
 const RegulatoryRisk = lazy(() => import('./components/RegulatoryRisk').then(m => ({ default: m.RegulatoryRisk })));
 const SickDayPlanView = lazy(() => import('./components/SickDayPlanView').then(m => ({ default: m.SickDayPlanView })));
+const ClinicianTools = lazy(() => import('./components/ClinicianTools').then(m => ({ default: m.ClinicianTools })));
 
 const ViewLoading: React.FC = () => (
   <div className="py-24 text-center text-slate-400 font-black text-xs uppercase tracking-widest animate-pulse">Loading…</div>
@@ -136,7 +138,10 @@ const AppContent: React.FC = () => {
       governance: <GovernanceLog />,
       ethics: <EthicsSafety />,
       regulatory: <RegulatoryRisk />,
-      sickday: <SickDayPlanView />
+      sickday: <SickDayPlanView />,
+      consults: <ClinicianTools type="consults" />,
+      assignments: <ClinicianTools type="assignments" />,
+      reasoning: <ClinicianTools type="reasoning" />
     };
     return views[activeView] || views.dashboard;
   }, [activeView]);
@@ -160,6 +165,7 @@ const App: React.FC = () => {
     <NavigationProvider>
       <ToastProvider>
         <EnvironmentProvider>
+          <RoleProvider>
           <GovernanceProvider>
             <ChildProfileProvider>
               <MedicalHistoryProvider>
@@ -167,6 +173,7 @@ const App: React.FC = () => {
               </MedicalHistoryProvider>
             </ChildProfileProvider>
           </GovernanceProvider>
+          </RoleProvider>
         </EnvironmentProvider>
       </ToastProvider>
     </NavigationProvider>

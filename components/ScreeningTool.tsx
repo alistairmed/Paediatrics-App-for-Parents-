@@ -4,6 +4,7 @@ import { analyzeScreening } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigation } from '../context/NavigationContext';
+import { useRole } from '../context/RoleContext';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
@@ -185,6 +186,7 @@ export const ScreeningTool: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
   const { showToast } = useToast();
   const { navigateTo } = useNavigation();
+  const { role } = useRole();
   const [viewState, setViewState] = useState<'hub' | 'finder' | 'test'>('hub');
   const [finderPath, setFinderPath] = useState<{ age?: string; domain?: string }>({});
   const [activeModKey, setActiveModKey] = useState<string | null>(null);
@@ -194,6 +196,8 @@ export const ScreeningTool: React.FC = () => {
 
   const activeMod = activeModKey ? SCREENING_MODS[activeModKey] : null;
 
+  const assignedTests = history.assignedTests || [];
+  const pendingRequests = assignedTests.filter(t => t.status === 'pending');
 
   const chartData = useMemo(() => {
     if (!analysis || !activeMod) return [];
@@ -236,6 +240,15 @@ export const ScreeningTool: React.FC = () => {
     try {
       const result = await analyzeScreening(activeMod.name, responses);
       setAnalysis(result);
+      
+      // Update specialist assignment status if relevant
+      const assignment = assignedTests.find(t => t.testId === activeMod.id);
+      if (assignment) {
+        const next = assignedTests.map(t => 
+          t.testId === activeMod.id ? { ...t, status: 'completed' as const } : t
+        );
+        updateHistory({ assignedTests: next });
+      }
     } catch (e) {
       showToast("Couldn't analyse the assessment. Please try again.", 'error');
     } finally {
@@ -320,8 +333,55 @@ export const ScreeningTool: React.FC = () => {
       {viewState === 'hub' && (
         <div className="space-y-12 animate-in slide-in-from-bottom-8">
           
+          {/* SPECIALIST REQUESTS SECTION */}
+          {pendingRequests.length > 0 && (
+            <section className="space-y-6">
+               <div className="flex items-center gap-3 ml-4">
+                  <span className="w-4 h-4 bg-indigo-600 rounded-full animate-pulse"></span>
+                  <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.3em]">Specialist Requests</h3>
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {pendingRequests.map(req => {
+                    const mod = SCREENING_MODS[req.testId];
+                    if (!mod) return null;
+                    return (
+                      <div key={req.testId} className={`p-8 rounded-[3rem] text-white shadow-2xl flex flex-col justify-between group hover:scale-[1.02] transition-all border-4 ${req.priority === 'Urgent' ? 'bg-rose-600 border-rose-400' : 'bg-indigo-600 border-indigo-400'}`}>
+                        <div className="space-y-6">
+                          <div className="flex justify-between items-start">
+                             <div className="flex flex-col gap-1">
+                               <span className="px-3 py-1 bg-white/20 rounded-full text-[8px] font-black uppercase tracking-widest border border-white/10 w-fit">{mod.domain}</span>
+                               <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border border-white/20 w-fit mt-1 ${req.priority === 'Urgent' ? 'bg-rose-900 text-rose-100' : 'bg-indigo-900 text-indigo-100'}`}>
+                                 {req.priority} Priority
+                               </span>
+                             </div>
+                             <span className="text-[8px] font-black uppercase opacity-60">Requested: {new Date(req.assignedDate).toLocaleDateString()}</span>
+                          </div>
+                          <div>
+                            <h4 className="text-3xl font-black italic tracking-tighter leading-none mb-3">{mod.name}</h4>
+                            {req.dueDate && <p className="text-[10px] font-black uppercase tracking-widest text-white/70 mb-4 italic">Deadline: {new Date(req.dueDate).toLocaleDateString()}</p>}
+                            {req.clinicianNote && (
+                              <div className="bg-black/10 p-4 rounded-2xl border border-white/5 shadow-inner">
+                                <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Doctor's Note:</p>
+                                <p className="text-sm font-medium italic">"{req.clinicianNote}"</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <button onClick={() => handleSelectTest(mod.id)} className={`w-full py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl group-hover:bg-indigo-50 transition-colors mt-8 ${req.priority === 'Urgent' ? 'bg-white text-rose-600' : 'bg-white text-indigo-600'}`}>Start Assessment</button>
+                      </div>
+                    );
+                  })}
+               </div>
+            </section>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {Object.values(SCREENING_MODS).map((mod) => {
+              const assignment = assignedTests.find(t => t.testId === mod.id);
+              const isPending = assignment?.status === 'pending';
+              
+              if (isPending && pendingRequests.length > 0) return null; 
+
               return (
                 <div key={mod.id} className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative flex flex-col justify-between">
                   <div className="space-y-4">

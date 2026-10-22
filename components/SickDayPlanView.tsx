@@ -1,13 +1,66 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { SickDayPlan } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useToast } from '../context/ToastContext';
+import { useRole } from '../context/RoleContext';
+
+const SICK_DAY_TEMPLATES: Record<string, Partial<SickDayPlan>> = {
+  asthma: {
+    greenZone: "Child is well. No symptoms. Continue regular preventer if prescribed.",
+    yellowZone: "Symptoms: Coughing, wheezing, or tight chest.\n1. Administer 4 puffs of blue reliever via spacer.\n2. Wait 4 minutes.\n3. Repeat if no improvement.\n4. Call GP for review.",
+    redZone: "EMERGENCY: Struggling to breathe, sucking in at throat, or reliever not working for >2 hours.",
+    backgroundForED: "Child has persistent asthma requiring secondary prevention.",
+    triggers: "Viral colds, exercise, smoke, weather changes.",
+    emergencyMeds: "Salbutamol 100mcg via spacer.",
+    ambulanceTriggers: "Too breathless to speak, blue lips, silent chest, or no improvement with rescue doses.",
+    dangerSigns: "Tugging at the neck, sucking in between ribs, pale skin.",
+    carerActions: "Keep child upright. Administer 4:4:4 asthma first aid."
+  },
+  epilepsy: {
+    greenZone: "Seizure free. Normal activity. Maintenance AEDs as prescribed.",
+    yellowZone: "Increased seizure frequency or prolonged absence seizures.",
+    redZone: "Generalized Tonic-Clonic seizure > 5 minutes or repeated seizures without regaining consciousness.",
+    emergencyMeds: "Midazolam (Buccal/Intranasal) as prescribed.",
+    ambulanceTriggers: "Seizure > 5 mins, first ever seizure, airway compromise, or breathing fails to return to normal.",
+    dangerSigns: "Status epilepticus, cyanosis (turning blue), seizure during swimming/eating.",
+    carerActions: "Time the seizure. Clear the area. Recovery position once finished. Do not put anything in mouth."
+  },
+  diabetes_t1: {
+    greenZone: "BGL 4.0 - 8.0 mmol/L. Normal diet and insulin routine.",
+    yellowZone: "BGL > 15.0 mmol/L with trace ketones or BGL < 3.9 mmol/L (Hypo).",
+    redZone: "Persistent vomiting, inability to eat/drink, or moderate/large ketones (DKA risk).",
+    emergencyMeds: "Glucagon injection (for severe hypo), Fast-acting glucose (jelly beans).",
+    ambulanceTriggers: "Unconscious, seizure, or breathing is heavy/fruity (Kussmaul breathing).",
+    dangerSigns: "Abdominal pain, nausea, confusion, rapid weight loss.",
+    carerActions: "Check BGL and ketones every 2 hours. Follow specific hypo protocol."
+  },
+  croup: {
+    greenZone: "Mild barking cough, no noisy breathing at rest.",
+    yellowZone: "Noisy breathing (stridor) when upset or active. Barking cough worsening.",
+    redZone: "Stridor (whistling) when quiet/at rest. Sucking in at throat.",
+    emergencyMeds: "Prednisolone/Dexamethasone (if prescribed).",
+    ambulanceTriggers: "Unable to drink, blue lips, silent breathing despite effort, or unusually sleepy.",
+    dangerSigns: "Stridor at rest, tracheal tug, sternal recession.",
+    carerActions: "Stay calm. Keep child calm. Do not examine throat."
+  },
+  generic_viral: {
+    greenZone: "Happy, hydrated, normal behavior. Fever managed.",
+    yellowZone: "Fever > 38.5, mild dehydration, refusing food but drinking.",
+    redZone: "Non-blanching rash, altered consciousness, high-pitched cry.",
+    emergencyMeds: "Paracetamol, Ibuprofen.",
+    ambulanceTriggers: "Fits (Febrile convulsions), blue appearance, or won't wake up.",
+    dangerSigns: "Purple spots, stiff neck, bulging soft spot (infants).",
+    carerActions: "Encourage fluids. Monitor wet nappies. Do not overdress."
+  }
+};
 
 export const SickDayPlanView: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
   const { showToast } = useToast();
+  const { role } = useRole();
   const planPhotoRef = useRef<HTMLInputElement>(null);
+  const [draftText, setDraftText] = useState('');
 
   const handlePlanPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -17,6 +70,13 @@ export const SickDayPlanView: React.FC = () => {
         updateHistory({ sickDayPlan: { ...history.sickDayPlan, planPhoto: reader.result as string } });
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleApplySickDayTemplate = (type: string) => {
+    const template = SICK_DAY_TEMPLATES[type];
+    if (template) {
+      updateHistory({ sickDayPlan: { ...history.sickDayPlan, ...template } });
     }
   };
 
@@ -84,6 +144,31 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
             <input type="file" accept="image/*" capture="environment" className="hidden" ref={planPhotoRef} onChange={handlePlanPhotoUpload} />
         </div>
       </header>
+
+      {role === 'clinician' && (
+        <section className="bg-slate-900 p-5 sm:p-10 rounded-[2rem] sm:rounded-[3rem] text-white shadow-2xl space-y-6">
+           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <h3 className="text-lg sm:text-xl font-black italic tracking-tighter">Clinician Plan Workbench</h3>
+              <div className="flex flex-wrap gap-2">
+                 {Object.keys(SICK_DAY_TEMPLATES).map(k => (
+                    <button key={k} onClick={() => handleApplySickDayTemplate(k)} className="px-3 py-2 min-h-[36px] bg-white/10 hover:bg-white/20 rounded-lg text-xs font-black uppercase border border-white/10 transition-all">
+                      {k.replace('_', ' ')}
+                    </button>
+                 ))}
+              </div>
+           </div>
+           <textarea 
+            value={draftText}
+            onChange={e => setDraftText(e.target.value)}
+            placeholder="DRAFTING AREA: Paste your hospital discharge macros or raw plan text here to copy/paste into specific fields below..."
+            className="w-full h-32 bg-white/5 rounded-2xl p-4 sm:p-6 font-bold italic text-indigo-100 border border-white/10 shadow-inner outline-none focus:bg-white/10 transition-all text-sm"
+           />
+           <div className="flex justify-between items-center px-2">
+              <p className="text-xs font-black text-indigo-400 uppercase tracking-widest">Workspace for clinical drafting only</p>
+              <button onClick={() => setDraftText('')} className="text-xs font-black text-slate-400 uppercase hover:text-white min-h-[44px] flex items-center">Clear Draft</button>
+           </div>
+        </section>
+      )}
 
       <div className="bg-rose-600 p-5 sm:p-12 rounded-[2.5rem] sm:rounded-[4rem] text-white shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-[80px]"></div>

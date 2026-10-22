@@ -4,6 +4,7 @@ import { ViewType } from '../types';
 import { useNavigation } from '../context/NavigationContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
+import { useRole } from '../context/RoleContext';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart, Line
 } from 'recharts';
@@ -20,7 +21,10 @@ export const Dashboard: React.FC = () => {
   const { navigateTo } = useNavigation();
   const { childProfile, childAge, hasSkippedSetup } = useChildProfile();
   const { latestWeight, history } = useMedicalHistory();
+  const { role } = useRole();
 
+  const pendingAssignments = (history.assignedTests || []).filter(t => t.status === 'pending');
+  
   const acuteStats = useMemo(() => {
     const logs = history.acuteLogs || [];
     const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -46,6 +50,97 @@ export const Dashboard: React.FC = () => {
     });
   }, [history.acuteLogs]);
 
+  if (role === 'clinician') {
+    return (
+      <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-28">
+        <section className="bg-slate-900 p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 bg-indigo-600 rounded-full opacity-10 blur-[100px]"></div>
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-8">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/10 rounded-3xl flex items-center justify-center text-4xl sm:text-5xl border border-white/5 shadow-inner shrink-0">🩺</div>
+              <div>
+                <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter leading-none">{childProfile?.name || 'Inpatient (Guest)'}</h2>
+                <p className="text-indigo-400 font-black uppercase text-xs tracking-[0.2em] mt-2">Clinical Context: {childAge || 'No Profile'}</p>
+                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-3 sm:mt-4">
+                  <span className="px-3 py-1.5 bg-white/10 rounded-lg text-xs font-black uppercase border border-white/5">Wt: {latestWeight || '--'} kg</span>
+                  <span className="px-3 py-1.5 bg-white/10 rounded-lg text-xs font-black uppercase border border-white/5">BSA: {latestWeight ? (Math.sqrt((latestWeight * 100) / 3600)).toFixed(2) : '--'} m²</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2.5 w-full md:w-auto">
+               <button onClick={() => navigateTo('handover')} className="w-full min-h-[44px] px-6 py-3.5 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all flex items-center justify-center">Review ISBAR Handover</button>
+               <button onClick={() => navigateTo('setup')} className="w-full min-h-[44px] px-6 py-3 bg-white/5 hover:bg-white/10 rounded-2xl font-black text-xs uppercase tracking-widest border border-white/10 transition-all text-slate-300 flex items-center justify-center">Update Baseline</button>
+            </div>
+          </div>
+        </section>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className={`p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border flex flex-col justify-between h-36 sm:h-44 ${acuteStats.maxTemp >= 38.5 ? 'bg-rose-50 border-rose-200' : 'bg-white border-slate-100'}`}>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400">Max Temp (24h)</p>
+            <p className={`text-3xl sm:text-4xl font-black italic ${acuteStats.maxTemp >= 38.5 ? 'text-rose-600' : 'text-slate-800'}`}>{acuteStats.maxTemp > 0 ? `${acuteStats.maxTemp}°` : '--'}</p>
+          </div>
+          <div className="bg-white p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 flex flex-col justify-between h-36 sm:h-44">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400">Fluid Vol (24h)</p>
+            <p className="text-3xl sm:text-4xl font-black italic text-teal-600">{acuteStats.fluidIntake} ml</p>
+          </div>
+          <div className="bg-white p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 flex flex-col justify-between h-36 sm:h-44">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400">Acute Events</p>
+            <p className="text-3xl sm:text-4xl font-black italic text-slate-800">{acuteStats.totalRecent}</p>
+          </div>
+          <div className={`p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border flex flex-col justify-between h-36 sm:h-44 ${acuteStats.hasAlerts ? 'bg-rose-600 text-white animate-pulse shadow-rose-200 shadow-2xl' : 'bg-slate-100 border-slate-200'}`}>
+            <p className={`text-xs font-black uppercase tracking-widest ${acuteStats.hasAlerts ? 'text-rose-100' : 'text-slate-400'}`}>Safety Status</p>
+            <p className="text-xl sm:text-2xl font-black italic">{acuteStats.hasAlerts ? 'URGENT REVIEW' : 'STABLE'}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          <div onClick={() => navigateTo('consults')} className="bg-white p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-slate-100 hover:border-indigo-600 shadow-sm hover:shadow-2xl transition-all cursor-pointer group min-h-[44px]">
+             <div className="flex items-center gap-4 sm:gap-6 mb-4 sm:mb-8">
+               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-inner group-hover:scale-110 transition-transform shrink-0">✍️</div>
+               <div>
+                  <h3 className="text-2xl font-black italic tracking-tighter">SOAP Consult</h3>
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-400 mt-1">Direct Clinical Entry</p>
+               </div>
+             </div>
+             <p className="text-slate-500 font-medium italic text-xs sm:text-sm leading-relaxed">Fast-path documentation for current assessment and plan. Supports clinical shorthand chips.</p>
+          </div>
+
+          <div onClick={() => navigateTo('reasoning')} className="bg-white p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-slate-100 hover:border-indigo-600 shadow-sm hover:shadow-2xl transition-all cursor-pointer group min-h-[44px]">
+             <div className="flex items-center gap-4 sm:gap-6 mb-4 sm:mb-8">
+               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-inner group-hover:scale-110 transition-transform shrink-0">🧠</div>
+               <div>
+                  <h3 className="text-2xl font-black italic tracking-tighter">Differential Bench</h3>
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-400 mt-1">AI Diagnostic Assistant</p>
+               </div>
+             </div>
+             <p className="text-slate-500 font-medium italic text-xs sm:text-sm leading-relaxed">Synthesis of history, exam, and labs into a ranked differential list with EBM grounding.</p>
+          </div>
+        </div>
+
+        <section className="space-y-4 sm:space-y-6">
+           <div className="flex items-center justify-between px-2 sm:px-4">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Specialist Pipeline</h3>
+              <button onClick={() => navigateTo('assignments')} className="text-xs font-black text-indigo-600 uppercase underline min-h-[44px] flex items-center">Manage Library</button>
+           </div>
+           <div className="bg-white p-5 sm:p-8 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4 sm:gap-6">
+                 <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-2xl shadow-inner shrink-0">📋</div>
+                 <div>
+                    <p className="font-black text-slate-800 text-sm sm:text-base">Pending Screener Submissions</p>
+                    <p className="text-xs font-bold text-slate-400">{pendingAssignments.length} tests active with caregiver</p>
+                 </div>
+              </div>
+              <div className="flex -space-x-2 self-end sm:self-auto">
+                 {pendingAssignments.map((a, i) => (
+                   <div key={i} title={a.testId} className="w-10 h-10 rounded-full bg-slate-900 border-2 border-white text-white flex items-center justify-center text-xs font-black uppercase">{a.testId.slice(0,2)}</div>
+                 ))}
+              </div>
+           </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 sm:space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-28">
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 p-5 sm:p-10 rounded-[2rem] sm:rounded-[4rem] text-white shadow-2xl relative overflow-hidden group">
@@ -67,6 +162,22 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {pendingAssignments.length > 0 && (
+        <div 
+          onClick={() => navigateTo('screening')}
+          className="bg-rose-600 p-5 sm:p-8 rounded-[2rem] sm:rounded-[3rem] text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-2xl cursor-pointer hover:scale-[1.02] transition-all animate-bounce-subtle"
+        >
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl sm:text-4xl shadow-inner shrink-0">📋</div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] opacity-70">Clinician Request</p>
+              <h3 className="text-xl sm:text-2xl font-black italic tracking-tight">Assessments Ready ({pendingAssignments.length})</h3>
+              <p className="text-rose-100 text-xs sm:text-sm font-bold opacity-80">Please complete these screening tools before your next visit.</p>
+            </div>
+          </div>
+          <button className="bg-white text-rose-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl min-h-[44px] w-full sm:w-auto">Start Now</button>
+        </div>
+      )}
 
       <section className="space-y-3 sm:space-y-4">
          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-2 sm:ml-4">Vital Management</h4>

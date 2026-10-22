@@ -32,7 +32,7 @@ export const RegulatoryRisk: React.FC = () => {
             </div>
             <div>
               <h4 className="font-black text-slate-800 uppercase text-[10px] tracking-[0.2em] mb-1">Intended Users</h4>
-              <p className="text-slate-600 font-medium">• Parents & Caregivers</p>
+              <p className="text-slate-600 font-medium">• Parents & Caregivers<br/>• Healthcare Professionals (Clinician Mode)</p>
             </div>
           </div>
           <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
