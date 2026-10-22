@@ -1,27 +1,7 @@
 
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, lazy, Suspense } from 'react';
 import { Layout } from './components/Layout';
-import { Dashboard } from './components/Dashboard';
-import { SymptomChecker } from './components/SymptomChecker';
-import { GrowthTracker } from './components/GrowthTracker';
-import { DoseCalculator } from './components/DoseCalculator';
-import { MilestoneNavigator } from './components/MilestoneNavigator';
-import { CalmStory } from './components/CalmStory';
-import { VaccineTracker } from './components/VaccineTracker';
-import { ScreeningTool } from './components/ScreeningTool';
-import { MedicalProfile } from './components/MedicalProfile';
-import { AppointmentManager } from './components/AppointmentManager';
-import { RedBook } from './components/RedBook';
-import { ParentingTips } from './components/ParentingTips';
 import { ChildProfileSetup } from './components/ChildProfileSetup';
-import { BondingJournal } from './components/BondingJournal';
-import { AcuteTracker } from './components/AcuteTracker';
-import { HandoverSummary } from './components/HandoverSummary';
-import { GovernanceLog } from './components/GovernanceLog';
-import { EthicsSafety } from './components/EthicsSafety';
-import { RegulatoryRisk } from './components/RegulatoryRisk';
-import { SickDayPlanView } from './components/SickDayPlanView';
-import { ClinicianTools } from './components/ClinicianTools';
 import { NavigationProvider, useNavigation } from './context/NavigationContext';
 import { ChildProfileProvider, useChildProfile } from './context/ChildProfileContext';
 import { MedicalHistoryProvider, useMedicalHistory } from './context/MedicalHistoryContext';
@@ -29,6 +9,32 @@ import { RoleProvider } from './context/RoleContext';
 import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
 import { ViewType } from './types';
+
+// Each screen is loaded on demand so the first page doesn't download the whole app.
+const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
+const SymptomChecker = lazy(() => import('./components/SymptomChecker').then(m => ({ default: m.SymptomChecker })));
+const GrowthTracker = lazy(() => import('./components/GrowthTracker').then(m => ({ default: m.GrowthTracker })));
+const DoseCalculator = lazy(() => import('./components/DoseCalculator').then(m => ({ default: m.DoseCalculator })));
+const MilestoneNavigator = lazy(() => import('./components/MilestoneNavigator').then(m => ({ default: m.MilestoneNavigator })));
+const CalmStory = lazy(() => import('./components/CalmStory').then(m => ({ default: m.CalmStory })));
+const VaccineTracker = lazy(() => import('./components/VaccineTracker').then(m => ({ default: m.VaccineTracker })));
+const ScreeningTool = lazy(() => import('./components/ScreeningTool').then(m => ({ default: m.ScreeningTool })));
+const MedicalProfile = lazy(() => import('./components/MedicalProfile').then(m => ({ default: m.MedicalProfile })));
+const AppointmentManager = lazy(() => import('./components/AppointmentManager').then(m => ({ default: m.AppointmentManager })));
+const RedBook = lazy(() => import('./components/RedBook').then(m => ({ default: m.RedBook })));
+const ParentingTips = lazy(() => import('./components/ParentingTips').then(m => ({ default: m.ParentingTips })));
+const BondingJournal = lazy(() => import('./components/BondingJournal').then(m => ({ default: m.BondingJournal })));
+const AcuteTracker = lazy(() => import('./components/AcuteTracker').then(m => ({ default: m.AcuteTracker })));
+const HandoverSummary = lazy(() => import('./components/HandoverSummary').then(m => ({ default: m.HandoverSummary })));
+const GovernanceLog = lazy(() => import('./components/GovernanceLog').then(m => ({ default: m.GovernanceLog })));
+const EthicsSafety = lazy(() => import('./components/EthicsSafety').then(m => ({ default: m.EthicsSafety })));
+const RegulatoryRisk = lazy(() => import('./components/RegulatoryRisk').then(m => ({ default: m.RegulatoryRisk })));
+const SickDayPlanView = lazy(() => import('./components/SickDayPlanView').then(m => ({ default: m.SickDayPlanView })));
+const ClinicianTools = lazy(() => import('./components/ClinicianTools').then(m => ({ default: m.ClinicianTools })));
+
+const ViewLoading: React.FC = () => (
+  <div className="py-24 text-center text-slate-400 font-black text-xs uppercase tracking-widest animate-pulse">Loading…</div>
+);
 
 const DisclaimerModal: React.FC = () => {
   const { hasAcceptedDisclaimer, acceptDisclaimer } = useGovernance();
@@ -146,7 +152,9 @@ const AppContent: React.FC = () => {
         <p className="text-[10px] font-black text-rose-600 uppercase tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
         <p className="text-[9px] text-rose-500 italic font-bold">Data remains on this device • Replaces no clinical judgment.</p>
       </div>
-      {ViewComponent}
+      <Suspense fallback={<ViewLoading />}>
+        {ViewComponent}
+      </Suspense>
     </Layout>
   );
 };

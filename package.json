@@ -10,7 +10,6 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@google/genai": "^1.34.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-is": "^19.2.3",

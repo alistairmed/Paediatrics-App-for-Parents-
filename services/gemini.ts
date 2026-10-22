@@ -344,6 +344,21 @@ export const explainMedicalTerm = async (term: string, ageGroup: string = 'infan
   return { text, sources };
 };
 
+export const generateClinicalReasoning = async (prompt: string) => {
+  const model = 'gemini-2.5-flash';
+
+  const data = await callGeminiProxy({
+    model,
+    contents: prompt,
+    config: { tools: [{ googleSearch: {} }] },
+  });
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Synthesis failed.';
+  const sources = data.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+
+  return { text, sources };
+};
+
 export const prepareAppointmentQuestions = async (
   history: MedicalHistory,
   appointment: Appointment,

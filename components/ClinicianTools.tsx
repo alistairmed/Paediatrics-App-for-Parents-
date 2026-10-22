@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { ConsultationNote, ClinicalFindings, AssignedTest, ReasoningLog } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
-import { GoogleGenAI } from "@google/genai";
+import { generateClinicalReasoning } from '../services/gemini';
 
 const SCREENING_MODS = [
   { id: 'snap4', name: 'SNAP-IV (ADHD)', domain: 'Focus' },
@@ -142,7 +142,6 @@ export const ClinicianTools: React.FC<{ type: 'consults' | 'reasoning' | 'assign
   const handleRunReasoning = async () => {
     setLoading(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const frameworkInstruction = 
         activeFramework === 'vindicate' ? "Use the VINDICATE acronym to structure your differential." :
         activeFramework === 'vitamins' ? "Use the VITAMINS mnemonic to structure your differential." :
@@ -163,15 +162,7 @@ export const ClinicianTools: React.FC<{ type: 'consults' | 'reasoning' | 'assign
       4. EBM Evidence & Grounding.
       Always spell out "degree Celsius". Format with bold headers and bullet points.`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
-        contents: prompt,
-        config: { tools: [{ googleSearch: {} }] }
-      });
-      setReasoningResult({
-        text: response.text || 'Synthesis failed.',
-        sources: response.candidates?.[0]?.groundingMetadata?.groundingChunks || []
-      });
+      setReasoningResult(await generateClinicalReasoning(prompt));
     } catch (e) {
       alert("Error generating reasoning.");
     } finally {
