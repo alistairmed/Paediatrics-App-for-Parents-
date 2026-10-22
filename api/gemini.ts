@@ -12,20 +12,12 @@ interface VercelResponse {
   };
 }
 
+// Only the models the app uses. Stops other callers spending the key on pricier models.
+const ALLOWED_MODELS = ['gemini-2.5-flash'];
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+  // No CORS headers: the app calls this from the same origin, and browsers on
+  // other sites are blocked from reading the response.
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed. Only POST requests are accepted.' });
   }
@@ -39,6 +31,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const { model = 'gemini-2.5-flash', contents, config, systemInstruction } = req.body || {};
+
+    if (!ALLOWED_MODELS.includes(model)) {
+      return res.status(400).json({ error: `Model "${model}" is not allowed.` });
+    }
 
     if (!contents) {
       return res.status(400).json({ error: 'Invalid request body: "contents" field is required.' });

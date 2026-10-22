@@ -18,6 +18,7 @@ export class GeminiError extends Error {
 
 /**
  * Proxy caller for Gemini API with 30s timeout, error classification, and sanitized logging.
+ * All AI calls go through /api/gemini so the API key stays on the server.
  */
 export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<any> {
   const controller = new AbortController();
@@ -67,17 +68,6 @@ export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<
         );
       }
 
-      // If /api/gemini returns 404 (e.g. running in pure Vite dev mode without server proxy)
-      const directKey =
-        (typeof import.meta !== 'undefined' &&
-          ((import.meta as any).env?.VITE_GEMINI_API_KEY || (import.meta as any).env?.GEMINI_API_KEY)) ||
-        (typeof process !== 'undefined' &&
-          (process.env?.GEMINI_API_KEY || process.env?.API_KEY));
-
-      if (status === 404 && directKey) {
-        return await callDirectGemini(payload, directKey, timeoutMs);
-      }
-
       throw new GeminiError(
         errorMsg || `Gemini API request failed with status ${status}`,
         'UNKNOWN',
@@ -104,93 +94,12 @@ export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<
       throw timeoutError;
     }
 
-    // Direct fallback if fetch('/api/gemini') failed (e.g. network connection to local endpoint)
-    const directKey =
-      (typeof import.meta !== 'undefined' &&
-        ((import.meta as any).env?.VITE_GEMINI_API_KEY || (import.meta as any).env?.GEMINI_API_KEY)) ||
-      (typeof process !== 'undefined' &&
-        (process.env?.GEMINI_API_KEY || process.env?.API_KEY));
-
-    if (directKey) {
-      try {
-        return await callDirectGemini(payload, directKey, timeoutMs);
-      } catch (fallbackErr: any) {
-        if (fallbackErr instanceof GeminiError) throw fallbackErr;
-      }
-    }
-
     const netError = new GeminiError(
       'Unable to connect to AI services. Please check your network connection and try again.',
       'NETWORK'
     );
     console.error('[PediPulse AI Error]', { type: netError.type, originalError: err?.message || String(err) });
     throw netError;
-  }
-}
-
-async function callDirectGemini(payload: any, apiKey: string, timeoutMs: number): Promise<any> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-  const model = payload.model || 'gemini-2.5-flash';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-
-  const contents = Array.isArray(payload.contents)
-    ? payload.contents
-    : [{ parts: typeof payload.contents === 'string' ? [{ text: payload.contents }] : [payload.contents] }];
-
-  const reqBody: any = { contents };
-
-  if (payload.config) {
-    if (payload.config.tools) reqBody.tools = payload.config.tools;
-    const genConfig: any = {};
-    if (payload.config.responseMimeType) genConfig.responseMimeType = payload.config.responseMimeType;
-    if (payload.config.responseSchema) genConfig.responseSchema = payload.config.responseSchema;
-    if (payload.config.responseModalities) genConfig.responseModalities = payload.config.responseModalities;
-    if (payload.config.speechConfig) genConfig.speechConfig = payload.config.speechConfig;
-    if (payload.config.temperature !== undefined) genConfig.temperature = payload.config.temperature;
-    if (Object.keys(genConfig).length > 0) reqBody.generationConfig = genConfig;
-  }
-
-  if (payload.systemInstruction) {
-    reqBody.systemInstruction =
-      typeof payload.systemInstruction === 'string'
-        ? { parts: [{ text: payload.systemInstruction }] }
-        : payload.systemInstruction;
-  }
-
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey,
-      },
-      body: JSON.stringify(reqBody),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!res.ok) {
-      if (res.status === 429) {
-        throw new GeminiError(
-          'You have reached the daily AI limit. Please try again tomorrow.',
-          'RATE_LIMIT',
-          429
-        );
-      }
-      throw new GeminiError(`Direct Gemini API call failed with status ${res.status}`, 'UNKNOWN', res.status);
-    }
-
-    return await res.json();
-  } catch (err: any) {
-    clearTimeout(timeoutId);
-    if (err instanceof GeminiError) throw err;
-    if (err.name === 'AbortError') {
-      throw new GeminiError('Request timed out (30s limit).', 'TIMEOUT', 408);
-    }
-    throw new GeminiError('Failed connecting directly to Gemini API.', 'NETWORK');
   }
 }
 
