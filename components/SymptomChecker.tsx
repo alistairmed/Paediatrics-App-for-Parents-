@@ -5,7 +5,6 @@ import { useChildProfile } from '../context/ChildProfileContext';
 import { useConnectivity } from '../hooks/useConnectivity';
 import { useGovernance } from '../context/GovernanceContext';
 import { useEnvironment } from '../context/EnvironmentContext';
-import { useRole } from '../context/RoleContext';
 import { evaluateRedFlags } from '../clinical/redFlags';
 import { ageInMonths } from '../clinical/age';
 
@@ -23,7 +22,6 @@ export const SymptomChecker: React.FC = () => {
   const { childProfile } = useChildProfile();
   const { addEntry } = useGovernance();
   const { mode } = useEnvironment();
-  const { role } = useRole();
   const isOnline = useConnectivity();
   
   const [description, setDescription] = useState('');
@@ -76,7 +74,6 @@ export const SymptomChecker: React.FC = () => {
       setResult(res);
       addEntry({
         eventType: "symptom_evaluation",
-        userRole: role,
         environment: mode,
         online: isOnline,
         inputSummary: `Desc: ${description.slice(0, 50)}... Temp: ${temp || 'N/A'}`,

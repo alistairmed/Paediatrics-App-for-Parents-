@@ -5,7 +5,6 @@ import { ChildProfileSetup } from './components/ChildProfileSetup';
 import { NavigationProvider, useNavigation } from './context/NavigationContext';
 import { ChildProfileProvider, useChildProfile } from './context/ChildProfileContext';
 import { MedicalHistoryProvider, useMedicalHistory } from './context/MedicalHistoryContext';
-import { RoleProvider } from './context/RoleContext';
 import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
 import { ViewType } from './types';
@@ -30,7 +29,6 @@ const GovernanceLog = lazy(() => import('./components/GovernanceLog').then(m => 
 const EthicsSafety = lazy(() => import('./components/EthicsSafety').then(m => ({ default: m.EthicsSafety })));
 const RegulatoryRisk = lazy(() => import('./components/RegulatoryRisk').then(m => ({ default: m.RegulatoryRisk })));
 const SickDayPlanView = lazy(() => import('./components/SickDayPlanView').then(m => ({ default: m.SickDayPlanView })));
-const ClinicianTools = lazy(() => import('./components/ClinicianTools').then(m => ({ default: m.ClinicianTools })));
 
 const ViewLoading: React.FC = () => (
   <div className="py-24 text-center text-slate-400 font-black text-xs uppercase tracking-widest animate-pulse">Loading…</div>
@@ -137,10 +135,7 @@ const AppContent: React.FC = () => {
       governance: <GovernanceLog />,
       ethics: <EthicsSafety />,
       regulatory: <RegulatoryRisk />,
-      sickday: <SickDayPlanView />,
-      consults: <ClinicianTools type="consults" />,
-      assignments: <ClinicianTools type="assignments" />,
-      reasoning: <ClinicianTools type="reasoning" />
+      sickday: <SickDayPlanView />
     };
     return views[activeView] || views.dashboard;
   }, [activeView]);
@@ -163,15 +158,13 @@ const App: React.FC = () => {
   return (
     <NavigationProvider>
       <EnvironmentProvider>
-        <RoleProvider>
-          <GovernanceProvider>
-            <ChildProfileProvider>
-              <MedicalHistoryProvider>
-                <AppContent />
-              </MedicalHistoryProvider>
-            </ChildProfileProvider>
-          </GovernanceProvider>
-        </RoleProvider>
+        <GovernanceProvider>
+          <ChildProfileProvider>
+            <MedicalHistoryProvider>
+              <AppContent />
+            </MedicalHistoryProvider>
+          </ChildProfileProvider>
+        </GovernanceProvider>
       </EnvironmentProvider>
     </NavigationProvider>
   );

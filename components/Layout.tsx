@@ -1,8 +1,7 @@
 
 import React, { useState } from 'react';
-import { ViewType, UserRole } from '../types';
+import { ViewType } from '../types';
 import { useNavigation } from '../context/NavigationContext';
-import { useRole } from '../context/RoleContext';
 import { useEnvironment } from '../context/EnvironmentContext';
 
 interface LayoutProps {
@@ -13,31 +12,18 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { role, setRole } = useRole();
   const { mode } = useEnvironment();
 
   const groups = [
     {
-      title: role === 'clinician' ? 'Clinical Action' : 'Acute Care',
-      color: role === 'clinician' ? 'text-slate-800' : 'text-rose-600',
-      bgColor: role === 'clinician' ? 'bg-slate-100' : 'bg-rose-50',
+      title: 'Acute Care',
+      color: 'text-rose-600',
+      bgColor: 'bg-rose-50',
       items: [
-        { id: 'symptoms', label: role === 'clinician' ? 'Clinical Triage' : 'Triage AI', icon: '🩺', highContrast: true },
+        { id: 'symptoms', label: 'Triage AI', icon: '🩺', highContrast: true },
         { id: 'sickday', label: 'Sick Day Plan', icon: '🚨', highContrast: true },
         { id: 'acutelogs', label: 'Acute Log Review', icon: '📈' },
         { id: 'dosage', label: 'Dosage Verification', icon: '💊' },
-      ]
-    },
-    {
-      title: 'Professional Bench',
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50',
-      role: 'clinician',
-      items: [
-        { id: 'consults', label: 'SOAP Documentation', icon: '✍️' },
-        { id: 'reasoning', label: 'Reasoning Engine', icon: '🧠' },
-        { id: 'assignments', label: 'Assignment Bench', icon: '📋' },
-        { id: 'handover', label: 'ISBAR Handover', icon: '📄' },
       ]
     },
     {
@@ -59,6 +45,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
       items: [
         { id: 'diagnostics', label: 'Investigation Results', icon: '🧪' },
         { id: 'reports', label: 'Specialist Letters', icon: '✉️' },
+        { id: 'handover', label: 'ISBAR Handover', icon: '📄' },
       ]
     },
     {
@@ -75,7 +62,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
       title: 'Governance & Risk',
       color: 'text-slate-600',
       bgColor: 'bg-slate-100',
-      role: 'clinician',
       items: [
         { id: 'governance', label: 'Audit Trail', icon: '🛡️' },
         { id: 'regulatory', label: 'TGA Compliance', icon: '⚖️' },
@@ -85,21 +71,15 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
       title: 'Caregiver Support',
       color: 'text-rose-400',
       bgColor: 'bg-rose-50',
-      role: 'parent',
       items: [
         { id: 'parenting', label: 'Parenting Hub', icon: '🌻' },
         { id: 'bonding', label: 'Bonding Journal', icon: '🫂' },
         { id: 'stories', label: 'Calm Stories', icon: '🌙' },
       ]
     }
-  ].filter(group => !group.role || group.role === role);
+  ];
 
-  const bottomNavItems = role === 'clinician' ? [
-    { id: 'consults', label: 'SOAP', icon: '✍️' },
-    { id: 'reasoning', label: 'Reason', icon: '🧠' },
-    { id: 'handover', label: 'ISBAR', icon: '📄' },
-    { id: 'dashboard', label: 'Home', icon: '🏠' },
-  ] : [
+  const bottomNavItems = [
     { id: 'symptoms', label: 'Triage', icon: '🌡️' },
     { id: 'sickday', label: 'Plan', icon: '🚨' },
     { id: 'profile', label: 'Hub', icon: '🏥' },
@@ -121,26 +101,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
           <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform border-4 border-white">👶</div>
           <div>
             <h1 className="text-xl font-black text-slate-800 tracking-tighter italic leading-none">PediPulse <span className="text-indigo-600">AI</span></h1>
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">{role === 'clinician' ? 'Clinical Workstation' : 'Parent Assistant'}</p>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Parent Assistant</p>
           </div>
         </div>
 
-        <div className="px-4 space-y-4">
-           <div className="space-y-1">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-2">Session Identity</p>
-              <div className="bg-slate-50 p-1 rounded-2xl border border-slate-100 flex items-center shadow-inner">
-                <button 
-                  onClick={() => setRole('parent')}
-                  className={`flex-1 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${role === 'parent' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-400'}`}
-                >Parent</button>
-                <button 
-                  onClick={() => setRole('clinician')}
-                  className={`flex-1 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${role === 'clinician' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400'}`}
-                >Clinician</button>
-              </div>
-           </div>
-        </div>
-        
         <div className="space-y-8 pb-10">
           {groups.map((group) => (
             <div key={group.title} className="space-y-2">
@@ -178,7 +142,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
   );
 
   return (
-    <div className={`min-h-screen flex flex-col md:flex-row ${role === 'clinician' ? 'bg-slate-50' : 'bg-[#FBFBFE]'}`}>
+    <div className={`min-h-screen flex flex-col md:flex-row bg-[#FBFBFE]`}>
       <div className="md:hidden flex items-center justify-between px-5 py-4 bg-white/95 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-3" onClick={() => handleNav('dashboard')}>
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg border-2 border-white">👶</div>

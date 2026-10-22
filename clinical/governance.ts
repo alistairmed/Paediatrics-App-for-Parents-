@@ -1,5 +1,5 @@
 
-import { EnvironmentMode, UserRole } from "../types";
+import { EnvironmentMode } from "../types";
 
 export type GovernanceEventType =
   | "symptom_evaluation"
@@ -11,7 +11,6 @@ export interface GovernanceEntry {
   id: string;
   timestamp: string;
   eventType: GovernanceEventType;
-  userRole: UserRole;
   environment: EnvironmentMode;
   online: boolean;
   inputSummary: string;

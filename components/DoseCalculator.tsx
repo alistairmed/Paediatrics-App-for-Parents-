@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useNavigation } from '../context/NavigationContext';
-import { useRole } from '../context/RoleContext';
 import { useConnectivity } from '../hooks/useConnectivity';
 import { useGovernance } from '../context/GovernanceContext';
 import { useEnvironment } from '../context/EnvironmentContext';
@@ -29,7 +28,6 @@ export const DoseCalculator: React.FC = () => {
   const { latestWeight } = useMedicalHistory();
   const { childProfile } = useChildProfile();
   const { navigateTo } = useNavigation();
-  const { role } = useRole();
   const { addEntry } = useGovernance();
   const { mode } = useEnvironment();
   const isOnline = useConnectivity();
@@ -92,7 +90,6 @@ export const DoseCalculator: React.FC = () => {
 
     addEntry({
       eventType: "dose_calculation",
-      userRole: role,
       environment: mode,
       online: isOnline,
       inputSummary: `Weight: ${weight}kg, Medication: ${medication}`,

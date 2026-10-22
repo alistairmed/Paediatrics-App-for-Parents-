@@ -28,7 +28,7 @@ export function generateClinicalExportBundle(handover: HandoverData, logs: Gover
       output += `[${entry.timestamp}] Event: ${entry.eventType}\n`;
       output += `  Rationale: ${entry.inputSummary}\n`;
       output += `  Red Flags: ${entry.redFlags?.join(', ') || 'None'}\n`;
-      output += `  Mode: ${entry.userRole} (${entry.environment})\n`;
+      output += `  Mode: ${entry.environment}\n`;
       output += `  Connectivity: ${entry.online ? 'Online' : 'Offline'}\n\n`;
     });
   }
