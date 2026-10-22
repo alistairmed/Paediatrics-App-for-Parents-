@@ -7,6 +7,7 @@ import { useGovernance } from '../context/GovernanceContext';
 import { useEnvironment } from '../context/EnvironmentContext';
 import { useRole } from '../context/RoleContext';
 import { evaluateRedFlags } from '../clinical/redFlags';
+import { ageInMonths } from '../clinical/age';
 
 const RED_FLAGS_LIST = [
   { text: "Difficulty Breathing", sub: "Grunting, wheezing, or chest sucking in", icon: "🫁" },
@@ -35,14 +36,7 @@ export const SymptomChecker: React.FC = () => {
   const [saved, setSaved] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const ageMonths = useMemo(() => {
-    if (!childProfile?.dob) return undefined;
-    const birth = new Date(childProfile.dob);
-    const now = new Date();
-    let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
-    if (now.getDate() < birth.getDate()) months--;
-    return months;
-  }, [childProfile]);
+  const ageMonths = useMemo(() => ageInMonths(childProfile?.dob), [childProfile]);
 
   const activeRedFlags = useMemo(() => {
     const input = {

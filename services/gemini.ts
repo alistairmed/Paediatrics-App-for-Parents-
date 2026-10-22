@@ -432,29 +432,3 @@ export const analyzeMedicalReport = async (imageBase64: string) => {
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
   return JSON.parse(text);
 };
-
-export const calculateDosage = async (weightKg: number, medication: string) => {
-  const model = 'gemini-2.5-flash';
-  const prompt = `Calculate safe pediatric dosage for ${medication} at ${weightKg}kg. Ensure adherence to Australian clinical standards. Spell out "degree Celsius".`;
-
-  const data = await callGeminiProxy({
-    model,
-    contents: prompt,
-    config: {
-      responseMimeType: 'application/json',
-      responseSchema: {
-        type: 'OBJECT',
-        properties: {
-          medicationName: { type: 'STRING' },
-          recommendedDose: { type: 'STRING' },
-          frequency: { type: 'STRING' },
-          maxDose24h: { type: 'STRING' },
-          cautionaryNotes: { type: 'STRING' },
-        },
-      },
-    },
-  });
-
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-  return JSON.parse(text);
-};

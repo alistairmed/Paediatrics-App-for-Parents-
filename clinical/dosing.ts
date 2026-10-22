@@ -23,13 +23,16 @@ export interface SafeDoseResult {
   maxDosesPerDay: number;
   intervalHours: number;
   safetyWarnings: string[];
+  /** Set when the medication should not be given at this age without a doctor's advice. */
+  contraindication?: string;
 }
 
 /**
  * Calculates a conservative safety ceiling for common OTC medications.
  * Explicitly handles hard caps for children approaching adult weights.
+ * ageMonths is optional; when known, age-based contraindications are applied.
  */
-export function calculateSafetyCeiling(weightKg: number, medication: string): SafeDoseResult | null {
+export function calculateSafetyCeiling(weightKg: number, medication: string, ageMonths?: number): SafeDoseResult | null {
   // Hard Unit Check
   if (weightKg > 150) return null; // Likely unit error
   if (weightKg < 2) return null; // Below safe threshold for app calculator
@@ -47,7 +50,10 @@ export function calculateSafetyCeiling(weightKg: number, medication: string): Sa
         "Do not exceed 4 doses in any 24-hour period.",
         "Ensure at least 4 hours between doses.",
         "Check other medicines to ensure no paracetamol duplication."
-      ]
+      ],
+      contraindication: ageMonths !== undefined && ageMonths < 1
+        ? "Babies under 1 month should only be given paracetamol on a doctor's advice."
+        : undefined
     };
   }
 
@@ -62,7 +68,10 @@ export function calculateSafetyCeiling(weightKg: number, medication: string): Sa
         "Give with or after food to protect the stomach.",
         "Ensure at least 6 hours between doses.",
         "Avoid use in dehydrated children."
-      ]
+      ],
+      contraindication: ageMonths !== undefined && ageMonths < 3
+        ? "Ibuprofen is not recommended for babies under 3 months. Speak to a doctor."
+        : undefined
     };
   }
 
