@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './index.css';
 
 // After a new deploy, an open tab may request screen files that no longer exist.
 // Reload once to pick up the current version instead of showing a broken screen.
