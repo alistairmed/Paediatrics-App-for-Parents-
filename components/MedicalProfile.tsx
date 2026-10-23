@@ -6,6 +6,9 @@ import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useNavigation } from '../context/NavigationContext';
 import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
+import { readImageAsCompressedDataUrl } from '../utils/image';
 
 const GenogramIcon: React.FC<{ member: GenogramMember }> = ({ member }) => {
   const isMale = member.sex === 'Male';
@@ -332,35 +335,31 @@ export const MedicalProfile: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       setReportLoading(true);
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result as string;
-        try {
-          const result = await analyzeMedicalReport(base64);
-          if (result) {
-            const newReport: MedicalReport = {
-              id: crypto.randomUUID(),
-              date: new Date().toLocaleDateString(),
-              specialist: result.specialist?.name || 'Unknown Specialist',
-              summary: result.summary || 'AI synthesis pending...',
-              actionItems: result.actionItems || [],
-              photoUrl: base64
-            };
-            updateHistory({
-              medicalReports: [...(history.medicalReports || []), newReport],
-              // Automatically integrate found conditions/meds if reliable
-              conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString() }))],
-              currentMedications: [...(history.currentMedications || []), ...(result.foundMedications || []).map((m: any) => ({ ...m, id: crypto.randomUUID(), startDate: new Date().toISOString() }))]
-            });
-            showToast("Specialist letter added to the record.");
-          }
-        } catch (error) {
-          showToast("Couldn't read the letter. Please try again.", 'error');
-        } finally {
-          setReportLoading(false);
+      const base64 = await readImageAsCompressedDataUrl(file);
+      try {
+        const result = await analyzeMedicalReport(base64);
+        if (result) {
+          const newReport: MedicalReport = {
+            id: crypto.randomUUID(),
+            date: new Date().toLocaleDateString(),
+            specialist: result.specialist?.name || 'Unknown Specialist',
+            summary: result.summary || 'AI synthesis pending...',
+            actionItems: result.actionItems || [],
+            photoUrl: base64
+          };
+          updateHistory({
+            medicalReports: [...(history.medicalReports || []), newReport],
+            // Automatically integrate found conditions/meds if reliable
+            conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString() }))],
+            currentMedications: [...(history.currentMedications || []), ...(result.foundMedications || []).map((m: any) => ({ ...m, id: crypto.randomUUID(), startDate: new Date().toISOString() }))]
+          });
+          showToast("Specialist letter added to the record.");
         }
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        showToast("Couldn't read the letter. Please try again.", 'error');
+      } finally {
+        setReportLoading(false);
+      }
     }
   };
 
@@ -392,7 +391,7 @@ export const MedicalProfile: React.FC = () => {
           </h2>
           <p className="text-slate-500 font-medium italic">Standard clinical record systems.</p>
         </div>
-        {currentSection === 'overview' && (
+        {currentSection === 'overview' && AI_ENABLED && (
           <button onClick={handleGenerateHandover} disabled={loading} className="bg-indigo-600 text-white px-8 py-5 rounded-[2rem] font-black text-[11px] uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition-all active:scale-95">
             {loading ? 'Synthesizing...' : 'Generate ISBAR ✨'}
           </button>
@@ -789,9 +788,13 @@ export const MedicalProfile: React.FC = () => {
             <section className="space-y-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4">
                 <h3 className="text-3xl font-black text-slate-900 italic tracking-tight">Specialist Letters</h3>
-                <button onClick={() => reportInputRef.current?.click()} disabled={reportLoading} className="px-8 py-4 bg-indigo-600 text-white rounded-[2rem] font-black text-[11px] uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition-all active:scale-95">
-                  {reportLoading ? 'Analyzing Syntax...' : '+ Upload Specialist Letter'}
-                </button>
+                {AI_ENABLED ? (
+                    <button onClick={() => reportInputRef.current?.click()} disabled={reportLoading} className="px-8 py-4 bg-indigo-600 text-white rounded-[2rem] font-black text-[11px] uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition-all active:scale-95">
+                    {reportLoading ? 'Analyzing Syntax...' : '+ Upload Specialist Letter'}
+                  </button>
+                ) : (
+                  <AiOffNotice feature="Reading specialist letters" />
+                )}
                 <input type="file" ref={reportInputRef} onChange={handleReportUpload} accept="image/*" className="hidden" />
               </div>
               <div className="space-y-6">

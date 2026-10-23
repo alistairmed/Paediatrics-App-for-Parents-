@@ -4,12 +4,14 @@ import react from '@vitejs/plugin-react';
 
 /**
  * Serves api/gemini.ts during `npm run dev`, mirroring the Vercel function,
- * so the Gemini key stays on the server locally too (read from .env.local).
+ * so the Gemini key stays on the server locally too (read from .env.local,
+ * along with ENABLE_AI).
  */
-const geminiDevProxy = (apiKey?: string): Plugin => ({
+const geminiDevProxy = (apiKey?: string, enableAi?: string): Plugin => ({
   name: 'gemini-dev-proxy',
   configureServer(server) {
     if (apiKey && !process.env.GEMINI_API_KEY) process.env.GEMINI_API_KEY = apiKey;
+    if (enableAi && !process.env.ENABLE_AI) process.env.ENABLE_AI = enableAi;
 
     server.middlewares.use('/api/gemini', async (req, res) => {
       const send = (code: number, body?: unknown) => {
@@ -50,7 +52,7 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react(), geminiDevProxy(env.GEMINI_API_KEY || env.API_KEY)],
+      plugins: [react(), geminiDevProxy(env.GEMINI_API_KEY || env.API_KEY, env.ENABLE_AI)],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

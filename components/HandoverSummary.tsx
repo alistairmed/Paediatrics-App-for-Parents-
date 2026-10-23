@@ -4,6 +4,8 @@ import { useChildProfile } from '../context/ChildProfileContext';
 import { generateHandoverData } from '../clinical/handover';
 import { analyzeMedicalProfile, GeminiError } from '../services/gemini';
 import { useToast } from '../context/ToastContext';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
 
 export const HandoverSummary: React.FC = () => {
   const { history, latestWeight } = useMedicalHistory();
@@ -109,20 +111,24 @@ export const HandoverSummary: React.FC = () => {
                 <h3 className="text-2xl font-black text-slate-800 italic">AI Clinical ISBAR Synthesis</h3>
                 <p className="text-slate-500 text-xs font-bold italic">Generate an automated clinical narrative powered by Gemini AI.</p>
               </div>
-              <button
-                onClick={handleGenerateAiISBAR}
-                disabled={aiLoading}
-                className="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-indigo-700 transition-all flex items-center gap-2"
-              >
-                {aiLoading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Synthesizing...
-                  </>
-                ) : (
-                  <>✨ Generate AI Narrative</>
-                )}
-              </button>
+              {AI_ENABLED ? (
+                  <button
+                  onClick={handleGenerateAiISBAR}
+                  disabled={aiLoading}
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-indigo-700 transition-all flex items-center gap-2"
+                >
+                  {aiLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Synthesizing...
+                    </>
+                  ) : (
+                    <>✨ Generate AI Narrative</>
+                  )}
+                </button>
+              ) : (
+                <AiOffNotice feature="The AI narrative" />
+              )}
             </div>
 
             {aiError && (

@@ -7,6 +7,8 @@ import { useNavigation } from '../context/NavigationContext';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
 
 type ResponseOption = { label: string; value: string; color?: string };
 
@@ -383,13 +385,17 @@ export const ScreeningTool: React.FC = () => {
                 </div>
               ))}
               <div className="pt-12">
-                <button 
-                    onClick={handleSubmit} 
-                    disabled={loading || Object.keys(responses).length < activeMod.questions.length}
-                    className="w-full py-7 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-slate-200 transition-all hover:bg-indigo-700 active:scale-95"
-                >
-                    {loading ? 'Synthesizing Patterns...' : 'Finalize & Prepare Handover ✨'}
-                </button>
+                {AI_ENABLED ? (
+                    <button 
+                      onClick={handleSubmit} 
+                      disabled={loading || Object.keys(responses).length < activeMod.questions.length}
+                      className="w-full py-7 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-slate-200 transition-all hover:bg-indigo-700 active:scale-95"
+                  >
+                      {loading ? 'Synthesizing Patterns...' : 'Finalize & Prepare Handover ✨'}
+                  </button>
+                ) : (
+                  <AiOffNotice feature="Screening analysis" />
+                )}
               </div>
             </div>
           ) : (

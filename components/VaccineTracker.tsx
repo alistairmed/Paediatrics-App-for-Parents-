@@ -4,6 +4,8 @@ import { getVaccineAdvice, GeminiError } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useToast } from '../context/ToastContext';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
 
 /**
  * Australian National Immunisation Program (NIP) Schedule
@@ -271,12 +273,16 @@ export const VaccineTracker: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-4 pt-2">
-                      <button 
-                        onClick={() => handleFetchInfo(vaccine.name)}
-                        className="text-[10px] text-indigo-600 font-black uppercase tracking-widest hover:underline flex items-center gap-1"
-                      >
-                        <span>🧠</span> Deep Dive (AI)
-                      </button>
+                      {AI_ENABLED ? (
+                          <button 
+                          onClick={() => handleFetchInfo(vaccine.name)}
+                          className="text-[10px] text-indigo-600 font-black uppercase tracking-widest hover:underline flex items-center gap-1"
+                        >
+                          <span>🧠</span> Deep Dive (AI)
+                        </button>
+                      ) : (
+                        null
+                      )}
                       <button 
                         onClick={() => setEditingId(isEditing ? null : vaccine.id)}
                         className={`text-[10px] font-black uppercase tracking-widest transition-all ${isEditing ? 'text-rose-500' : 'text-slate-400 hover:text-indigo-600'}`}

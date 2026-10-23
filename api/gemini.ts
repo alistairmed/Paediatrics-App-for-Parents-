@@ -18,6 +18,12 @@ const ALLOWED_MODELS = ['gemini-2.5-flash'];
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // No CORS headers: the app calls this from the same origin, and browsers on
   // other sites are blocked from reading the response.
+  // AI features are off unless explicitly enabled (see config/features.ts),
+  // so the key can't be spent by scripts calling this endpoint directly.
+  if (process.env.ENABLE_AI !== 'true') {
+    return res.status(503).json({ error: 'AI features are switched off.' });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed. Only POST requests are accepted.' });
   }
