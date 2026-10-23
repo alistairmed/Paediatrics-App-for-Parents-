@@ -8,6 +8,7 @@ import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
 import { AI_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
+import { readImageAsCompressedDataUrl } from '../utils/image';
 
 const GenogramIcon: React.FC<{ member: GenogramMember }> = ({ member }) => {
   const isMale = member.sex === 'Male';
@@ -334,35 +335,31 @@ export const MedicalProfile: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       setReportLoading(true);
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result as string;
-        try {
-          const result = await analyzeMedicalReport(base64);
-          if (result) {
-            const newReport: MedicalReport = {
-              id: crypto.randomUUID(),
-              date: new Date().toLocaleDateString(),
-              specialist: result.specialist?.name || 'Unknown Specialist',
-              summary: result.summary || 'AI synthesis pending...',
-              actionItems: result.actionItems || [],
-              photoUrl: base64
-            };
-            updateHistory({
-              medicalReports: [...(history.medicalReports || []), newReport],
-              // Automatically integrate found conditions/meds if reliable
-              conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString() }))],
-              currentMedications: [...(history.currentMedications || []), ...(result.foundMedications || []).map((m: any) => ({ ...m, id: crypto.randomUUID(), startDate: new Date().toISOString() }))]
-            });
-            showToast("Specialist letter added to the record.");
-          }
-        } catch (error) {
-          showToast("Couldn't read the letter. Please try again.", 'error');
-        } finally {
-          setReportLoading(false);
+      const base64 = await readImageAsCompressedDataUrl(file);
+      try {
+        const result = await analyzeMedicalReport(base64);
+        if (result) {
+          const newReport: MedicalReport = {
+            id: crypto.randomUUID(),
+            date: new Date().toLocaleDateString(),
+            specialist: result.specialist?.name || 'Unknown Specialist',
+            summary: result.summary || 'AI synthesis pending...',
+            actionItems: result.actionItems || [],
+            photoUrl: base64
+          };
+          updateHistory({
+            medicalReports: [...(history.medicalReports || []), newReport],
+            // Automatically integrate found conditions/meds if reliable
+            conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString() }))],
+            currentMedications: [...(history.currentMedications || []), ...(result.foundMedications || []).map((m: any) => ({ ...m, id: crypto.randomUUID(), startDate: new Date().toISOString() }))]
+          });
+          showToast("Specialist letter added to the record.");
         }
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        showToast("Couldn't read the letter. Please try again.", 'error');
+      } finally {
+        setReportLoading(false);
+      }
     }
   };
 

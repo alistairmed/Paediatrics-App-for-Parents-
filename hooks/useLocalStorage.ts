@@ -1,8 +1,13 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+
+/** Fired on window when a value couldn't be saved (usually because storage is full). */
+export const STORAGE_ERROR_EVENT = "pedipulse:storage-error";
 
 /**
  * A safe wrapper for localStorage with error handling and type safety.
+ * A value is only shown as saved once it has actually been written, so a
+ * full storage quota can't make changes silently disappear on reload.
  */
 export function useLocalStorage<T>(key: string, initialValue: T) {
   // Get from local storage then parse stored json or return initialValue
@@ -21,22 +26,27 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   }, [initialValue, key]);
 
   const [storedValue, setStoredValue] = useState<T>(readValue);
+  // Latest value, so updater functions called in quick succession build on each other.
+  const latest = useRef(storedValue);
 
-  // Return a wrapped version of useState's setter function that
-  // persists the new value to localStorage.
+  // Persist first, then update state. If the write fails, keep the last
+  // saved value and announce the failure instead of pretending it saved.
   const setValue = useCallback((value: T | ((val: T) => T)) => {
+    const valueToStore = value instanceof Function ? value(latest.current) : value;
     try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-
       if (typeof window !== "undefined") {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
       console.warn(`Error setting localStorage key “${key}”:`, error);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key } }));
+      }
+      return;
     }
-  }, [key, storedValue]);
+    latest.current = valueToStore;
+    setStoredValue(valueToStore);
+  }, [key]);
 
   return [storedValue, setValue] as const;
 }

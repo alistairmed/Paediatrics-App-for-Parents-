@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
+import { STORAGE_ERROR_EVENT } from '../hooks/useLocalStorage';
 
 export type ToastTone = 'success' | 'error' | 'info';
 
@@ -47,6 +48,16 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const pending = timers.current;
     return () => pending.forEach(clearTimeout);
   }, []);
+
+  // Saving failed (useLocalStorage keeps the last saved data): tell the user.
+  useEffect(() => {
+    const onStorageError = () => showToast(
+      "Couldn't save: this device's storage for PediPulse is full. Remove some photos or old entries, then try again.",
+      'error'
+    );
+    window.addEventListener(STORAGE_ERROR_EVENT, onStorageError);
+    return () => window.removeEventListener(STORAGE_ERROR_EVENT, onStorageError);
+  }, [showToast]);
 
   return (
     <ToastContext.Provider value={{ showToast }}>
