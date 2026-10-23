@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { AI_ENABLED } from '../config/features';
 
 export const EthicsSafety: React.FC = () => {
   return (
@@ -43,9 +44,15 @@ export const EthicsSafety: React.FC = () => {
         <section className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl space-y-4">
           <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">🔒</div>
           <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Privacy & Data Sovereignty</h3>
-          <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
-            <strong>Data remains on your device.</strong> PediPulse AI stores sensitive health data locally. No diagnostic data is transmitted to remote servers unless explicitly exported as a clinical handover by the user.
-          </p>
+          {AI_ENABLED ? (
+            <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
+              <strong>Records are stored on your device.</strong> When you use an AI feature (marked ✨), the information needed for that request, such as symptom descriptions, photos or medical history, is sent to Google's Gemini service to generate the response. Nothing is sent unless you use an AI feature.
+            </p>
+          ) : (
+            <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
+              <strong>Data remains on your device.</strong> PediPulse stores health records only in this browser. AI features are switched off in this version, so nothing you enter is sent to any server. Records leave the device only if you copy or export them yourself.
+            </p>
+          )}
         </section>
       </div>
 

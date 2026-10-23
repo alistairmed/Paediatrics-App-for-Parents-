@@ -1,7 +1,8 @@
 import { PEDI_PULSE_PROMPTS } from './prompts';
+import { AI_ENABLED } from '../config/features';
 import { MedicalHistory, Appointment } from '../types';
 
-export type GeminiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'UNKNOWN';
+export type GeminiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'UNKNOWN';
 
 export class GeminiError extends Error {
   type: GeminiErrorType;
@@ -21,6 +22,10 @@ export class GeminiError extends Error {
  * All AI calls go through /api/gemini so the API key stays on the server.
  */
 export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<any> {
+  if (!AI_ENABLED) {
+    throw new GeminiError('AI features are switched off in this version.', 'DISABLED');
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 

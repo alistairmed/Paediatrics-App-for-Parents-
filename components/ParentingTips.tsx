@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getParentingAdvice, explainMedicalTerm, GeminiError } from '../services/gemini';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
 
 const COMMON_CHALLENGES = [
   { id: 'resilience', label: 'Building Resilience', icon: '🌈' },
@@ -199,7 +201,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
   useEffect(() => {
     if (preselectedChallenge) {
       setChallenge(preselectedChallenge);
-      handleGetAdvice(preselectedChallenge);
+      if (AI_ENABLED) handleGetAdvice(preselectedChallenge);
       if (onClearChallenge) setTimeout(onClearChallenge, 1000);
     }
   }, [preselectedChallenge]);
@@ -300,15 +302,19 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="e.g. Febrile Convulsion, Stridor..."
                     className="flex-1 p-5 rounded-2xl bg-white font-black text-slate-900 outline-none border-none shadow-xl placeholder-slate-400"
-                    onKeyPress={e => e.key === 'Enter' && handleExplainTerm()}
+                    onKeyPress={e => e.key === 'Enter' && AI_ENABLED && handleExplainTerm()}
                    />
-                   <button 
-                    onClick={handleExplainTerm}
-                    disabled={literacyLoading}
-                    className="w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-xl hover:bg-emerald-400 transition-all active:scale-95"
-                   >
-                     {literacyLoading ? <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" /> : '🔍'}
-                   </button>
+                   {AI_ENABLED ? (
+                       <button 
+                      onClick={handleExplainTerm}
+                      disabled={literacyLoading}
+                      className="w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-xl hover:bg-emerald-400 transition-all active:scale-95"
+                     >
+                       {literacyLoading ? <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" /> : '🔍'}
+                     </button>
+                   ) : (
+                     null
+                   )}
                 </div>
              </div>
           </section>
@@ -442,13 +448,17 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                     className="flex-1 p-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-black text-slate-900 text-sm shadow-inner placeholder-slate-400"
                     placeholder="Describe behavior..."
                   />
-                  <button 
-                    onClick={() => handleGetAdvice()} 
-                    disabled={loading}
-                    className="w-14 h-14 bg-amber-500 text-white rounded-2xl shadow-lg hover:bg-amber-600 transition-transform active:scale-95 flex items-center justify-center"
-                  >
-                    {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : '✨'}
-                  </button>
+                  {AI_ENABLED ? (
+                      <button 
+                      onClick={() => handleGetAdvice()} 
+                      disabled={loading}
+                      className="w-14 h-14 bg-amber-500 text-white rounded-2xl shadow-lg hover:bg-amber-600 transition-transform active:scale-95 flex items-center justify-center"
+                    >
+                      {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : '✨'}
+                    </button>
+                  ) : (
+                    null
+                  )}
                 </div>
               </div>
             </div>

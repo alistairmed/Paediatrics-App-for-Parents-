@@ -9,6 +9,7 @@ import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
 import { ToastProvider } from './context/ToastContext';
 import { ViewType } from './types';
+import { AI_ENABLED } from './config/features';
 
 // Each screen is loaded on demand so the first page doesn't download the whole app.
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
@@ -146,7 +147,7 @@ const AppContent: React.FC = () => {
       <DisclaimerModal />
       <div className="bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-sm space-y-1">
         <p className="text-[10px] font-black text-rose-600 uppercase tracking-wider sm:tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
-        <p className="hidden sm:block text-[9px] text-rose-500 italic font-bold">Data remains on this device • Replaces no clinical judgment.</p>
+        <p className="hidden sm:block text-[9px] text-rose-500 italic font-bold">{AI_ENABLED ? 'AI features send your entries to Google Gemini' : 'Data remains on this device'} • Replaces no clinical judgment.</p>
       </div>
       <Suspense fallback={<ViewLoading />}>
         {ViewComponent}
