@@ -1,6 +1,47 @@
 import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+
+/**
+ * Serves api/gemini.ts during `npm run dev`, mirroring the Vercel function,
+ * so the Gemini key stays on the server locally too (read from .env.local).
+ */
+const geminiDevProxy = (apiKey?: string): Plugin => ({
+  name: 'gemini-dev-proxy',
+  configureServer(server) {
+    if (apiKey && !process.env.GEMINI_API_KEY) process.env.GEMINI_API_KEY = apiKey;
+
+    server.middlewares.use('/api/gemini', async (req, res) => {
+      const send = (code: number, body?: unknown) => {
+        res.statusCode = code;
+        if (body === undefined) return res.end();
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(body));
+      };
+
+      let raw = '';
+      for await (const chunk of req) raw += chunk;
+      let body: unknown;
+      try {
+        body = raw ? JSON.parse(raw) : undefined;
+      } catch {
+        return send(400, { error: 'Invalid JSON body.' });
+      }
+
+      const { default: handler } = await server.ssrLoadModule('/api/gemini.ts');
+      await handler(
+        { method: req.method, body, headers: req.headers },
+        {
+          setHeader: (name: string, value: string) => res.setHeader(name, value),
+          status: (code: number) => ({
+            json: (json: unknown) => send(code, json),
+            end: () => send(code),
+          }),
+        }
+      );
+    });
+  },
+});
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
@@ -9,7 +50,7 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react()],
+      plugins: [react(), geminiDevProxy(env.GEMINI_API_KEY || env.API_KEY)],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

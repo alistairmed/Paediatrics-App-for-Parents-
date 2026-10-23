@@ -19,6 +19,20 @@ export interface ClinicalInput {
 }
 
 /**
+ * Lowercases free text and strips apostrophes so "won't" and "wont" match the same keywords.
+ */
+function normaliseSymptoms(symptoms: string[]): string {
+  return symptoms.join(' ').toLowerCase().replace(/['\u2019\u2018`]/g, '');
+}
+
+/**
+ * True when any keyword appears as whole words, so "fit" matches "had a fit" but not "outfit".
+ */
+function mentions(text: string, keywords: string[]): boolean {
+  return keywords.some(kw => new RegExp(`\\b${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(text));
+}
+
+/**
  * Evaluates clinical inputs against standard pediatric safety rules.
  * Incorporates WHO IMCI (Integrated Management of Childhood Illness) danger signs.
  * This acts as a deterministic safety layer.
@@ -26,13 +40,13 @@ export interface ClinicalInput {
 export function evaluateRedFlags(input: ClinicalInput): RedFlag[] {
   const flags: RedFlag[] = [];
   const isLowResource = input.environment === 'low-resource';
-  const symptomString = input.symptoms.join(' ').toLowerCase();
+  const symptomString = normaliseSymptoms(input.symptoms);
 
   // --- 1. WHO IMCI GENERAL DANGER SIGNS (Always Checked) ---
   // These are high-specificity indicators for severe systemic illness.
 
   // IMCI: Unable to drink or breastfeed
-  if (['not drinking', 'unable to drink', 'cannot drink', 'refusing breast', 'wont drink'].some(kw => symptomString.includes(kw))) {
+  if (mentions(symptomString, ['not drinking', 'unable to drink', 'cannot drink', 'cant drink', 'refusing breast', 'wont drink', 'refusing feeds', 'not feeding'])) {
     flags.push({
       id: 'imci-not-drinking',
       message: 'Urgent Danger Sign: Unable to Drink',
@@ -42,7 +56,7 @@ export function evaluateRedFlags(input: ClinicalInput): RedFlag[] {
   }
 
   // IMCI: Vomits everything
-  if (['vomits everything', 'persistent vomiting', 'cannot keep anything down', 'projectile vomiting'].some(kw => symptomString.includes(kw))) {
+  if (mentions(symptomString, ['vomits everything', 'persistent vomiting', 'cannot keep anything down', 'projectile vomiting'])) {
     flags.push({
       id: 'imci-vomiting',
       message: 'Urgent Danger Sign: Persistent Vomiting',
@@ -52,7 +66,7 @@ export function evaluateRedFlags(input: ClinicalInput): RedFlag[] {
   }
 
   // IMCI: Convulsions (Fits)
-  if (['convulsions', 'fit', 'seizure', 'shaking uncontrollably', 'twitching'].some(kw => symptomString.includes(kw))) {
+  if (mentions(symptomString, ['convulsions', 'convulsion', 'fit', 'fits', 'fitting', 'seizure', 'seizures', 'shaking uncontrollably', 'twitching'])) {
     flags.push({
       id: 'imci-convulsions',
       message: 'Urgent Danger Sign: Convulsions',
@@ -73,9 +87,19 @@ export function evaluateRedFlags(input: ClinicalInput): RedFlag[] {
     });
   }
 
+  // Neonatal Hypothermia: a low temperature can also signal serious infection in young infants
+  if (input.ageMonths !== undefined && input.ageMonths < 3 && input.temperature && input.temperature < 36) {
+    flags.push({
+      id: 'neonate-hypothermia',
+      message: 'Low Temperature in Young Infant',
+      subtext: 'A temperature below 36°C in an infant under 3 months can be a sign of serious infection and needs urgent medical review.',
+      severity: 'Urgent'
+    });
+  }
+
   // Respiratory Distress Logic
   const respDistressKeywords = ['difficulty breathing', 'grunting', 'wheezing', 'chest sucking', 'fast breathing', 'stridor', 'noisy breathing', 'retractions'];
-  const hasRespDistress = respDistressKeywords.some(keyword => symptomString.includes(keyword));
+  const hasRespDistress = mentions(symptomString, respDistressKeywords);
 
   if (hasRespDistress) {
     flags.push({
@@ -87,8 +111,8 @@ export function evaluateRedFlags(input: ClinicalInput): RedFlag[] {
   }
 
   // Altered Consciousness / Lethargy
-  const lethargyKeywords = ['floppy', 'lethargic', 'unresponsive', 'wont wake', 'unusually sleepy', 'very drowsy', 'unconscious'];
-  if (lethargyKeywords.some(kw => symptomString.includes(kw))) {
+  const lethargyKeywords = ['floppy', 'lethargic', 'unresponsive', 'wont wake', 'hard to wake', 'difficult to wake', 'unusually sleepy', 'very drowsy', 'unconscious'];
+  if (mentions(symptomString, lethargyKeywords)) {
     flags.push({
       id: 'altered-consciousness',
       message: 'Decreased Level of Consciousness',
@@ -97,9 +121,31 @@ export function evaluateRedFlags(input: ClinicalInput): RedFlag[] {
     });
   }
 
+  // Possible Meningococcal Disease / Sepsis
+  const rashKeywords = ['non-blanching', 'non blanching', 'nonblanching', 'doesnt fade', 'does not fade', 'dont fade', 'petechiae', 'petechial', 'purpura', 'purpuric', 'purple spots', 'purple rash'];
+  if (mentions(symptomString, rashKeywords)) {
+    flags.push({
+      id: 'non-blanching-rash',
+      message: 'Non-Blanching Rash',
+      subtext: 'Purple or red spots that do not fade when pressed can be a sign of meningococcal infection or sepsis. Call 000 or go to the nearest emergency department now.',
+      severity: 'Urgent'
+    });
+  }
+
+  // Poor Perfusion / Cyanosis
+  const colourKeywords = ['blue lips', 'lips are blue', 'lips turning blue', 'turning blue', 'blue around the mouth', 'grey skin', 'mottled'];
+  if (mentions(symptomString, colourKeywords)) {
+    flags.push({
+      id: 'cyanosis-mottling',
+      message: 'Abnormal Skin Colour',
+      subtext: 'Blue lips, grey or mottled skin can mean the child is not getting enough oxygen or blood flow. Seek emergency care immediately.',
+      severity: 'Urgent'
+    });
+  }
+
   // Dehydration Signs
   const dehydrationKeywords = ['no wet nappy', 'dry mouth', 'crying without tears', 'sunken eyes', 'not peeing'];
-  if (dehydrationKeywords.some(kw => symptomString.includes(kw))) {
+  if (mentions(symptomString, dehydrationKeywords)) {
     flags.push({
       id: 'dehydration',
       message: 'Signs of Dehydration',

@@ -1,14 +1,18 @@
 
 import React from 'react';
 import { useGovernance } from '../context/GovernanceContext';
+import { useToast } from '../context/ToastContext';
 
 export const GovernanceLog: React.FC = () => {
   const { log, clearLog } = useGovernance();
+  const { showToast } = useToast();
 
   const copyEntry = (entry: any) => {
     const text = `PEDIPULSE GOVERNANCE ENTRY\nType: ${entry.eventType}\nTimestamp: ${new Date(entry.timestamp).toLocaleString()}\nInput: ${entry.inputSummary}\nOutput: ${entry.outputSummary}\nRed Flags: ${entry.redFlags?.join(', ') || 'None'}`;
-    navigator.clipboard.writeText(text);
-    alert("Entry copied to clipboard for clinical review.");
+    navigator.clipboard.writeText(text).then(
+      () => showToast("Entry copied to the clipboard."),
+      () => showToast("Couldn't copy to the clipboard.", 'error')
+    );
   };
 
   return (
@@ -63,7 +67,6 @@ export const GovernanceLog: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${entry.userRole === 'clinician' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-indigo-600 border-indigo-100'}`}>{entry.userRole}</span>
                   <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${entry.environment === 'low-resource' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-blue-100 text-blue-700 border-blue-200'}`}>{entry.environment.replace('-', ' ')}</span>
                 </div>
               </div>

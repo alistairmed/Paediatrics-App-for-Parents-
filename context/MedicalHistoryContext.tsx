@@ -53,8 +53,7 @@ const DEFAULT_HISTORY: MedicalHistory = {
   growthRecords: [],
   milestones: [],
   acuteLogs: [],
-  investigations: [],
-  reasoningLogs: []
+  investigations: []
 };
 
 interface MedicalHistoryContextType {

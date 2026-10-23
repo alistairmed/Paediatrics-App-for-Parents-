@@ -32,4 +32,18 @@ describe('Dosing Safety Engine - Extended Validation', () => {
     const result = calculateSafetyCeiling(10, 'Magic Syrup');
     expect(result).toBeNull();
   });
+
+  test('Age: Flags ibuprofen as not recommended under 3 months', () => {
+    expect(calculateSafetyCeiling(5, 'Ibuprofen', 2)?.contraindication).toBeDefined();
+    expect(calculateSafetyCeiling(6, 'Ibuprofen', 3)?.contraindication).toBeUndefined();
+  });
+
+  test('Age: Flags paracetamol under 1 month as doctor-advice only', () => {
+    expect(calculateSafetyCeiling(3.5, 'Paracetamol', 0)?.contraindication).toBeDefined();
+    expect(calculateSafetyCeiling(4.5, 'Paracetamol', 1)?.contraindication).toBeUndefined();
+  });
+
+  test('Age: No contraindication when age is unknown', () => {
+    expect(calculateSafetyCeiling(5, 'Ibuprofen')?.contraindication).toBeUndefined();
+  });
 });

@@ -3,9 +3,9 @@ import React, { useState, useRef, useMemo } from 'react';
 import { Medication, SpecialistContact, MedicalDevice, MedicalReport, Condition, Investigation, PreviousMedication, GenogramMember } from '../types';
 import { analyzeMedicalProfile, analyzeMedicalReport } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
-import { useRole } from '../context/RoleContext';
 import { useNavigation } from '../context/NavigationContext';
 import { SearchFilterBar } from './SearchFilterBar';
+import { useToast } from '../context/ToastContext';
 
 const GenogramIcon: React.FC<{ member: GenogramMember }> = ({ member }) => {
   const isMale = member.sex === 'Male';
@@ -125,7 +125,7 @@ const GenogramViz: React.FC<{ members: GenogramMember[] }> = ({ members }) => {
 export const MedicalProfile: React.FC = () => {
   const { history, updateHistory, pendingEvents } = useMedicalHistory();
   const { activeView } = useNavigation();
-  const { role } = useRole();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [showCeasedMeds, setShowCeasedMeds] = useState(false);
@@ -352,10 +352,10 @@ export const MedicalProfile: React.FC = () => {
               conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString() }))],
               currentMedications: [...(history.currentMedications || []), ...(result.foundMedications || []).map((m: any) => ({ ...m, id: crypto.randomUUID(), startDate: new Date().toISOString() }))]
             });
-            alert("Specialist letter integrated into registry.");
+            showToast("Specialist letter added to the record.");
           }
         } catch (error) {
-          alert("Error analyzing report.");
+          showToast("Couldn't read the letter. Please try again.", 'error');
         } finally {
           setReportLoading(false);
         }
@@ -370,7 +370,7 @@ export const MedicalProfile: React.FC = () => {
       const result = await analyzeMedicalProfile({ history, linkedEvents: pendingEvents });
       setAiAnalysis(result);
     } catch (e) {
-      alert("Error generating handover.");
+      showToast("Couldn't generate the handover. Please try again.", 'error');
     } finally {
       setLoading(false);
     }
@@ -653,7 +653,6 @@ export const MedicalProfile: React.FC = () => {
                     <p className="font-black text-2xl text-slate-900 tracking-tighter mb-3 leading-none italic">{issue.name}</p>
                     <div className="flex items-center gap-2 mt-4">
                        <span className="px-4 py-1.5 bg-white border border-slate-300 rounded-xl text-[9px] font-black uppercase text-slate-500 tracking-widest">{issue.status}</span>
-                       {issue.clinicianVerified && <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[9px] font-black uppercase tracking-widest">Verified ✓</span>}
                     </div>
                   </div>
                 ))}
@@ -664,7 +663,7 @@ export const MedicalProfile: React.FC = () => {
                       placeholder="Add Diagnosis..." 
                       className="bg-transparent font-black text-2xl outline-none placeholder-indigo-300 text-slate-900 italic tracking-tight" 
                    />
-                   <button onClick={() => { if(newIssue.name) { updateHistory({ conditions: [...(history.conditions || []), { ...newIssue, id: crypto.randomUUID(), status: 'Active', clinicianVerified: role === 'clinician' } as Condition] }); setNewIssue({ name: '' }); } }} className="w-fit px-8 py-3 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-indigo-700 active:scale-95 transition-all">Assign Label +</button>
+                   <button onClick={() => { if(newIssue.name) { updateHistory({ conditions: [...(history.conditions || []), { ...newIssue, id: crypto.randomUUID(), status: 'Active' } as Condition] }); setNewIssue({ name: '' }); } }} className="w-fit px-8 py-3 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-indigo-700 active:scale-95 transition-all">Assign Label +</button>
                 </div>
               </div>
             </section>

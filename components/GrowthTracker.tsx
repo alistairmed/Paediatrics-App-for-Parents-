@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { GrowthRecord } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
+import { useToast } from '../context/ToastContext';
 
 const WHO_WEIGHT_REF = [
   { age: 0, p3: 2.4, p50: 3.3, p97: 4.3 },
@@ -18,6 +19,7 @@ const WHO_WEIGHT_REF = [
 
 export const GrowthTracker: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
+  const { showToast } = useToast();
   const records = history.growthRecords || [];
   const [showReferenceLines, setShowReferenceLines] = useState(true);
 
@@ -30,7 +32,7 @@ export const GrowthTracker: React.FC = () => {
     const ageNum = Number(newRecord.age);
     const weightNum = Number(newRecord.weight);
     if (isNaN(ageNum) || isNaN(weightNum) || weightNum < 1 || weightNum > 150) {
-       alert("Please enter a realistic pediatric weight (2kg - 100kg).");
+       showToast("Please enter a realistic weight between 1 kg and 150 kg.", 'error');
        return;
     }
     if (!newRecord.age || !newRecord.weight || !newRecord.height) return;

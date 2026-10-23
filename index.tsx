@@ -2,6 +2,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './index.css';
+
+// After a new deploy, an open tab may request screen files that no longer exist.
+// Reload once to pick up the current version instead of showing a broken screen.
+window.addEventListener('vite:preloadError', (event) => {
+  const reloadedAt = Number(sessionStorage.getItem('chunk-reload-at') || 0);
+  if (Date.now() - reloadedAt < 10000) return;
+  event.preventDefault();
+  sessionStorage.setItem('chunk-reload-at', String(Date.now()));
+  window.location.reload();
+});
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

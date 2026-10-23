@@ -3,6 +3,7 @@ import { Vaccination } from '../types';
 import { getVaccineAdvice, GeminiError } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
+import { useToast } from '../context/ToastContext';
 
 /**
  * Australian National Immunisation Program (NIP) Schedule
@@ -84,6 +85,7 @@ const NIP_SCHEDULE = (dob: Date): Vaccination[] => {
 export const VaccineTracker: React.FC = () => {
   const { history, updateHistory, addClinicalEvent } = useMedicalHistory();
   const { childProfile } = useChildProfile();
+  const { showToast } = useToast();
   
   const [info, setInfo] = useState<{ name: string; text: string; sources: any[] } | null>(null);
   const [loadingInfo, setLoadingInfo] = useState(false);
@@ -125,7 +127,7 @@ export const VaccineTracker: React.FC = () => {
       severity: 'Low'
     });
     setSyncedIds(prev => new Set(prev).add(vaccine.id));
-    alert(`${vaccine.name} synced to the medical timeline.`);
+    showToast(`${vaccine.name} added to the medical timeline.`);
   };
 
   const updateDetails = (id: string, field: keyof Vaccination, value: any) => {
