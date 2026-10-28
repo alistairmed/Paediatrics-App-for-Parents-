@@ -1,4 +1,4 @@
-import { PEDI_PULSE_PROMPTS } from './prompts';
+import { PEDI_PULSE_PROMPTS, SAFETY_SYSTEM_INSTRUCTION } from './prompts';
 import { AI_ENABLED } from '../config/features';
 import { MedicalHistory, Appointment } from '../types';
 
@@ -15,6 +15,19 @@ export class GeminiError extends Error {
     this.status = status;
     Object.setPrototypeOf(this, GeminiError.prototype);
   }
+}
+
+/**
+ * Adds the shared safety instruction to a request, keeping any
+ * feature-specific system instruction after it.
+ */
+export function withSafetyInstruction(payload: any): any {
+  const own = payload.systemInstruction;
+  const ownText = typeof own === 'string' ? own : own?.parts?.map((p: any) => p.text).join('\n');
+  return {
+    ...payload,
+    systemInstruction: ownText ? `${SAFETY_SYSTEM_INSTRUCTION}\n\n${ownText}` : SAFETY_SYSTEM_INSTRUCTION,
+  };
 }
 
 /**
@@ -35,7 +48,7 @@ export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(withSafetyInstruction(payload)),
       signal: controller.signal,
     });
 
@@ -205,7 +218,7 @@ export const generateCalmingStory = async (childName: string, theme: string) => 
 
 export const getVaccineAdvice = async (vaccineName: string) => {
   const model = 'gemini-2.5-flash';
-  const prompt = `Provide a detailed explanation of the ${vaccineName} vaccine in the context of the Australian National Immunisation Program. Include what it protects against, common side effects, and why it is important. Spell out "degree Celsius" for any temperature mentions.`;
+  const prompt = `Provide a general explanation of the ${vaccineName} vaccine in the context of the Australian National Immunisation Program. Include what it protects against, common side effects, and why it is important. Base it on the Australian Immunisation Handbook. Do not advise delaying, skipping or changing any vaccine; for questions about this child's vaccines, refer the parent to their GP or immunisation provider. Spell out "degree Celsius" for any temperature mentions.`;
 
   const data = await callGeminiProxy({
     model,
