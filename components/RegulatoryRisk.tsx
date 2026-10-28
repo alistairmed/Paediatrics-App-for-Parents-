@@ -7,7 +7,7 @@ export const RegulatoryRisk: React.FC = () => {
       <header className="space-y-4">
         <h2 className="text-4xl font-black text-slate-800 tracking-tight italic">Regulatory & <span className="text-indigo-600">Risk Audit</span></h2>
         <p className="text-slate-500 font-medium max-w-2xl leading-relaxed italic">
-          Formal TGA Self-Classification, Clinical Risk Register (ISO 14971-Lite), and Governance SOP.
+          Internal TGA self-assessment (not reviewed by the TGA), Clinical Risk Register (ISO 14971-Lite), and Governance SOP.
         </p>
       </header>
 
@@ -16,7 +16,7 @@ export const RegulatoryRisk: React.FC = () => {
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner">🇦🇺</div>
           <div>
-            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Part A: TGA Self-Classification</h3>
+            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Part A: TGA Self-Assessment</h3>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Australia (Regulatory Posture)</p>
           </div>
         </div>
@@ -26,8 +26,8 @@ export const RegulatoryRisk: React.FC = () => {
             <div>
               <h4 className="font-black text-slate-800 uppercase text-[10px] tracking-[0.2em] mb-1">Intended Purpose</h4>
               <p className="text-slate-600 leading-relaxed font-medium italic">
-                Support caregivers and clinicians by organising paediatric health information, highlighting potential red flags, and assisting preparation for medical review. 
-                <strong> Does not diagnose disease, recommend treatment, or replace clinical judgment.</strong>
+                Support caregivers by organising paediatric health information, highlighting potential red flags, and assisting preparation for medical review.
+                <strong> Not intended to diagnose disease or replace clinical judgment.</strong>
               </p>
             </div>
             <div>
@@ -40,8 +40,9 @@ export const RegulatoryRisk: React.FC = () => {
             <div className="space-y-3">
               {[
                 { label: 'Provides health information', status: true },
-                { label: 'Supports clinical decisions', status: true },
-                { label: 'Makes diagnosis/treatment decisions', status: false },
+                { label: 'Calculates a medicine dose for a specific child', status: true },
+                { label: 'Gives consumers symptom triage / urgency advice', status: true },
+                { label: 'Scores screening questionnaires', status: true },
                 { label: 'Replaces clinician judgment', status: false },
                 { label: 'Directly controls therapy', status: false },
               ].map((item, i) => (
@@ -54,7 +55,7 @@ export const RegulatoryRisk: React.FC = () => {
               ))}
             </div>
             <div className="mt-6 pt-4 border-t border-slate-200 text-center">
-              <p className="text-[10px] font-black text-indigo-600 uppercase">Conclusion: Non-Regulated Software</p>
+              <p className="text-[10px] font-black text-amber-700 uppercase">Status: Not assessed by the TGA. Dose and triage features may make this a regulated medical device.</p>
             </div>
           </div>
         </div>
@@ -195,7 +196,7 @@ export const RegulatoryRisk: React.FC = () => {
         <div className="relative z-10 space-y-4">
           <h4 className="text-2xl font-black italic tracking-tighter">Regulatory Position Statement</h4>
           <p className="text-indigo-100 text-sm leading-relaxed max-w-2xl font-medium italic opacity-90">
-            "PediPulse AI is positioned as a decision-support and information tool, not a medical device, in accordance with TGA software guidance. All residual risks are considered acceptable for a non-diagnostic educational and informational application."
+            "PediPulse is a pilot prototype. Its regulatory status has not been assessed by the TGA. Features that calculate a medicine dose for an individual child or give consumers triage advice may make it software as a medical device (SaMD) under Australian regulations. Regulatory advice should be obtained before it is offered to the public."
           </p>
           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
              <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Version 1.0</span>

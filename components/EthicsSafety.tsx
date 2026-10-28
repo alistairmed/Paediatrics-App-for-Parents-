@@ -61,7 +61,7 @@ export const EthicsSafety: React.FC = () => {
         <div className="relative z-10 space-y-6">
            <h4 className="text-2xl font-black italic tracking-tighter">Regulatory Alignment (Australia)</h4>
            <p className="text-slate-300 text-sm leading-relaxed max-w-2xl font-medium">
-             PediPulse AI follows the <strong>TGA (Therapeutic Goods Administration)</strong> guidance for software that is NOT a medical device. By providing informational support only and explicitly excluding diagnostic functionality, the app adheres to current Australian regulatory frameworks for digital health tools.
+             PediPulse is a pilot and has <strong>not been assessed by the TGA (Therapeutic Goods Administration)</strong>. Some features, such as the weight-based dose calculator and symptom triage, may make it software that the TGA regulates as a medical device. It is not intended to diagnose, and it doesn't replace advice from your child's doctor, nurse or pharmacist.
            </p>
         </div>
       </div>
