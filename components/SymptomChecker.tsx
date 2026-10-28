@@ -98,9 +98,9 @@ export const SymptomChecker: React.FC = () => {
 
   const handleSaveToLogs = () => {
     if (result) {
-      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      // Full ISO date: the dashboard's last-24-hours alert and the log's date filter parse it.
       addAcuteLog({
-        timestamp,
+        timestamp: new Date().toISOString(),
         type: 'Triage',
         value: activeRedFlags.length > 0 ? 'Urgent Review Indicated' : 'Standard Home Care',
         notes: `SYMPTOMS: ${description}\n\nAI SYNTHESIS:\n${result.text}`,
