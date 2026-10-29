@@ -67,6 +67,18 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {acuteStats.hasAlerts && (
+        <div role="alert" className="bg-rose-600 text-white p-5 sm:p-8 rounded-[2rem] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <span className="text-3xl shrink-0" aria-hidden="true">🚨</span>
+            <div className="space-y-1">
+              <p className="text-lg font-black leading-tight">Urgent warning signs were logged in the last 24 hours</p>
+              <p className="text-sm font-bold text-rose-50">If your child still has these signs, call 000 or go to the nearest emergency department now.</p>
+            </div>
+          </div>
+          <button onClick={() => navigateTo('acutelogs')} className="shrink-0 min-h-[44px] px-6 py-3 bg-white text-rose-700 rounded-2xl font-black text-xs uppercase tracking-widest">View Log</button>
+        </div>
+      )}
 
       <section className="space-y-3 sm:space-y-4">
          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-2 sm:ml-4">Vital Management</h4>
