@@ -1,5 +1,5 @@
 
-import React, { useMemo, useEffect, lazy, Suspense } from 'react';
+import React, { useMemo, useEffect, useState, lazy, Suspense } from 'react';
 import { Layout } from './components/Layout';
 import { ChildProfileSetup } from './components/ChildProfileSetup';
 import { NavigationProvider, useNavigation } from './context/NavigationContext';
@@ -8,6 +8,10 @@ import { MedicalHistoryProvider, useMedicalHistory } from './context/MedicalHist
 import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
 import { ToastProvider } from './context/ToastContext';
+import { LockScreen } from './components/LockScreen';
+import { isLockEnabled, isUnlocked, lockNow } from './utils/vault';
+
+const AUTO_LOCK_AFTER_MS = 5 * 60 * 1000;
 import { ViewType } from './types';
 import { AI_ENABLED } from './config/features';
 
@@ -157,6 +161,21 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const [unlocked, setUnlocked] = useState(() => !isLockEnabled() || isUnlocked());
+
+  // With the passcode lock on, lock again after 5 minutes in the background.
+  useEffect(() => {
+    let hiddenAt = 0;
+    const onVisibilityChange = () => {
+      if (document.hidden) hiddenAt = Date.now();
+      else if (isLockEnabled() && hiddenAt && Date.now() - hiddenAt > AUTO_LOCK_AFTER_MS) lockNow();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, []);
+
+  if (!unlocked) return <LockScreen onUnlock={() => setUnlocked(true)} />;
+
   return (
     <NavigationProvider>
       <ToastProvider>

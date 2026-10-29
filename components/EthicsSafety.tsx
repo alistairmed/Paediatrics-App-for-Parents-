@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { AI_ENABLED } from '../config/features';
+import { PasscodeSettings } from './PasscodeSettings';
 
 export const EthicsSafety: React.FC = () => {
   return (
@@ -55,6 +56,8 @@ export const EthicsSafety: React.FC = () => {
           )}
         </section>
       </div>
+
+      <PasscodeSettings />
 
       <div className="bg-slate-900 p-12 rounded-[4rem] text-white shadow-2xl relative overflow-hidden group">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/10 rounded-full blur-[100px]"></div>
