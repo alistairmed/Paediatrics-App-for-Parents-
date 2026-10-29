@@ -1,4 +1,6 @@
-import { PEDI_PULSE_PROMPTS, SAFETY_SYSTEM_INSTRUCTION } from './prompts';
+import { PEDI_PULSE_PROMPTS, withSafetyInstruction } from './prompts';
+
+export { withSafetyInstruction };
 import { AI_ENABLED } from '../config/features';
 import { MedicalHistory, Appointment } from '../types';
 
@@ -15,19 +17,6 @@ export class GeminiError extends Error {
     this.status = status;
     Object.setPrototypeOf(this, GeminiError.prototype);
   }
-}
-
-/**
- * Adds the shared safety instruction to a request, keeping any
- * feature-specific system instruction after it.
- */
-export function withSafetyInstruction(payload: any): any {
-  const own = payload.systemInstruction;
-  const ownText = typeof own === 'string' ? own : own?.parts?.map((p: any) => p.text).join('\n');
-  return {
-    ...payload,
-    systemInstruction: ownText ? `${SAFETY_SYSTEM_INSTRUCTION}\n\n${ownText}` : SAFETY_SYSTEM_INSTRUCTION,
-  };
 }
 
 /**

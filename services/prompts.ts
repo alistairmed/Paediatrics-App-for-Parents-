@@ -13,6 +13,21 @@ You support parents and carers in Australia with general health information abou
 `.trim();
 
 
+/**
+ * Adds the shared safety instruction to a request, keeping any
+ * feature-specific system instruction after it. Safe to apply twice
+ * (the app adds it, and api/gemini.ts enforces it on the server).
+ */
+export function withSafetyInstruction(payload: any): any {
+  const own = payload.systemInstruction;
+  const ownText: string | undefined = typeof own === 'string' ? own : own?.parts?.map((p: any) => p.text).join('\n');
+  if (ownText?.startsWith(SAFETY_SYSTEM_INSTRUCTION)) return { ...payload, systemInstruction: ownText };
+  return {
+    ...payload,
+    systemInstruction: ownText ? `${SAFETY_SYSTEM_INSTRUCTION}\n\n${ownText}` : SAFETY_SYSTEM_INSTRUCTION,
+  };
+}
+
 export const PEDI_PULSE_PROMPTS = {
   v1: {
     clinicalTriage: `
