@@ -71,7 +71,9 @@ export function calculateSafetyCeiling(weightKg: number, medication: string, age
       ],
       contraindication: ageMonths !== undefined && ageMonths < 3
         ? "Ibuprofen is not recommended for babies under 3 months. Speak to a doctor."
-        : undefined
+        : weightKg < 5
+          ? "Ibuprofen is not recommended for children under 5 kg. Speak to a doctor."
+          : undefined
     };
   }
 

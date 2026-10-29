@@ -118,8 +118,8 @@ export const SymptomChecker: React.FC = () => {
     <div className="space-y-8 pb-20 animate-in fade-in">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 italic">Symptom <span className="text-indigo-600">AI Triage</span></h2>
-          <p className="text-slate-600 font-bold italic">Capture signs and receive guideline-based analysis.</p>
+          <h2 className="text-3xl font-black text-slate-800 italic">Symptom <span className="text-indigo-600">{AI_ENABLED ? 'AI Triage' : 'Triage'}</span></h2>
+          <p className="text-slate-600 font-bold italic">{AI_ENABLED ? 'Capture signs and receive guideline-based analysis.' : 'Describe what you are seeing to check for warning signs that need urgent care.'}</p>
         </div>
         <div className="flex gap-2">
           {!isOnline && (

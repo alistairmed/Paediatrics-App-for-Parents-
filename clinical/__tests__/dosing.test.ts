@@ -46,4 +46,10 @@ describe('Dosing Safety Engine - Extended Validation', () => {
   test('Age: No contraindication when age is unknown', () => {
     expect(calculateSafetyCeiling(5, 'Ibuprofen')?.contraindication).toBeUndefined();
   });
+
+  test('Weight: Flags ibuprofen under 5 kg even when age is unknown or over 3 months', () => {
+    expect(calculateSafetyCeiling(4.8, 'Ibuprofen')?.contraindication).toMatch(/under 5 kg/);
+    expect(calculateSafetyCeiling(4.8, 'Ibuprofen', 4)?.contraindication).toMatch(/under 5 kg/);
+    expect(calculateSafetyCeiling(4.8, 'Paracetamol', 4)?.contraindication).toBeUndefined();
+  });
 });

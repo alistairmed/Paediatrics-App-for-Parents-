@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useNavigation } from '../context/NavigationContext';
@@ -36,6 +36,15 @@ export const DoseCalculator: React.FC = () => {
   const [medication, setMedication] = useState(OTC_MEDICATIONS[0].name);
   const [result, setResult] = useState<DoseResult | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  // On phones the result sits below the form, off-screen: bring it into view.
+  useEffect(() => {
+    const el = resultRef.current;
+    if ((result || notice) && el && el.getBoundingClientRect().top > window.innerHeight * 0.6) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [result, notice]);
 
   const ageMonths = useMemo(() => ageInMonths(childProfile?.dob), [childProfile]);
 
@@ -152,7 +161,7 @@ export const DoseCalculator: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-2">
+        <div ref={resultRef} className="lg:col-span-2 scroll-mt-24">
           {result ? (
             <div className="bg-white p-8 sm:p-12 rounded-[3.5rem] border border-emerald-50 shadow-2xl space-y-8 animate-in zoom-in-95 border-l-[16px] border-l-emerald-600 relative overflow-hidden">
               <div className="relative z-10 flex items-center gap-4">
