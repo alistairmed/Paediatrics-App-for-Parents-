@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { generateCalmingStory, GeminiError } from '../services/gemini';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
 
 // Audio decoding helpers as per guidelines
 function decode(base64: string) {
@@ -177,24 +179,30 @@ export const CalmStory: React.FC = () => {
             </div>
           )}
 
-          <button 
-            onClick={handleGenerate}
-            disabled={loading || !childName}
-            className={`w-full py-6 rounded-[2rem] font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
-              loading || !childName ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700'
-            }`}
-          >
-            {loading ? (
-              <>
-                <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                Brewing Magic...
-              </>
-            ) : (
-              <>
-                <span className="text-xl">🔊</span> Play CalmCast Story
-              </>
-            )}
-          </button>
+          {AI_ENABLED ? (
+              <button 
+              onClick={handleGenerate}
+              disabled={loading || !childName}
+              className={`w-full py-6 rounded-[2rem] font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
+                loading || !childName ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700'
+              }`}
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                  Brewing Magic...
+                </>
+              ) : (
+                <>
+                  <span className="text-xl">🔊</span> Play CalmCast Story
+                </>
+              )}
+            </button>
+          ) : (
+            <AiOffNotice feature="The narrated story">
+              <button onClick={() => setShowManualStory(true)} className="px-5 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest">Read the Written Story Instead</button>
+            </AiOffNotice>
+          )}
 
           {(showManualStory || !errorMessage) && (
             <div className="pt-4 border-t border-slate-100">

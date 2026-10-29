@@ -7,6 +7,8 @@ import { useNavigation } from '../context/NavigationContext';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
 
 type ResponseOption = { label: string; value: string; color?: string };
 
@@ -22,31 +24,12 @@ interface ScreeningMod {
 }
 
 const SCREENING_MODS: Record<string, ScreeningMod> = {
-  sdq: {
-    id: 'sdq',
-    name: 'SDQ (Behavioral Profile)',
-    ageRange: '4-17 Years',
-    domain: 'Behavior',
-    description: 'Strengths and Difficulties Questionnaire: A broad look at emotional and behavioral patterns.',
-    type: 'scale',
-    options: [{ label: 'Not True', value: '0' }, { label: 'Somewhat True', value: '1' }, { label: 'Certainly True', value: '2' }],
-    questions: [
-      { id: '1', text: 'Considerate of other people’s feelings.', category: 'Prosocial' },
-      { id: '2', text: 'Restless, overactive, cannot stay still for long.', category: 'Hyperactivity' },
-      { id: '3', text: 'Often complains of headaches, stomach-aches or sickness.', category: 'Emotional' },
-      { id: '4', text: 'Shares readily with other children.', category: 'Prosocial' },
-      { id: '5', text: 'Often has temper tantrums or hot tempers.', category: 'Conduct' },
-      { id: '6', text: 'Rather solitary, prefers to play alone.', category: 'Peer Problems' },
-      { id: '7', text: 'Generally obedient, usually does what adults request.', category: 'Conduct' },
-      { id: '8', text: 'Many worries or often seems worried.', category: 'Emotional' },
-    ]
-  },
   snap4: {
     id: 'snap4',
-    name: 'SNAP-IV (ADHD Screening)',
+    name: 'Attention Check (8 SNAP-IV items)',
     ageRange: '6-18 Years',
     domain: 'Focus',
-    description: 'The Swanson, Nolan, and Pelham Questionnaire for assessing ADHD symptoms and oppositional behavior.',
+    description: 'Eight items from the SNAP-IV rating scale about attention and behaviour. A shortened check, not the full validated questionnaire.',
     type: 'scale',
     options: [
       { label: 'Not at all', value: '0' },
@@ -63,47 +46,6 @@ const SCREENING_MODS: Record<string, ScreeningMod> = {
       { id: 's6', text: 'Often blurts out answers before questions have been completed.', category: 'Impulsivity' },
       { id: 's7', text: 'Often loses temper.', category: 'Oppositional' },
       { id: 's8', text: 'Often actively defies or refuses to comply with adult requests.', category: 'Oppositional' },
-    ]
-  },
-  asq3: {
-    id: 'asq3',
-    name: 'ASQ-3 (Developmental Progress)',
-    ageRange: '1-66 Months',
-    domain: 'Development',
-    description: 'Ages & Stages Questionnaires: Screens for developmental progress in early childhood.',
-    type: 'tri-state',
-    options: [
-      { label: 'Yes', value: '10', color: 'bg-emerald-500' },
-      { label: 'Sometimes', value: '5', color: 'bg-amber-500' },
-      { label: 'Not Yet', value: '0', color: 'bg-slate-400' }
-    ],
-    questions: [
-      { id: 'a1', text: 'Does your child use two-word phrases, like "Get ball" or "Mamma go"?', category: 'Communication' },
-      { id: 'a2', text: 'Does your child follow simple instructions like "Give me the book"?', category: 'Communication' },
-      { id: 'a3', text: 'Does your child kick a ball by swinging their leg forward?', category: 'Gross Motor' },
-      { id: 'a4', text: 'Does your child climb on furniture without help?', category: 'Gross Motor' },
-      { id: 'a5', text: 'Does your child turn the pages of a book one at a time?', category: 'Fine Motor' },
-      { id: 'a6', text: 'Does your child stack small blocks or toys on top of each other?', category: 'Fine Motor' },
-      { id: 'a7', text: 'Does your child pretend to feed a doll or a stuffed animal?', category: 'Problem Solving' },
-      { id: 'a8', text: 'Does your child try to get things that are out of reach?', category: 'Problem Solving' },
-    ]
-  },
-  mchat: {
-    id: 'mchat',
-    name: 'M-CHAT-R (Autism/Social)',
-    ageRange: '16-30 Months',
-    domain: 'Social',
-    description: 'Modified Checklist for Autism in Toddlers: Screens for social and communicative risk.',
-    type: 'binary',
-    options: [{ label: 'Yes', value: '1', color: 'bg-emerald-500' }, { label: 'No', value: '0', color: 'bg-rose-500' }],
-    questions: [
-      { id: 'm1', text: 'If you point at something across the room, does your child look at it?', category: 'Joint Attention' },
-      { id: 'm2', text: 'Have you ever wondered if your child might be deaf?', category: 'Sensory' },
-      { id: 'm3', text: 'Does your child play pretend or make-believe?', category: 'Play' },
-      { id: 'm4', text: 'Does your child like climbing on things?', category: 'Motor' },
-      { id: 'm5', text: 'Does your child make unusual finger movements near their eyes?', category: 'Sensory' },
-      { id: 'm6', text: 'Does your child point with one finger to ask for something or to get help?', category: 'Social' },
-      { id: 'm7', text: 'Is your child interested in other children?', category: 'Social' },
     ]
   },
   gad7: {
@@ -131,10 +73,10 @@ const SCREENING_MODS: Record<string, ScreeningMod> = {
   },
   phq9: {
     id: 'phq9',
-    name: 'PHQ-9 (Mood/Depression)',
+    name: 'Mood Check (7 PHQ-9 items)',
     ageRange: '12+ Years',
     domain: 'Mood',
-    description: 'Standard clinical tool for screening and monitoring depression severity.',
+    description: 'Seven items from the PHQ-9 about mood over the last two weeks. A shortened check, not the full validated questionnaire.',
     type: 'scale',
     options: [
         { label: 'Not at all', value: '0' }, 
@@ -163,20 +105,17 @@ const FINDER_STEPS = {
     ],
     concerns: {
         dev: [
-            { id: 'social', label: 'Social & Interaction', test: 'mchat' },
-            { id: 'milestones', label: 'Overall Progress (ASQ)', test: 'asq3' },
+            { id: 'social', label: 'Social & Interaction', test: 'dev_milestones' },
+            { id: 'milestones', label: 'Overall Progress', test: 'dev_milestones' },
             { id: 'physical', label: 'Physical Milestones', test: 'dev_milestones' },
         ],
         bh: [
             { id: 'adhd', label: 'Attention & Focus', test: 'snap4' },
-            { id: 'behavior', label: 'General Behavior (SDQ)', test: 'sdq' },
-            { id: 'social_school', label: 'Social/Friendships', test: 'sdq' }
         ],
         mh: [
             { id: 'adhd_teen', label: 'Focus & Organization', test: 'snap4' },
             { id: 'anxiety', label: 'Anxiety/Worry', test: 'gad7' },
-            { id: 'mood', label: 'Low Mood/Sleep', test: 'phq9' },
-            { id: 'wellbeing', label: 'General Wellbeing', test: 'sdq' }
+            { id: 'mood', label: 'Low Mood/Sleep', test: 'phq9' }
         ]
     }
 };
@@ -352,11 +291,22 @@ export const ScreeningTool: React.FC = () => {
               <div className="bg-indigo-900 p-10 rounded-[3.5rem] text-white shadow-2xl mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
                  <div className="space-y-2">
                     <h3 className="text-3xl font-black italic tracking-tighter leading-none">{activeMod.name}</h3>
-                    <p className="text-indigo-200 text-sm font-medium italic opacity-70">Pre-Appointment Clinical Tool.</p>
+                    <p className="text-indigo-200 text-sm font-medium italic opacity-70">Pre-Appointment Check.</p>
                  </div>
                  <div className="px-6 py-2 bg-white/10 rounded-xl border border-white/10">
                     <span className="text-xs font-black text-indigo-100">{Object.keys(responses).length} / {activeMod.questions.length} Complete</span>
                  </div>
+              </div>
+
+              <div role="note" className="bg-amber-50 border-2 border-amber-200 rounded-[2rem] p-6 space-y-2">
+                <p className="text-sm font-bold text-amber-950 leading-relaxed">
+                  This check can't diagnose or rule out any condition. Use it to organise what you've noticed before talking with your GP, child health nurse or paediatrician.
+                </p>
+                {activeMod.domain === 'Mood' && (
+                  <p className="text-sm font-bold text-amber-950 leading-relaxed">
+                    If your child talks about hurting themselves or you're worried about their safety, get help now: call <strong>000</strong> in an emergency, <strong>Kids Helpline 1800 55 1800</strong> (5–25 years) or <strong>Lifeline 13 11 14</strong>, any time.
+                  </p>
+                )}
               </div>
 
               {activeMod.questions.map((q, i) => (
@@ -383,13 +333,17 @@ export const ScreeningTool: React.FC = () => {
                 </div>
               ))}
               <div className="pt-12">
-                <button 
-                    onClick={handleSubmit} 
-                    disabled={loading || Object.keys(responses).length < activeMod.questions.length}
-                    className="w-full py-7 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-slate-200 transition-all hover:bg-indigo-700 active:scale-95"
-                >
-                    {loading ? 'Synthesizing Patterns...' : 'Finalize & Prepare Handover ✨'}
-                </button>
+                {AI_ENABLED ? (
+                    <button 
+                      onClick={handleSubmit} 
+                      disabled={loading || Object.keys(responses).length < activeMod.questions.length}
+                      className="w-full py-7 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-slate-200 transition-all hover:bg-indigo-700 active:scale-95"
+                  >
+                      {loading ? 'Synthesizing Patterns...' : 'Finalize & Prepare Handover ✨'}
+                  </button>
+                ) : (
+                  <AiOffNotice feature="Screening analysis" />
+                )}
               </div>
             </div>
           ) : (

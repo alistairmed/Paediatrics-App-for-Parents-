@@ -3,6 +3,7 @@ import { Appointment } from '../types';
 import { prepareAppointmentQuestions, GeminiError } from '../services/gemini';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useGovernance } from '../context/GovernanceContext';
+import { AI_ENABLED } from '../config/features';
 
 export const AppointmentManager: React.FC = () => {
   const { history, updateHistory, addAppointment } = useMedicalHistory();
@@ -161,7 +162,7 @@ export const AppointmentManager: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 self-start justify-end">
-                    {apt.status === 'Upcoming' && (
+                    {apt.status === 'Upcoming' && AI_ENABLED && (
                       <button 
                         onClick={() => handleAIPrep(apt)} 
                         disabled={prepLoading === apt.id} 

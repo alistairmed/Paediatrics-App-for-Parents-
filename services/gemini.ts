@@ -1,7 +1,8 @@
-import { PEDI_PULSE_PROMPTS } from './prompts';
+import { PEDI_PULSE_PROMPTS, SAFETY_SYSTEM_INSTRUCTION } from './prompts';
+import { AI_ENABLED } from '../config/features';
 import { MedicalHistory, Appointment } from '../types';
 
-export type GeminiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'UNKNOWN';
+export type GeminiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'UNKNOWN';
 
 export class GeminiError extends Error {
   type: GeminiErrorType;
@@ -17,10 +18,27 @@ export class GeminiError extends Error {
 }
 
 /**
+ * Adds the shared safety instruction to a request, keeping any
+ * feature-specific system instruction after it.
+ */
+export function withSafetyInstruction(payload: any): any {
+  const own = payload.systemInstruction;
+  const ownText = typeof own === 'string' ? own : own?.parts?.map((p: any) => p.text).join('\n');
+  return {
+    ...payload,
+    systemInstruction: ownText ? `${SAFETY_SYSTEM_INSTRUCTION}\n\n${ownText}` : SAFETY_SYSTEM_INSTRUCTION,
+  };
+}
+
+/**
  * Proxy caller for Gemini API with 30s timeout, error classification, and sanitized logging.
  * All AI calls go through /api/gemini so the API key stays on the server.
  */
 export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<any> {
+  if (!AI_ENABLED) {
+    throw new GeminiError('AI features are switched off in this version.', 'DISABLED');
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -30,7 +48,7 @@ export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(withSafetyInstruction(payload)),
       signal: controller.signal,
     });
 
@@ -200,7 +218,7 @@ export const generateCalmingStory = async (childName: string, theme: string) => 
 
 export const getVaccineAdvice = async (vaccineName: string) => {
   const model = 'gemini-2.5-flash';
-  const prompt = `Provide a detailed explanation of the ${vaccineName} vaccine in the context of the Australian National Immunisation Program. Include what it protects against, common side effects, and why it is important. Spell out "degree Celsius" for any temperature mentions.`;
+  const prompt = `Provide a general explanation of the ${vaccineName} vaccine in the context of the Australian National Immunisation Program. Include what it protects against, common side effects, and why it is important. Base it on the Australian Immunisation Handbook. Do not advise delaying, skipping or changing any vaccine; for questions about this child's vaccines, refer the parent to their GP or immunisation provider. Spell out "degree Celsius" for any temperature mentions.`;
 
   const data = await callGeminiProxy({
     model,

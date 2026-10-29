@@ -3,20 +3,18 @@ import React, { useRef } from 'react';
 import { SickDayPlan } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useToast } from '../context/ToastContext';
+import { readImageAsCompressedDataUrl } from '../utils/image';
 
 export const SickDayPlanView: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
   const { showToast } = useToast();
   const planPhotoRef = useRef<HTMLInputElement>(null);
 
-  const handlePlanPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePlanPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        updateHistory({ sickDayPlan: { ...history.sickDayPlan, planPhoto: reader.result as string } });
-      };
-      reader.readAsDataURL(file);
+      const planPhoto = await readImageAsCompressedDataUrl(file);
+      updateHistory({ sickDayPlan: { ...history.sickDayPlan, planPhoto } });
     }
   };
 

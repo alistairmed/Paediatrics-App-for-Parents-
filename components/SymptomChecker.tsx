@@ -8,6 +8,9 @@ import { useEnvironment } from '../context/EnvironmentContext';
 import { evaluateRedFlags } from '../clinical/redFlags';
 import { ageInMonths } from '../clinical/age';
 import { useToast } from '../context/ToastContext';
+import { AI_ENABLED } from '../config/features';
+import { AiOffNotice } from './AiOffNotice';
+import { readImageAsCompressedDataUrl } from '../utils/image';
 
 const RED_FLAGS_LIST = [
   { text: "Difficulty Breathing", sub: "Grunting, wheezing, or chest sucking in", icon: "🫁" },
@@ -49,12 +52,10 @@ export const SymptomChecker: React.FC = () => {
     return evaluateRedFlags(input);
   }, [ageMonths, temp, description, duration, mode]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result as string);
-      reader.readAsDataURL(file);
+      setImage(await readImageAsCompressedDataUrl(file));
     }
   };
 
@@ -97,9 +98,9 @@ export const SymptomChecker: React.FC = () => {
 
   const handleSaveToLogs = () => {
     if (result) {
-      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      // Full ISO date: the dashboard's last-24-hours alert and the log's date filter parse it.
       addAcuteLog({
-        timestamp,
+        timestamp: new Date().toISOString(),
         type: 'Triage',
         value: activeRedFlags.length > 0 ? 'Urgent Review Indicated' : 'Standard Home Care',
         notes: `SYMPTOMS: ${description}\n\nAI SYNTHESIS:\n${result.text}`,
@@ -186,21 +187,29 @@ export const SymptomChecker: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <input type="file" accept="image/*" capture="environment" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
-              <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-3 px-10 py-5 rounded-2xl font-black border-2 text-xs uppercase tracking-widest w-full sm:w-auto transition-all bg-white border-slate-400 text-slate-900 hover:bg-slate-50 shadow-sm">
-                {image ? '📷 Retake Photo' : '📷 Take Triage Photo'}
-              </button>
-              <button 
-                onClick={handleAnalyze} 
-                disabled={loading || (!description.trim() && !image)} 
-                className={`flex-1 py-5 rounded-2xl font-black text-white shadow-2xl transition-all uppercase tracking-widest text-sm w-full flex items-center justify-center gap-3 ${loading ? 'bg-slate-400' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'}`}
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Synthesizing Guidelines...
-                  </>
-                ) : 'Analyze Symptoms ✨'}
-              </button>
+              {AI_ENABLED && (
+                <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-3 px-10 py-5 rounded-2xl font-black border-2 text-xs uppercase tracking-widest w-full sm:w-auto transition-all bg-white border-slate-400 text-slate-900 hover:bg-slate-50 shadow-sm">
+                  {image ? '📷 Retake Photo' : '📷 Take Triage Photo'}
+                </button>
+              )}
+              {AI_ENABLED ? (
+                  <button 
+                  onClick={handleAnalyze} 
+                  disabled={loading || (!description.trim() && !image)} 
+                  className={`flex-1 py-5 rounded-2xl font-black text-white shadow-2xl transition-all uppercase tracking-widest text-sm w-full flex items-center justify-center gap-3 ${loading ? 'bg-slate-400' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'}`}
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Synthesizing Guidelines...
+                    </>
+                  ) : 'Analyze Symptoms ✨'}
+                </button>
+              ) : (
+                <AiOffNotice feature="Triage">
+                  <p className="text-sm font-bold text-slate-600">The red-flag check above still works without AI.</p>
+                </AiOffNotice>
+              )}
             </div>
 
             {image && (
