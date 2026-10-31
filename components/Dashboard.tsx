@@ -4,6 +4,7 @@ import { ViewType } from '../types';
 import { useNavigation } from '../context/NavigationContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
+import { NIP_SCHEDULE, vaccineReminders } from '../clinical/vaccineSchedule';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart, Line
 } from 'recharts';
@@ -20,6 +21,13 @@ export const Dashboard: React.FC = () => {
   const { navigateTo } = useNavigation();
   const { childProfile, childAge, hasSkippedSetup } = useChildProfile();
   const { latestWeight, history } = useMedicalHistory();
+
+  // Saved vaccine records, or the standard schedule if the vaccine screen hasn't been opened yet.
+  const vaccines = useMemo(() => {
+    const saved = history.vaccinations || [];
+    const list = saved.length ? saved : childProfile?.dob ? NIP_SCHEDULE(new Date(childProfile.dob)) : [];
+    return vaccineReminders(list);
+  }, [history.vaccinations, childProfile?.dob]);
 
   const acuteStats = useMemo(() => {
     const logs = history.acuteLogs || [];
@@ -65,6 +73,27 @@ export const Dashboard: React.FC = () => {
            </div>
         </div>
       </div>
+
+      {(vaccines.overdue.length > 0 || vaccines.dueSoon.length > 0) && (
+        <section aria-labelledby="vaccine-reminder-title" className="bg-white border-2 border-teal-200 rounded-[2rem] p-5 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start gap-4">
+            <span className="text-3xl shrink-0" aria-hidden="true">💉</span>
+            <div className="space-y-1">
+              <h3 id="vaccine-reminder-title" className="text-lg font-black text-slate-800">Vaccines</h3>
+              {vaccines.overdue.length > 0 && (
+                <p className="text-base font-bold text-rose-700">Not yet recorded: {vaccines.overdue.map(v => v.name).join(', ')}</p>
+              )}
+              {vaccines.dueSoon.length > 0 && (
+                <p className="text-base font-bold text-slate-700">
+                  Due soon: {vaccines.dueSoon.map(v => `${v.name} (${new Date(v.dueDate).toLocaleDateString([], { day: 'numeric', month: 'short' })})`).join(', ')}
+                </p>
+              )}
+              <p className="text-sm font-medium text-slate-600">Book with your GP or immunisation provider, or mark them as given if they're done.</p>
+            </div>
+          </div>
+          <button onClick={() => navigateTo('vaccines')} className="shrink-0 min-h-[44px] px-6 py-3 bg-teal-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Open Vaccines</button>
+        </section>
+      )}
 
       <section className="space-y-3 sm:space-y-4">
          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-2 sm:ml-4">Vital Management</h4>
