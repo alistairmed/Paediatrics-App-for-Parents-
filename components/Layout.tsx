@@ -60,7 +60,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
       items: [
         { id: 'redbook', label: 'Digital Red Book', icon: '📕' },
         { id: 'milestones', label: 'Milestone Sync', icon: '✨' },
-        { id: 'screening', label: 'Clinical Screeners', icon: '🔍' },
+        { id: 'screening', label: 'Conversation Starters', icon: '💬' },
       ]
     },
     {

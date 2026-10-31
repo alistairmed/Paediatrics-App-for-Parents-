@@ -8,7 +8,6 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
 import { AI_ENABLED } from '../config/features';
-import { AiOffNotice } from './AiOffNotice';
 
 type ResponseOption = { label: string; value: string; color?: string };
 
@@ -130,6 +129,7 @@ export const ScreeningTool: React.FC = () => {
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
+  const [showAnswers, setShowAnswers] = useState(false);
 
   const activeMod = activeModKey ? SCREENING_MODS[activeModKey] : null;
 
@@ -167,6 +167,7 @@ export const ScreeningTool: React.FC = () => {
     setViewState('test');
     setResponses({});
     setAnalysis(null);
+    setShowAnswers(false);
   };
 
   const handleSubmit = async () => {
@@ -212,12 +213,12 @@ export const ScreeningTool: React.FC = () => {
     <div className="space-y-8 sm:space-y-10 pb-28 animate-in fade-in duration-700">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 sm:gap-6">
         <div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter italic leading-none">Clinical <span className="text-teal-600">Screening</span></h2>
-          <p className="text-slate-500 font-medium italic mt-2 text-xs sm:text-sm">Validated pediatric assessment tools for pre-specialist review.</p>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter italic leading-none">Conversation <span className="text-teal-600">Starters</span></h2>
+          <p className="text-slate-500 font-medium italic mt-2 text-xs sm:text-sm">Short checklists to help you put what you've noticed into words before seeing your GP, child health nurse or paediatrician. They aren't tests and don't give a score.</p>
         </div>
         <div className="flex flex-wrap gap-2 w-full md:w-auto">
             {viewState !== 'hub' && (
-                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm min-h-[44px]">Return to Hub</button>
+                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm min-h-[44px]">Return to Hub</button>
             )}
             {viewState === 'hub' && (
                 <button onClick={handleStartFinder} className="w-full md:w-auto bg-teal-600 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl hover:bg-teal-700 active:scale-95 transition-all min-h-[44px]">Start Test Finder ✨</button>
@@ -228,8 +229,8 @@ export const ScreeningTool: React.FC = () => {
       {viewState === 'finder' && (
         <div className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] border border-teal-100 shadow-2xl space-y-8 sm:space-y-12 animate-in zoom-in-95">
             <div className="text-center space-y-2">
-                <h3 className="text-2xl sm:text-3xl font-black text-slate-800 italic uppercase">Clinical Decision Support</h3>
-                <p className="text-slate-500 font-medium italic text-xs sm:text-sm">Answer 2 simple questions to find the appropriate tool for your child.</p>
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-800 italic uppercase">Find a checklist</h3>
+                <p className="text-slate-500 font-medium italic text-xs sm:text-sm">Answer 2 simple questions to find a checklist that fits.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -286,12 +287,39 @@ export const ScreeningTool: React.FC = () => {
 
       {viewState === 'test' && activeMod && (
         <div className="space-y-8">
-          {!analysis ? (
+          {showAnswers ? (
+            <div className="space-y-6">
+              <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-5 print:shadow-none print:border-0 print:p-0">
+                <div>
+                  <h3 className="text-2xl font-black text-slate-800">{activeMod.name}: your answers</h3>
+                  <p className="text-sm font-bold text-slate-600">{new Date().toLocaleDateString()} · a conversation starter, not a test or a score</p>
+                </div>
+                <ul className="divide-y divide-slate-100">
+                  {activeMod.questions.map(q => {
+                    const answer = activeMod.options.find(o => o.value === responses[q.id]);
+                    return (
+                      <li key={q.id} className="py-3 flex flex-col sm:flex-row sm:justify-between gap-1 break-inside-avoid">
+                        <span className="text-base font-medium text-slate-800">{q.text}</span>
+                        <span className={`text-base font-black shrink-0 ${answer ? 'text-teal-800' : 'text-slate-400'}`}>{answer ? answer.label : 'Not answered'}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="text-sm font-medium text-slate-600">
+                  Take this to your GP, child health nurse or paediatrician. They can talk it through with you and decide whether anything else is needed.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3 print:hidden">
+                <button onClick={() => window.print()} className="min-h-[48px] px-6 rounded-2xl bg-teal-600 text-white font-black uppercase tracking-widest text-xs">Print or Save as PDF</button>
+                <button onClick={() => setShowAnswers(false)} className="min-h-[48px] px-6 rounded-2xl border-2 border-slate-300 font-black uppercase tracking-widest text-xs text-slate-700">Change Answers</button>
+              </div>
+            </div>
+          ) : !analysis ? (
             <div className="space-y-4 animate-in slide-in-from-bottom-4">
               <div className="bg-indigo-900 p-10 rounded-[3.5rem] text-white shadow-2xl mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
                  <div className="space-y-2">
                     <h3 className="text-3xl font-black italic tracking-tighter leading-none">{activeMod.name}</h3>
-                    <p className="text-indigo-200 text-sm font-medium italic opacity-70">Pre-Appointment Check.</p>
+                    <p className="text-indigo-200 text-sm font-medium italic opacity-70">Conversation starter for your appointment.</p>
                  </div>
                  <div className="px-6 py-2 bg-white/10 rounded-xl border border-white/10">
                     <span className="text-xs font-black text-indigo-100">{Object.keys(responses).length} / {activeMod.questions.length} Complete</span>
@@ -342,7 +370,16 @@ export const ScreeningTool: React.FC = () => {
                       {loading ? 'Synthesizing Patterns...' : 'Finalize & Prepare Handover ✨'}
                   </button>
                 ) : (
-                  <AiOffNotice feature="Screening analysis" />
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => setShowAnswers(true)}
+                      disabled={Object.keys(responses).length === 0}
+                      className="w-full py-6 bg-teal-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl disabled:bg-slate-300 hover:bg-teal-700"
+                    >
+                      See My Answers
+                    </button>
+                    <p className="text-sm font-medium text-slate-600 text-center">You don't have to answer every question.</p>
+                  </div>
                 )}
               </div>
             </div>
