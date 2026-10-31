@@ -209,7 +209,7 @@ export const MedicalProfile: React.FC = () => {
 
   const filteredInvestigations = useMemo(() => {
     return (history.investigations || []).filter(inv =>
-      matchesFilter([inv.name, inv.result, inv.category], inv.date)
+      matchesFilter([inv.name, inv.result, inv.location], inv.date)
     );
   }, [history.investigations, searchQuery, startDate, endDate]);
 
@@ -221,7 +221,7 @@ export const MedicalProfile: React.FC = () => {
 
   const filteredDevices = useMemo(() => {
     return (history.devices || []).filter(d =>
-      matchesFilter([d.type, d.model, d.size], d.prescribeDate)
+      matchesFilter([d.type, d.model, d.size, d.notes], d.lastChanged)
     );
   }, [history.devices, searchQuery, startDate, endDate]);
 
