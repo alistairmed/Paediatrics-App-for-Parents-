@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { createBackup, readBackup, restoreRecords, backupFileName, BackupError, MIN_BACKUP_PASSWORD } from '../utils/backup';
 import { useToast } from '../context/ToastContext';
+import { useConfirm } from '../context/ConfirmContext';
 
 /** Export an encrypted backup file, or restore one (replaces this device's records). */
 export const BackupRestore: React.FC = () => {
   const { showToast } = useToast();
+  const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
@@ -48,7 +50,7 @@ export const BackupRestore: React.FC = () => {
       const { records, createdAt } = await readBackup(await restoreFile.text(), restorePassword);
       const made = new Date(createdAt).toLocaleString();
       // Replacing everything is the point of a restore, but it must be deliberate.
-      if (!window.confirm(`Replace all records on this device with the backup from ${made}? Records not in the backup will be removed.`)) return;
+      if (!(await confirm({ title: 'Restore this backup?', message: `This replaces all records on this device with the backup from ${made}. Records not in the backup will be removed.`, confirmLabel: 'Restore', danger: true }))) return;
       await restoreRecords(records);
       showToast('Backup restored.');
       setTimeout(() => window.location.reload(), 600);

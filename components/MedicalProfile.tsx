@@ -6,6 +6,7 @@ import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useNavigation } from '../context/NavigationContext';
 import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
+import { useConfirm } from '../context/ConfirmContext';
 import { AI_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
 import { readImageAsCompressedDataUrl } from '../utils/image';
@@ -129,6 +130,7 @@ export const MedicalProfile: React.FC = () => {
   const { history, updateHistory, pendingEvents } = useMedicalHistory();
   const { activeView } = useNavigation();
   const { showToast } = useToast();
+  const confirm = useConfirm();
   const [loading, setLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [showCeasedMeds, setShowCeasedMeds] = useState(false);
@@ -858,8 +860,8 @@ export const MedicalProfile: React.FC = () => {
 
       <div className="flex justify-center mt-12">
         <button 
-          onClick={() => {
-            if (confirm("🚨 CRITICAL: This will delete ALL pediatric records stored locally on this device. This action cannot be undone. Are you sure?")) {
+          onClick={async () => {
+            if (await confirm({ title: 'Delete everything on this device?', message: 'This deletes all children and all records stored in PediPulse on this device. It cannot be undone, so export a backup first if you might want them back.', confirmLabel: 'Delete Everything', danger: true })) {
                localStorage.clear();
                window.location.reload();
             }

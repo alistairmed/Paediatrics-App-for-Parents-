@@ -4,6 +4,7 @@ import { AcuteLogEntry } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
+import { useConfirm } from '../context/ConfirmContext';
 
 const icons = { 
   Fluid: '🥤', 
@@ -47,6 +48,7 @@ export const AcuteTracker: React.FC = () => {
   const [selectedMed, setSelectedMed] = useState<'Paracetamol' | 'Ibuprofen' | 'Other'>('Paracetamol');
   const [otherMedName, setOtherMedName] = useState('');
   const { showToast } = useToast();
+  const confirm = useConfirm();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -99,8 +101,8 @@ export const AcuteTracker: React.FC = () => {
     });
   }, [rawLogs, selectedCategory, searchQuery, startDate, endDate]);
 
-  const deleteEntry = (id: string) => {
-    if (confirm("Void this entry?")) {
+  const deleteEntry = async (id: string) => {
+    if (await confirm({ title: 'Delete this entry?', message: 'It will be removed from the log.', confirmLabel: 'Delete', danger: true })) {
       updateHistory({
         acuteLogs: history.acuteLogs?.filter(log => log.id !== id)
       });

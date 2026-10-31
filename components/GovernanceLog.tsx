@@ -2,10 +2,12 @@
 import React from 'react';
 import { useGovernance } from '../context/GovernanceContext';
 import { useToast } from '../context/ToastContext';
+import { useConfirm } from '../context/ConfirmContext';
 
 export const GovernanceLog: React.FC = () => {
   const { log, clearLog } = useGovernance();
   const { showToast } = useToast();
+  const confirm = useConfirm();
 
   const copyEntry = (entry: any) => {
     const text = `PEDIPULSE GOVERNANCE ENTRY\nType: ${entry.eventType}\nTimestamp: ${new Date(entry.timestamp).toLocaleString()}\nInput: ${entry.inputSummary}\nOutput: ${entry.outputSummary}\nRed Flags: ${entry.redFlags?.join(', ') || 'None'}`;
@@ -27,7 +29,7 @@ export const GovernanceLog: React.FC = () => {
              🛡️ Active Integrity Check: {new Date().toLocaleDateString()}
            </span>
            <button 
-             onClick={() => confirm("Clear all governance logs?") && clearLog()}
+             onClick={async () => { if (await confirm({ title: 'Clear the activity log?', message: 'This removes every entry in the log on this device.', confirmLabel: 'Clear Log', danger: true })) clearLog(); }}
              className="px-6 py-2 bg-slate-100 text-slate-400 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-rose-50 hover:text-rose-600 transition-all"
            >
              Clear Audit Trail 🗑️
