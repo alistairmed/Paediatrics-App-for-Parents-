@@ -161,7 +161,7 @@ export const HandoverSummary: React.FC = () => {
                   value={manualSummary}
                   onChange={e => setManualSummary(e.target.value)}
                   placeholder="Enter custom clinical notes or additional handover details manually..."
-                  className="w-full h-32 p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 font-bold text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full h-32 p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 font-bold text-sm outline-hidden focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             )}

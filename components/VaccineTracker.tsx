@@ -110,7 +110,7 @@ export const VaccineTracker: React.FC = () => {
         </div>
         <button 
           onClick={() => setShowAddCustom(!showAddCustom)}
-          className="bg-white border-2 border-indigo-100 text-indigo-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-sm"
+          className="bg-white border-2 border-indigo-100 text-indigo-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-xs"
         >
           {showAddCustom ? 'Cancel' : '+ Record Other Vaccine'}
         </button>
@@ -124,13 +124,13 @@ export const VaccineTracker: React.FC = () => {
                 placeholder="Vaccine Name (e.g. Flu, Meningococcal B)" 
                 value={customVax.name}
                 onChange={e => setCustomVax({...customVax, name: e.target.value})}
-                className="p-4 rounded-2xl bg-white border border-indigo-200 font-black text-slate-900 outline-none"
+                className="p-4 rounded-2xl bg-white border border-indigo-200 font-black text-slate-900 outline-hidden"
               />
               <input 
                 type="date"
                 value={customVax.dueDate ? new Date(customVax.dueDate).toISOString().split('T')[0] : ''}
                 onChange={e => setCustomVax({...customVax, dueDate: new Date(e.target.value)})}
-                className="p-4 rounded-2xl bg-white border border-indigo-200 font-black text-slate-900 outline-none uppercase"
+                className="p-4 rounded-2xl bg-white border border-indigo-200 font-black text-slate-900 outline-hidden uppercase"
               />
            </div>
            <button onClick={handleAddCustom} className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Add to Record</button>
@@ -149,10 +149,10 @@ export const VaccineTracker: React.FC = () => {
                 key={vaccine.id}
                 className={`group rounded-[3rem] border-2 transition-all overflow-hidden ${
                   vaccine.status === 'completed' 
-                    ? 'bg-emerald-50/50 border-emerald-100 shadow-sm' 
+                    ? 'bg-emerald-50/50 border-emerald-100 shadow-xs' 
                     : overdue 
                       ? 'bg-rose-50 border-rose-200 shadow-lg scale-[1.02]'
-                      : 'bg-white border-slate-100 hover:border-indigo-100 shadow-sm'
+                      : 'bg-white border-slate-100 hover:border-indigo-100 shadow-xs'
                 }`}
               >
                 <div className="p-8 flex items-start gap-6">
@@ -163,7 +163,7 @@ export const VaccineTracker: React.FC = () => {
                       aria-label={`${vaccine.name}: mark as received`}
                       checked={vaccine.status === 'completed'}
                       onChange={() => toggleStatus(vaccine.id)}
-                      className="w-14 h-14 rounded-[1.5rem] border-4 border-slate-100 text-emerald-700 focus:ring-emerald-500 cursor-pointer appearance-none checked:bg-emerald-700 checked:border-emerald-600 transition-all shadow-md active:scale-90"
+                      className="w-14 h-14 rounded-3xl border-4 border-slate-100 text-emerald-700 focus:ring-emerald-500 cursor-pointer appearance-none checked:bg-emerald-700 checked:border-emerald-600 transition-all shadow-md active:scale-90"
                     />
                     {vaccine.status === 'completed' && (
                       <span className="absolute inset-0 flex items-center justify-center text-white pointer-events-none text-3xl font-black">✓</span>
@@ -235,7 +235,7 @@ export const VaccineTracker: React.FC = () => {
                           type="date" 
                           value={vaccine.receivedDate ? new Date(vaccine.receivedDate).toISOString().split('T')[0] : ''}
                           onChange={(e) => updateDetails(vaccine.id, 'receivedDate', new Date(e.target.value))}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 shadow-inner uppercase text-lg"
+                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner uppercase text-lg"
                         />
                       </div>
                       <div className="space-y-2">
@@ -245,7 +245,7 @@ export const VaccineTracker: React.FC = () => {
                           placeholder="e.g. Melbourne Children's GP"
                           value={vaccine.clinic || ''}
                           onChange={(e) => updateDetails(vaccine.id, 'clinic', e.target.value)}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 shadow-inner"
+                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner"
                         />
                       </div>
                       <div className="space-y-2">
@@ -255,7 +255,7 @@ export const VaccineTracker: React.FC = () => {
                           placeholder="e.g. GSK (Infanrix Hexa)"
                           value={vaccine.manufacturer || ''}
                           onChange={(e) => updateDetails(vaccine.id, 'manufacturer', e.target.value)}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 shadow-inner"
+                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner"
                         />
                       </div>
                       <div className="space-y-2">
@@ -265,7 +265,7 @@ export const VaccineTracker: React.FC = () => {
                           placeholder="e.g. Lot #99X21"
                           value={vaccine.lotNumber || ''}
                           onChange={(e) => updateDetails(vaccine.id, 'lotNumber', e.target.value)}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 shadow-inner"
+                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner"
                         />
                       </div>
                     </div>
@@ -275,7 +275,7 @@ export const VaccineTracker: React.FC = () => {
                         placeholder="Fever, localized redness, irritability..."
                         value={vaccine.sideEffects || ''}
                         onChange={(e) => updateDetails(vaccine.id, 'sideEffects', e.target.value)}
-                        className="w-full h-32 p-6 rounded-3xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 shadow-inner resize-none text-base"
+                        className="w-full h-32 p-6 rounded-3xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner resize-none text-base"
                        />
                     </div>
                   </div>
@@ -287,7 +287,7 @@ export const VaccineTracker: React.FC = () => {
 
         <div className="lg:col-span-1">
           {loadingInfo ? (
-            <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-sm sticky top-8 animate-pulse text-center space-y-6">
+            <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-xs sticky top-8 animate-pulse text-center space-y-6">
               <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-4xl">🔬</div>
               <p className="text-slate-600 font-black uppercase tracking-widest text-xs">Analyzing National Guidelines...</p>
             </div>
@@ -320,7 +320,7 @@ export const VaccineTracker: React.FC = () => {
               </div>
             </div>
           ) : info ? (
-            <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-2xl sticky top-8 animate-in slide-in-from-right-4 max-h-[85vh] overflow-y-auto border-l-[20px] border-l-indigo-600 relative overflow-hidden">
+            <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-2xl sticky top-8 animate-in slide-in-from-right-4 max-h-[85vh] overflow-y-auto border-l-20 border-l-indigo-600 relative overflow-hidden">
               <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-500 rounded-full opacity-5 blur-[100px]"></div>
               <button aria-label="Close" onClick={() => setInfo(null)} className="absolute top-8 right-8 text-slate-500 font-black text-2xl hover:text-rose-700 transition-colors">×</button>
               <h3 className="text-3xl font-black text-slate-800 mb-8 leading-tight">{info.name}</h3>

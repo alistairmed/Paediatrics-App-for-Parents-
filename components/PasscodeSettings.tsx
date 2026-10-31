@@ -50,10 +50,10 @@ export const PasscodeSettings: React.FC = () => {
     }
   };
 
-  const inputClass = "w-full p-3 rounded-xl border-2 border-slate-300 focus:border-indigo-600 outline-none font-black text-slate-900";
+  const inputClass = "w-full p-3 rounded-xl border-2 border-slate-300 focus:border-indigo-600 outline-hidden font-black text-slate-900";
 
   return (
-    <section className="bg-white p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border border-slate-100 shadow-xl space-y-4">
+    <section className="bg-white p-6 sm:p-10 rounded-4xl sm:rounded-[3rem] border border-slate-100 shadow-xl space-y-4">
       <div className="flex items-center gap-3">
         <span className="text-2xl" aria-hidden="true">🔐</span>
         <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Passcode Lock</h3>

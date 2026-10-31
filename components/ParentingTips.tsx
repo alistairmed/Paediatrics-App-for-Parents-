@@ -301,7 +301,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="e.g. Febrile Convulsion, Stridor..."
-                    className="flex-1 p-5 rounded-2xl bg-white font-black text-slate-900 outline-none border-none shadow-xl placeholder-slate-400"
+                    className="flex-1 p-5 rounded-2xl bg-white font-black text-slate-900 outline-hidden border-none shadow-xl placeholder-slate-400"
                     onKeyPress={e => e.key === 'Enter' && AI_ENABLED && handleExplainTerm()}
                    />
                    {AI_ENABLED ? (
@@ -334,7 +334,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
           )}
 
           {aiTermExplanation && (
-            <div className="bg-white p-12 rounded-[4rem] border-l-[20px] border-l-emerald-600 shadow-2xl animate-in zoom-in-95 relative overflow-hidden flex flex-col">
+            <div className="bg-white p-12 rounded-[4rem] border-l-20 border-l-emerald-600 shadow-2xl animate-in zoom-in-95 relative overflow-hidden flex flex-col">
                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-emerald-500 rounded-full opacity-5 blur-[100px]"></div>
                <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-10 relative z-10">
                   <div className="flex items-center gap-4">
@@ -397,7 +397,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTerms.map((t, i) => (
-                <div key={i} className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all group">
+                <div key={i} className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xs flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all group">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
                       <div className="w-14 h-14 bg-emerald-50 text-emerald-700 rounded-2xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">
@@ -424,13 +424,13 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
       {activeTab === 'tips' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xs space-y-6">
               <div>
                 <label htmlFor="parent-age-group" className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-2 mb-2">Age Group</label>
                 <select id="parent-age-group" 
                   value={age}
                   onChange={e => setAge(e.target.value)}
-                  className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none font-black text-slate-900"
+                  className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 outline-hidden font-black text-slate-900"
                 >
                   <option>Toddler (1-3 years)</option>
                   <option>Preschooler (3-5 years)</option>
@@ -476,8 +476,8 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
 
           <div className="lg:col-span-2">
             {loading ? (
-              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white rounded-[3rem] border border-slate-100 animate-pulse text-center space-y-6 shadow-sm">
-                <div className="w-20 h-20 bg-amber-50 rounded-[2rem] flex items-center justify-center text-5xl animate-bounce shadow-inner">🌻</div>
+              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white rounded-[3rem] border border-slate-100 animate-pulse text-center space-y-6 shadow-xs">
+                <div className="w-20 h-20 bg-amber-50 rounded-4xl flex items-center justify-center text-5xl animate-bounce shadow-inner">🌻</div>
                 <div className="space-y-2">
                   <p className="font-black text-slate-800 uppercase tracking-widest text-sm">Reviewing Clinical Frameworks...</p>
                   <p className="text-slate-600 text-xs font-bold">Synthesizing evidence-based strategies for your child's age group.</p>
@@ -521,7 +521,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                       return (
                         <div key={idx} className={`${isList ? 'ml-6' : ''}`}>
                            {isBold ? (
-                              <div className="bg-amber-50/50 p-6 rounded-3xl border border-amber-100 shadow-sm">
+                              <div className="bg-amber-50/50 p-6 rounded-3xl border border-amber-100 shadow-xs">
                                 <h5 className="text-xl font-black text-amber-950 uppercase tracking-tight mb-2 flex items-center gap-2">
                                    <span className="w-3 h-3 rounded-full bg-amber-500"></span>
                                    {line.replace(/\*\*/g, '')}
@@ -529,7 +529,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                               </div>
                            ) : isList ? (
                               <div className="flex gap-4 items-start py-2">
-                                 <span className="w-2 h-2 rounded-full bg-amber-200 mt-2 shrink-0 shadow-sm"></span>
+                                 <span className="w-2 h-2 rounded-full bg-amber-200 mt-2 shrink-0 shadow-xs"></span>
                                  <p className="text-lg font-black text-slate-700 leading-relaxed">
                                     {line.replace(/^[-•]\s*/, '')}
                                  </p>
@@ -549,7 +549,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                     <p className="text-xs font-black text-amber-700 uppercase tracking-widest">Guideline Registry</p>
                     <div className="flex flex-wrap gap-3">
                       {advice.sources.map((s: any, i: number) => (
-                        <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-slate-600 hover:text-amber-700 bg-white px-5 py-2.5 rounded-2xl border-2 border-slate-100 transition-all flex items-center gap-2 shadow-sm group">
+                        <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-slate-600 hover:text-amber-700 bg-white px-5 py-2.5 rounded-2xl border-2 border-slate-100 transition-all flex items-center gap-2 shadow-xs group">
                           {s.web?.title || 'Health Resource'} <span className="text-xs transition-transform group-hover:translate-x-1">↗</span>
                         </a>
                       ))}
@@ -565,7 +565,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
               </div>
             ) : (
               <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-slate-50/50 border-4 border-dashed border-slate-200 rounded-[4rem] text-center p-12 space-y-6">
-                <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center text-5xl shadow-sm grayscale opacity-30">🌻</div>
+                <div className="w-24 h-24 bg-white rounded-4xl flex items-center justify-center text-5xl shadow-xs grayscale opacity-30">🌻</div>
                 <div className="max-w-sm">
                   <h4 className="font-black text-slate-800 text-xl tracking-tight mb-2 uppercase">Strategy Lab</h4>
                   <p className="text-slate-600 font-bold">Describe a parenting challenge or select a clinical module to receive tailored synthesis.</p>
@@ -592,7 +592,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 href={res.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col justify-between"
+                className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col justify-between"
               >
                 <div>
                   <div className="flex justify-between items-start mb-6">
@@ -627,16 +627,16 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {CLINICAL_MODULES.map((mod, i) => (
-              <div key={i} className={`p-10 rounded-[4rem] border-2 shadow-sm flex flex-col group hover:shadow-xl transition-all ${mod.color}`}>
+              <div key={i} className={`p-10 rounded-[4rem] border-2 shadow-xs flex flex-col group hover:shadow-xl transition-all ${mod.color}`}>
                 <div className="flex items-center gap-6 mb-8">
-                  <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-5xl shadow-sm border border-white group-hover:rotate-6 transition-transform">
+                  <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-5xl shadow-xs border border-white group-hover:rotate-6 transition-transform">
                     {mod.icon}
                   </div>
                   <div className="flex-1">
                     <p className="text-xs font-black text-teal-700 uppercase tracking-[0.2em] mb-1">{mod.focus}</p>
                     <h4 className="text-3xl font-black text-slate-800 leading-tight">{mod.title}</h4>
                   </div>
-                  <a href={mod.url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/40 hover:bg-white rounded-full flex items-center justify-center shadow-sm border border-white/50 transition-all text-teal-700 font-black">↗</a>
+                  <a href={mod.url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/40 hover:bg-white rounded-full flex items-center justify-center shadow-xs border border-white/50 transition-all text-teal-700 font-black">↗</a>
                 </div>
 
                 <div className="space-y-8 flex-1">

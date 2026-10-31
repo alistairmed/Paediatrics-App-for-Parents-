@@ -44,14 +44,14 @@ export const ConfirmProvider: React.FC<{ children: React.ReactNode }> = ({ child
     <ConfirmContext.Provider value={confirm}>
       {children}
       {request && (
-        <div className="fixed inset-0 z-[150] bg-slate-900/60 flex items-center justify-center p-4" onClick={() => close(false)}>
+        <div className="fixed inset-0 z-150 bg-slate-900/60 flex items-center justify-center p-4" onClick={() => close(false)}>
           <div
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="confirm-title"
             aria-describedby="confirm-message"
             onClick={e => e.stopPropagation()}
-            className="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5"
+            className="bg-white rounded-4xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5"
           >
             <h2 id="confirm-title" className="text-xl font-black text-slate-800">{request.title}</h2>
             <p id="confirm-message" className="text-base font-medium text-slate-700 leading-relaxed">{request.message}</p>

@@ -153,7 +153,7 @@ export const AcuteTracker: React.FC = () => {
     setNotes('');
   };
 
-  const inputBaseClass = "w-full p-4 bg-white border-2 border-slate-100 rounded-xl font-black text-slate-900 outline-none focus:border-indigo-600 transition-all placeholder:text-slate-200 text-sm shadow-sm";
+  const inputBaseClass = "w-full p-4 bg-white border-2 border-slate-100 rounded-xl font-black text-slate-900 outline-hidden focus:border-indigo-600 transition-all placeholder:text-slate-200 text-sm shadow-xs";
   const labelBaseClass = "text-xs font-black text-slate-600 uppercase tracking-widest ml-2 mb-1 block";
 
   return (
@@ -164,7 +164,7 @@ export const AcuteTracker: React.FC = () => {
           <p className="text-slate-500 font-bold mt-2">Track recovery and comfort.</p>
         </div>
         <div className="flex gap-3">
-            <div className="bg-indigo-50 border border-indigo-100 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-sm">
+            <div className="bg-indigo-50 border border-indigo-100 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-xs">
                 <span className="text-indigo-600 font-black text-xs uppercase tracking-widest">Net Balance</span>
                 <span className={`font-black text-lg ${balanceStats.balance < 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
                     {balanceStats.balance > 0 ? '+' : ''}{balanceStats.balance} ml
@@ -242,7 +242,7 @@ export const AcuteTracker: React.FC = () => {
             </div>
           )}
 
-          <div className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm space-y-8">
+          <div className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-xs space-y-8">
               <h3 className="text-3xl font-black text-slate-800 tracking-tighter ml-4 leading-none">Recovery Timeline</h3>
 
               <SearchFilterBar
@@ -262,7 +262,7 @@ export const AcuteTracker: React.FC = () => {
 
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 no-scrollbar">
                  {filteredAcuteLogs.length ? filteredAcuteLogs.map(entry => (
-                    <div key={entry.id} className={`p-6 rounded-[2.5rem] border transition-all flex items-center justify-between group bg-white border-slate-100 shadow-sm`}>
+                    <div key={entry.id} className={`p-6 rounded-[2.5rem] border transition-all flex items-center justify-between group bg-white border-slate-100 shadow-xs`}>
                        <div className="flex items-center gap-8">
                           <span className={`text-xs font-black w-14 shrink-0 uppercase text-slate-600`}>{formatLogTime(entry.timestamp)}</span>
                           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 bg-slate-50`}>{(icons as any)[entry.type]}</div>

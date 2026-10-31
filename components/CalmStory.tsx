@@ -125,7 +125,7 @@ export const CalmStory: React.FC = () => {
               value={childName}
               onChange={e => setChildName(e.target.value)}
               placeholder="Enter child's name..."
-              className="w-full p-6 rounded-2xl border-2 border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-none bg-indigo-50/30 text-indigo-950 font-black text-lg placeholder-indigo-300 transition-all shadow-inner" 
+              className="w-full p-6 rounded-2xl border-2 border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-hidden bg-indigo-50/30 text-indigo-950 font-black text-lg placeholder-indigo-300 transition-all shadow-inner" 
             />
           </div>
 
@@ -183,7 +183,7 @@ export const CalmStory: React.FC = () => {
               <button 
               onClick={handleGenerate}
               disabled={loading || !childName}
-              className={`w-full py-6 rounded-[2rem] font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
+              className={`w-full py-6 rounded-4xl font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
                 loading || !childName ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700'
               }`}
             >

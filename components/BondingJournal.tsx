@@ -58,7 +58,7 @@ export const BondingJournal: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm space-y-6">
+          <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xs space-y-6">
             <h4 className="text-xs font-black text-slate-600 uppercase tracking-[0.2em] mb-4">Attachment Behaviors</h4>
             <div className="space-y-3">
               {OBSERVATION_CHECKLIST.map((item) => (
@@ -124,7 +124,7 @@ export const BondingJournal: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-rose-50/50 p-6 rounded-[2rem] border border-rose-100 mb-8 relative z-10 animate-in fade-in zoom-in-95" key={activePromptIdx}>
+            <div className="bg-rose-50/50 p-6 rounded-4xl border border-rose-100 mb-8 relative z-10 animate-in fade-in zoom-in-95" key={activePromptIdx}>
                <p className="text-rose-900 font-bold text-lg leading-relaxed">
                  "{ATTACHMENT_PROMPTS[activePromptIdx].prompt}"
                </p>
@@ -133,7 +133,7 @@ export const BondingJournal: React.FC = () => {
             <textarea 
               value={observations} 
               onChange={e => handleUpdate(e.target.value)} 
-              className="w-full min-h-[400px] p-8 rounded-[3rem] border-2 border-slate-50 outline-none bg-slate-50/20 font-bold text-slate-700 text-xl leading-relaxed shadow-inner focus:ring-4 focus:ring-rose-100 focus:border-rose-100 transition-all z-10"
+              className="w-full min-h-[400px] p-8 rounded-[3rem] border-2 border-slate-50 outline-hidden bg-slate-50/20 font-bold text-slate-700 text-xl leading-relaxed shadow-inner focus:ring-4 focus:ring-rose-100 focus:border-rose-100 transition-all z-10"
               placeholder={`Share your thoughts about ${childProfile?.name || 'your child'} here...`}
             />
 

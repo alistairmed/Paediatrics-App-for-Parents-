@@ -179,7 +179,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
 
   return (
     <div className={`min-h-screen print:min-h-0 flex flex-col md:flex-row bg-[#FBFBFE] print:bg-white`}>
-      <header className="md:hidden print:hidden flex items-center justify-between gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+      <header className="md:hidden print:hidden flex items-center justify-between gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
         <button onClick={() => handleNav('dashboard')} aria-label="PediPulse home" className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 shrink-0 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-xl shadow-md">👶</span>
           <span className="min-w-0 text-left">
@@ -191,7 +191,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
       </header>
 
       {isMobileMenuOpen && (
-        <div role="dialog" aria-modal="true" aria-label="All sections" className="md:hidden fixed inset-0 z-[60] bg-slate-50 overflow-y-auto overscroll-contain">
+        <div role="dialog" aria-modal="true" aria-label="All sections" className="md:hidden fixed inset-0 z-60 bg-slate-50 overflow-y-auto overscroll-contain">
           <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200">
             <h2 className="text-lg font-black text-slate-800">All sections</h2>
             <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu" className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-2xl text-slate-700">×</button>

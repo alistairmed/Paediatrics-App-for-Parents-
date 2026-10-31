@@ -151,7 +151,7 @@ export const RegulatoryRisk: React.FC = () => {
             { sign: 'Lethargic/Unconscious', trigger: 'Symptom: "lethargic"', action: 'Urgent Escalation' },
             { sign: 'Fever in Young Infant', trigger: 'Age <3mo + Fever ≥38°C', action: 'Urgent Escalation' },
           ].map((item, i) => (
-            <div key={i} className="bg-white p-4 rounded-2xl border border-slate-100 space-y-2 shadow-sm">
+            <div key={i} className="bg-white p-4 rounded-2xl border border-slate-100 space-y-2 shadow-xs">
               <h5 className="font-black text-slate-800 text-xs uppercase tracking-tight">{item.sign}</h5>
               <p className="text-xs text-slate-600 font-bold">{item.trigger}</p>
               <div className="pt-2 border-t border-slate-50 flex items-center gap-2">
@@ -181,7 +181,7 @@ export const RegulatoryRisk: React.FC = () => {
              { step: '4', title: 'Verification', desc: 'Relevant clinical tests updated; governance logs reviewed.' },
            ].map((s, i) => (
              <div key={i} className="flex gap-6 items-start">
-               <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center font-black text-indigo-600 shrink-0 border border-indigo-100 shadow-sm">{s.step}</div>
+               <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center font-black text-indigo-600 shrink-0 border border-indigo-100 shadow-xs">{s.step}</div>
                <div>
                   <h5 className="font-black text-slate-800 text-sm">{s.title}</h5>
                   <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">{s.desc}</p>

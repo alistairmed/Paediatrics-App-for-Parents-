@@ -44,10 +44,10 @@ export const GovernanceLog: React.FC = () => {
           </div>
         ) : (
           log.map((entry) => (
-            <div key={entry.id} className="p-6 rounded-[2rem] border border-slate-50 bg-slate-50/20 hover:bg-slate-50 transition-colors space-y-4 relative group">
+            <div key={entry.id} className="p-6 rounded-4xl border border-slate-50 bg-slate-50/20 hover:bg-slate-50 transition-colors space-y-4 relative group">
               <button 
                 onClick={() => copyEntry(entry)}
-                className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-slate-100 p-2 rounded-xl text-xs font-black uppercase tracking-widest text-slate-600 hover:text-indigo-600 hover:border-indigo-100 shadow-sm"
+                className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-slate-100 p-2 rounded-xl text-xs font-black uppercase tracking-widest text-slate-600 hover:text-indigo-600 hover:border-indigo-100 shadow-xs"
               >
                 Copy Rationale 📋
               </button>
@@ -87,7 +87,7 @@ export const GovernanceLog: React.FC = () => {
               {entry.redFlags && entry.redFlags.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-2">
                   {entry.redFlags.map(rf => (
-                    <span key={rf} className="px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-black uppercase tracking-widest shadow-sm">🚩 ALERT: {rf}</span>
+                    <span key={rf} className="px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-black uppercase tracking-widest shadow-xs">🚩 ALERT: {rf}</span>
                   ))}
                 </div>
               )}

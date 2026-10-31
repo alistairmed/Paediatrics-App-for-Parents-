@@ -54,9 +54,9 @@ const DisclaimerModal: React.FC = () => {
   if (hasAcceptedDisclaimer || activeView === 'privacy' || activeView === 'terms') return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div role="dialog" aria-modal="true" aria-labelledby="disclaimer-title" className="bg-white rounded-[3rem] max-w-lg w-full p-10 shadow-2xl space-y-8 animate-in zoom-in-95">
-         <div className="w-20 h-20 bg-rose-50 text-rose-700 rounded-[2rem] flex items-center justify-center text-4xl shadow-inner mx-auto" aria-hidden="true">⚠️</div>
+         <div className="w-20 h-20 bg-rose-50 text-rose-700 rounded-4xl flex items-center justify-center text-4xl shadow-inner mx-auto" aria-hidden="true">⚠️</div>
          <div className="text-center space-y-4">
             <h2 id="disclaimer-title" className="text-3xl font-black text-slate-800 tracking-tight leading-none">Purpose & Safety Notice</h2>
             <div className="text-slate-700 font-medium space-y-4 leading-relaxed text-base">
@@ -68,7 +68,7 @@ const DisclaimerModal: React.FC = () => {
          <div className="space-y-3">
            <button 
             onClick={acceptDisclaimer}
-            className="w-full py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest shadow-xl hover:bg-indigo-700 transition-all"
+            className="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black uppercase tracking-widest shadow-xl hover:bg-indigo-700 transition-all"
            >
              I Understand & Agree
            </button>
@@ -162,7 +162,7 @@ const AppContent: React.FC = () => {
   return (
     <Layout activeView={activeView} onNavigate={navigateTo}>
       <DisclaimerModal />
-      <div className="print:hidden bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-sm space-y-1">
+      <div className="print:hidden bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-xs space-y-1">
         <p className="text-xs font-black text-rose-700 uppercase tracking-wider sm:tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
         <p className="hidden sm:block text-xs text-rose-700 font-bold">{AI_ENABLED ? 'AI features send your entries to Google Gemini' : 'Data remains on this device'} • Replaces no clinical judgment.</p>
       </div>

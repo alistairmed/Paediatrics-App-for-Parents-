@@ -33,7 +33,7 @@ export const WhenToGetHelp: React.FC = () => (
       </p>
     </header>
 
-    <section className="bg-rose-600 text-white rounded-[2rem] p-6 sm:p-8 space-y-4 shadow-xl">
+    <section className="bg-rose-600 text-white rounded-4xl p-6 sm:p-8 space-y-4 shadow-xl">
       <h3 className="text-xl font-black">Call 000 now if your child has:</h3>
       <ul className="space-y-2 list-disc pl-5 text-base font-bold">
         {CALL_000.map(sign => <li key={sign}>{sign}</li>)}
@@ -41,7 +41,7 @@ export const WhenToGetHelp: React.FC = () => (
       <a href="tel:000" className="inline-block bg-white text-rose-700 font-black px-6 py-3 rounded-2xl">Call 000</a>
     </section>
 
-    <section className="bg-amber-50 border-2 border-amber-200 rounded-[2rem] p-6 sm:p-8 space-y-4">
+    <section className="bg-amber-50 border-2 border-amber-200 rounded-4xl p-6 sm:p-8 space-y-4">
       <h3 className="text-xl font-black text-amber-950">See a doctor today, or call healthdirect on 1800 022 222, if:</h3>
       <ul className="space-y-2 list-disc pl-5 text-base font-bold text-amber-950">
         {SEE_DOCTOR_TODAY.map(sign => <li key={sign}>{sign}</li>)}

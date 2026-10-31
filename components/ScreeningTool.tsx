@@ -218,7 +218,7 @@ export const ScreeningTool: React.FC = () => {
         </div>
         <div className="flex flex-wrap gap-2 w-full md:w-auto">
             {viewState !== 'hub' && (
-                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm min-h-[44px]">Return to Hub</button>
+                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xs min-h-[44px]">Return to Hub</button>
             )}
             {viewState === 'hub' && (
                 <button onClick={handleStartFinder} className="w-full md:w-auto bg-teal-700 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl hover:bg-teal-800 active:scale-95 transition-all min-h-[44px]">Start Test Finder ✨</button>
@@ -241,7 +241,7 @@ export const ScreeningTool: React.FC = () => {
                             if (!finderPath.age) setFinderPath({ age: opt.id });
                             else handleSelectTest(opt.test);
                         }}
-                        className="bg-slate-50 p-6 sm:p-8 rounded-[2rem] border border-slate-100 hover:border-teal-500 hover:bg-teal-50 transition-all text-center group min-h-[44px]"
+                        className="bg-slate-50 p-6 sm:p-8 rounded-4xl border border-slate-100 hover:border-teal-500 hover:bg-teal-50 transition-all text-center group min-h-[44px]"
                     >
                         <p className="text-base sm:text-lg font-black text-slate-800 group-hover:text-teal-900">{opt.label}</p>
                         <p className="text-xs font-black text-slate-600 uppercase tracking-widest mt-1">Select Option <span>→</span></p>
@@ -263,7 +263,7 @@ export const ScreeningTool: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {Object.values(SCREENING_MODS).map((mod) => {
               return (
-                <div key={mod.id} className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative flex flex-col justify-between">
+                <div key={mod.id} className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-100 shadow-xs hover:shadow-xl transition-all group relative flex flex-col justify-between">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
                         <div className="flex items-center gap-2">
@@ -326,7 +326,7 @@ export const ScreeningTool: React.FC = () => {
                  </div>
               </div>
 
-              <div role="note" className="bg-amber-50 border-2 border-amber-200 rounded-[2rem] p-6 space-y-2">
+              <div role="note" className="bg-amber-50 border-2 border-amber-200 rounded-4xl p-6 space-y-2">
                 <p className="text-sm font-bold text-amber-950 leading-relaxed">
                   This check can't diagnose or rule out any condition. Use it to organise what you've noticed before talking with your GP, child health nurse or paediatrician.
                 </p>
@@ -338,12 +338,12 @@ export const ScreeningTool: React.FC = () => {
               </div>
 
               {activeMod.questions.map((q, i) => (
-                <div key={q.id} className="bg-white p-8 rounded-[3rem] border border-slate-100 flex flex-col lg:flex-row justify-between items-center gap-6 shadow-sm hover:border-teal-100 transition-colors">
+                <div key={q.id} className="bg-white p-8 rounded-[3rem] border border-slate-100 flex flex-col lg:flex-row justify-between items-center gap-6 shadow-xs hover:border-teal-100 transition-colors">
                   <div className="flex gap-6 items-start flex-1">
                     <span className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-xs font-black text-slate-600 shrink-0 border border-slate-100">{i+1}</span>
                     <p className="text-xl font-black text-slate-700 leading-snug">{q.text}</p>
                   </div>
-                  <div className="flex bg-slate-50 p-1.5 rounded-[1.5rem] border border-slate-100 shadow-inner overflow-x-auto no-scrollbar">
+                  <div className="flex bg-slate-50 p-1.5 rounded-3xl border border-slate-100 shadow-inner overflow-x-auto no-scrollbar">
                     {activeMod.options.map(opt => (
                       <button 
                         key={opt.value}
@@ -374,7 +374,7 @@ export const ScreeningTool: React.FC = () => {
                     <button
                       onClick={() => setShowAnswers(true)}
                       disabled={Object.keys(responses).length === 0}
-                      className="w-full py-6 bg-teal-700 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl disabled:bg-slate-300 hover:bg-teal-800"
+                      className="w-full py-6 bg-teal-700 text-white rounded-4xl font-black uppercase tracking-widest shadow-xl disabled:bg-slate-300 hover:bg-teal-800"
                     >
                       See My Answers
                     </button>
@@ -385,7 +385,7 @@ export const ScreeningTool: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-10 animate-in zoom-in-95">
-              <div className="bg-white p-12 rounded-[4rem] border-l-[24px] border-l-teal-600 shadow-2xl space-y-12 relative overflow-hidden">
+              <div className="bg-white p-12 rounded-[4rem] border-l-24 border-l-teal-600 shadow-2xl space-y-12 relative overflow-hidden">
                  <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-teal-50 rounded-full opacity-50 blur-[100px]"></div>
                  
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
@@ -403,8 +403,8 @@ export const ScreeningTool: React.FC = () => {
                             <h4 className="text-xs font-black uppercase text-teal-700 tracking-[0.3em] ml-2">Clinical Recommendations</h4>
                             <div className="space-y-4">
                                 {analysis.actionableTips?.map((t: string, i: number) => (
-                                    <div key={i} className="bg-teal-50/50 p-6 rounded-3xl border border-teal-100 flex gap-6 shadow-sm group hover:bg-white transition-all">
-                                        <span className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm group-hover:scale-110 transition-transform">📋</span>
+                                    <div key={i} className="bg-teal-50/50 p-6 rounded-3xl border border-teal-100 flex gap-6 shadow-xs group hover:bg-white transition-all">
+                                        <span className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-xs group-hover:scale-110 transition-transform">📋</span>
                                         <p className="text-sm font-black text-teal-950 leading-snug">{t}</p>
                                     </div>
                                 ))}

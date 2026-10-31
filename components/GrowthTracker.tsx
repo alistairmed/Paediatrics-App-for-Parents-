@@ -106,7 +106,7 @@ export const GrowthTracker: React.FC = () => {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <form onSubmit={handleAdd} className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-4 self-start">
+        <form onSubmit={handleAdd} className="bg-white p-6 rounded-4xl border border-slate-200 shadow-xs space-y-4 self-start">
           <h3 className="font-black text-slate-800">Add a measurement</h3>
           <label className="block">
             <span className={labelClass}>Date measured</span>
@@ -128,13 +128,13 @@ export const GrowthTracker: React.FC = () => {
           <button type="submit" className="w-full min-h-[48px] bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl uppercase tracking-widest text-xs">Save Measurement</button>
         </form>
 
-        <section className="lg:col-span-2 bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-4" aria-labelledby="growth-chart-title">
+        <section className="lg:col-span-2 bg-white p-6 rounded-4xl border border-slate-200 shadow-xs space-y-4" aria-labelledby="growth-chart-title">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h3 id="growth-chart-title" className="font-black text-slate-800">{measure.label} for age ({sex === 'male' ? 'boys' : 'girls'})</h3>
             <div className="flex gap-1 bg-slate-100 p-1 rounded-xl" role="tablist" aria-label="Measurement">
               {MEASURES.map(m => (
                 <button key={m.id} role="tab" aria-selected={m.id === measureId} onClick={() => setMeasureId(m.id)}
-                  className={`px-3 py-2 rounded-lg text-sm font-bold min-h-[40px] ${m.id === measureId ? 'bg-white text-indigo-700 shadow' : 'text-slate-600'}`}>
+                  className={`px-3 py-2 rounded-lg text-sm font-bold min-h-[40px] ${m.id === measureId ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600'}`}>
                   {m.label}
                 </button>
               ))}

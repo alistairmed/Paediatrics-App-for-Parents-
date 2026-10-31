@@ -113,7 +113,7 @@ export const RedBook: React.FC = () => {
       )}
 
       <header className="flex items-center gap-4 px-1">
-        <div className="w-12 h-16 bg-rose-600 rounded-xl flex items-center justify-center text-white font-black text-xs rotate-[-3deg] border-2 border-white shadow-lg uppercase">Book</div>
+        <div className="w-12 h-16 bg-rose-600 rounded-xl flex items-center justify-center text-white font-black text-xs -rotate-3 border-2 border-white shadow-lg uppercase">Book</div>
         <div>
           <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Digital <span className="text-rose-700">Red Book</span></h2>
           <p className="text-slate-500 text-xs font-medium">Standardized Child Health Record Sync</p>
@@ -121,7 +121,7 @@ export const RedBook: React.FC = () => {
       </header>
 
       <nav className="sticky top-[58px] md:top-0 z-40 bg-[#FBFBFE]/80 backdrop-blur-md py-2">
-        <div className="bg-white p-1 rounded-full border border-slate-200 shadow-sm flex items-center">
+        <div className="bg-white p-1 rounded-full border border-slate-200 shadow-xs flex items-center">
           {tabs.map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`flex-1 py-3.5 rounded-full font-black transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2 ${activeTab === tab.id ? 'bg-rose-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
               <span className="text-lg">{tab.icon}</span>
@@ -146,7 +146,7 @@ export const RedBook: React.FC = () => {
                   <div key={check.id} className="relative pl-12">
                     <button aria-label={check.completed ? `Mark the ${check.ageMilestone} check as not done` : `Mark the ${check.ageMilestone} check as done`} 
                       onClick={() => toggleCheck(check.id)}
-                      className={`absolute left-0 w-10 h-10 rounded-2xl border-2 flex items-center justify-center transition-all z-10 shadow-sm ${
+                      className={`absolute left-0 w-10 h-10 rounded-2xl border-2 flex items-center justify-center transition-all z-10 shadow-xs ${
                         check.completed ? 'bg-rose-600 border-rose-500 text-white' : 'bg-white border-slate-100 text-slate-200'
                       }`}
                     >
@@ -154,7 +154,7 @@ export const RedBook: React.FC = () => {
                     </button>
                     <div 
                       className={`p-6 rounded-3xl border transition-all cursor-pointer ${
-                        activeCheck === check.id ? 'border-rose-100 bg-rose-50/30 shadow-lg' : 'border-slate-50 bg-white shadow-sm hover:border-rose-100'
+                        activeCheck === check.id ? 'border-rose-100 bg-rose-50/30 shadow-lg' : 'border-slate-50 bg-white shadow-xs hover:border-rose-100'
                       }`}
                       onClick={() => setActiveCheck(activeCheck === check.id ? null : check.id)}
                     >
@@ -162,7 +162,7 @@ export const RedBook: React.FC = () => {
                         <div>
                           <h4 className="font-black text-xl text-slate-800 tracking-tight">{check.ageMilestone} Health Check</h4>
                           <div className="flex gap-2 mt-2">
-                            {check.completed && <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase">Assessment Complete</span>}
+                            {check.completed && <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-100 uppercase">Assessment Complete</span>}
                             {vax && (
                               <span className={`text-xs font-black uppercase px-2 py-0.5 rounded border ${
                                 vax.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'
@@ -179,7 +179,7 @@ export const RedBook: React.FC = () => {
                           <div className="relative">
                             <label htmlFor="redboo-assessment-notes" className="text-xs font-black uppercase text-slate-600 tracking-widest absolute -top-2 left-4 bg-white px-2">Assessment Notes</label>
                             <textarea id="redboo-assessment-notes" 
-                                className="w-full h-32 p-6 rounded-[2rem] border border-slate-100 bg-white text-sm font-bold outline-none focus:ring-4 focus:ring-rose-50 transition-all shadow-inner"
+                                className="w-full h-32 p-6 rounded-4xl border border-slate-100 bg-white text-sm font-bold outline-hidden focus:ring-4 focus:ring-rose-50 transition-all shadow-inner"
                                 placeholder="Log weight gain, feeding concerns, or developmental observations..."
                                 value={check.notes}
                                 onChange={(e) => updateNotes(check.id, e.target.value)}

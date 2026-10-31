@@ -139,7 +139,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 onClick={() => onCategoryChange && onCategoryChange(cat.value)}
                 className={`px-4 py-1.5 rounded-full font-black text-xs transition-all shrink-0 ${
                   isSelected
-                    ? 'bg-violet-600 text-white shadow-sm scale-105'
+                    ? 'bg-violet-600 text-white shadow-xs scale-105'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >

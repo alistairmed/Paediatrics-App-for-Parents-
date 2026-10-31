@@ -32,7 +32,7 @@ export const AiConsentSettings: React.FC = () => {
   const [given, setGiven] = useState(hasAiConsent);
   if (!AI_ENABLED) return null;
   return (
-    <section className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-200 space-y-3" aria-labelledby="ai-consent-title">
+    <section className="bg-white p-6 sm:p-8 rounded-4xl border border-slate-200 space-y-3" aria-labelledby="ai-consent-title">
       <h3 id="ai-consent-title" className="text-xl font-black text-slate-800">AI features</h3>
       <p className="text-base font-medium text-slate-700">
         {given

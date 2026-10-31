@@ -72,13 +72,13 @@ const ChildProfileForm: React.FC = () => {
     finish();
   };
 
-  const inputClass = "w-full p-4 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none font-bold text-slate-900 text-base";
+  const inputClass = "w-full p-4 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-hidden font-bold text-slate-900 text-base";
   const labelClass = "block text-sm font-bold text-slate-700 mb-1.5";
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 pb-28">
       <header className="text-center space-y-3">
-        <div className="w-20 h-20 bg-indigo-600 text-white rounded-[2rem] flex items-center justify-center text-4xl mx-auto shadow-xl" aria-hidden="true">👶</div>
+        <div className="w-20 h-20 bg-indigo-600 text-white rounded-4xl flex items-center justify-center text-4xl mx-auto shadow-xl" aria-hidden="true">👶</div>
         <h2 className="text-3xl font-black text-slate-800 tracking-tight">
           {editing ? `Edit ${editing.name}'s profile` : isFirstChild ? 'Add your child' : 'Add another child'}
         </h2>
@@ -111,7 +111,7 @@ const ChildProfileForm: React.FC = () => {
 
         {error && <p role="alert" className="text-sm font-bold text-rose-700">{error}</p>}
 
-        <button type="submit" className="w-full py-5 min-h-[48px] text-white font-black rounded-[2rem] shadow-xl bg-indigo-600 hover:bg-indigo-700 uppercase tracking-widest">
+        <button type="submit" className="w-full py-5 min-h-[48px] text-white font-black rounded-4xl shadow-xl bg-indigo-600 hover:bg-indigo-700 uppercase tracking-widest">
           {editing ? 'Save Profile' : `Add ${name.trim() || 'Child'}`}
         </button>
 

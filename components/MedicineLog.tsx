@@ -48,7 +48,7 @@ export const MedicineLog: React.FC = () => {
   };
 
   return (
-    <section className="bg-white border-2 border-slate-200 rounded-[2rem] p-6 sm:p-8 space-y-6" aria-labelledby="medicine-log-title">
+    <section className="bg-white border-2 border-slate-200 rounded-4xl p-6 sm:p-8 space-y-6" aria-labelledby="medicine-log-title">
       <div className="space-y-1">
         <h3 id="medicine-log-title" className="text-xl font-black text-slate-800">Medicine log{childProfile ? ` for ${childProfile.name}` : ''}</h3>
         <p className="text-sm font-medium text-slate-600">

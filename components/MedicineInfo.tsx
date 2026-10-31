@@ -34,7 +34,7 @@ export const MedicineInfo: React.FC<{ children?: React.ReactNode }> = ({ childre
       </p>
     </header>
 
-    <section className="bg-emerald-50 border-2 border-emerald-200 rounded-[2rem] p-6 sm:p-8 space-y-3">
+    <section className="bg-emerald-50 border-2 border-emerald-200 rounded-4xl p-6 sm:p-8 space-y-3">
       <h3 className="text-xl font-black text-emerald-950">Getting the dose right</h3>
       <ul className="space-y-2 list-disc pl-5 text-base font-bold text-emerald-950">
         <li>Follow the dosing instructions on the label for your child's weight or age.</li>
@@ -46,7 +46,7 @@ export const MedicineInfo: React.FC<{ children?: React.ReactNode }> = ({ childre
 
     <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {RULES.map(rule => (
-        <div key={rule.name} className="bg-white border-2 border-slate-200 rounded-[2rem] p-6 space-y-2">
+        <div key={rule.name} className="bg-white border-2 border-slate-200 rounded-4xl p-6 space-y-2">
           <h3 className="text-lg font-black text-slate-800">{rule.name}</h3>
           <ul className="space-y-1 list-disc pl-5 text-base font-medium text-slate-700">
             {rule.points.map(point => <li key={point}>{point}</li>)}
