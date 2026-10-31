@@ -8,6 +8,7 @@ import { MedicalHistoryProvider, useMedicalHistory } from './context/MedicalHist
 import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
 import { ToastProvider } from './context/ToastContext';
+import { ConfirmProvider } from './context/ConfirmContext';
 import { LockScreen } from './components/LockScreen';
 import { isLockEnabled, isUnlocked, lockNow } from './utils/vault';
 
@@ -187,6 +188,7 @@ const App: React.FC = () => {
   return (
     <NavigationProvider>
       <ToastProvider>
+      <ConfirmProvider>
         <EnvironmentProvider>
           <GovernanceProvider>
             <ChildProfileProvider>
@@ -196,6 +198,7 @@ const App: React.FC = () => {
             </ChildProfileProvider>
           </GovernanceProvider>
         </EnvironmentProvider>
+      </ConfirmProvider>
       </ToastProvider>
     </NavigationProvider>
   );
