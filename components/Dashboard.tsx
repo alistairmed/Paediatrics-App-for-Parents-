@@ -61,8 +61,8 @@ export const Dashboard: React.FC = () => {
            <div className="hidden sm:flex w-24 h-24 bg-white/20 rounded-[2.5rem] items-center justify-center text-4xl sm:text-5xl shadow-inner border border-white/10 rotate-[-4deg] shrink-0">🏠</div>
            <div className="text-center md:text-left">
               <p className="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2">{hasSkippedSetup ? 'GUEST REGISTRY ACTIVE' : 'PEDI-PULSE REGISTRY ACTIVE'}</p>
-              <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter leading-none mb-3 sm:mb-4">Welcome Home, {childProfile?.name?.split(' ')[0] || 'Guest'}.</h2>
-              <p className="hidden sm:block text-indigo-100 font-medium italic opacity-90 max-w-lg text-base">
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tighter leading-none mb-3 sm:mb-4">Welcome Home, {childProfile?.name?.split(' ')[0] || 'Guest'}.</h2>
+              <p className="hidden sm:block text-indigo-100 font-medium opacity-90 max-w-lg text-base">
                 Your clinical workstation is initialized. Use the quick actions below to track wellness, or explore the Medical Hub for deeper history.
               </p>
               {hasSkippedSetup && (
@@ -91,12 +91,12 @@ export const Dashboard: React.FC = () => {
               <p className="text-sm font-medium text-slate-600">Book with your GP or immunisation provider, or mark them as given if they're done.</p>
             </div>
           </div>
-          <button onClick={() => navigateTo('vaccines')} className="shrink-0 min-h-[44px] px-6 py-3 bg-teal-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Open Vaccines</button>
+          <button onClick={() => navigateTo('vaccines')} className="shrink-0 min-h-[44px] px-6 py-3 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Open Vaccines</button>
         </section>
       )}
 
       <section className="space-y-3 sm:space-y-4">
-         <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-2 sm:ml-4">Vital Management</h4>
+         <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest ml-2 sm:ml-4">Vital Management</h4>
          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <button onClick={() => navigateTo('acutelogs')} className="p-4 sm:p-6 min-h-[90px] bg-white border border-slate-200 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm flex flex-col items-center justify-center gap-2 hover:scale-105 transition-all group active:bg-slate-50">
                <span className="text-3xl sm:text-4xl group-hover:rotate-12 transition-transform">🌡️</span>
@@ -120,8 +120,8 @@ export const Dashboard: React.FC = () => {
       <section className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] border border-slate-100 shadow-xl space-y-6 sm:space-y-8">
          <div className="flex justify-between items-center px-2 sm:px-4">
             <div>
-               <h3 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight italic leading-none">Health at a Glance</h3>
-               <p className="text-xs font-black uppercase text-slate-400 mt-1.5 tracking-widest">Recent Activity Trend</p>
+               <h3 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight leading-none">Health at a Glance</h3>
+               <p className="text-xs font-black uppercase text-slate-600 mt-1.5 tracking-widest">Recent Activity Trend</p>
             </div>
             <button onClick={() => navigateTo('acutelogs')} className="text-xs font-black text-indigo-600 uppercase underline min-h-[44px] flex items-center">Full Log View</button>
          </div>
@@ -144,8 +144,8 @@ export const Dashboard: React.FC = () => {
             <div className="py-12 sm:py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] sm:rounded-[3rem] flex flex-col items-center gap-3 sm:gap-4 p-4">
                <span className="text-5xl sm:text-6xl grayscale opacity-20">📉</span>
                <div className="max-w-xs">
-                  <p className="text-xs sm:text-sm font-black text-slate-400 uppercase tracking-widest">No Wellness Data Yet</p>
-                  <p className="text-xs font-bold text-slate-400 italic mt-1">Log a fever or fluid intake to see your child's recovery trend here.</p>
+                  <p className="text-xs sm:text-sm font-black text-slate-600 uppercase tracking-widest">No Wellness Data Yet</p>
+                  <p className="text-xs font-bold text-slate-600 mt-1">Log a fever or fluid intake to see your child's recovery trend here.</p>
                </div>
             </div>
          )}
@@ -160,8 +160,8 @@ export const Dashboard: React.FC = () => {
           <div className="relative z-10 flex flex-col justify-between h-full space-y-12 sm:space-y-20">
             <div>
               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-6 sm:mb-8">📋</div>
-              <h3 className="text-3xl sm:text-4xl font-black italic tracking-tighter leading-tight">Longitudinal <br/> Medical Hub</h3>
-              <p className="text-indigo-200 font-medium text-sm sm:text-lg mt-3 sm:mt-4 max-w-sm leading-relaxed italic opacity-80">Synthesis of the clinical story, MDT care team coordination, and specialist letters.</p>
+              <h3 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight">Longitudinal <br/> Medical Hub</h3>
+              <p className="text-indigo-200 font-medium text-sm sm:text-lg mt-3 sm:mt-4 max-w-sm leading-relaxed opacity-80">Synthesis of the clinical story, MDT care team coordination, and specialist letters.</p>
             </div>
             <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-indigo-300 group-hover:text-white transition-colors">
               Access Patient History <span>→</span>
@@ -177,7 +177,7 @@ export const Dashboard: React.FC = () => {
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm mb-4 sm:mb-6 group-hover:scale-110 transition-transform">✨</div>
             <div>
               <h3 className="text-xl sm:text-2xl font-black text-teal-900 tracking-tight">Milestone Sync</h3>
-              <p className="text-xs font-black uppercase text-teal-600 mt-1.5 tracking-widest">Growth Tracking</p>
+              <p className="text-xs font-black uppercase text-teal-700 mt-1.5 tracking-widest">Growth Tracking</p>
             </div>
           </div>
           
@@ -188,7 +188,7 @@ export const Dashboard: React.FC = () => {
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm mb-4 sm:mb-6 group-hover:scale-110 transition-transform">📕</div>
             <div>
               <h3 className="text-xl sm:text-2xl font-black text-rose-900 tracking-tight">Digital Red Book</h3>
-              <p className="text-xs font-black uppercase text-rose-600 mt-1.5 tracking-widest">Immunisation Record</p>
+              <p className="text-xs font-black uppercase text-rose-700 mt-1.5 tracking-widest">Immunisation Record</p>
             </div>
           </div>
 
@@ -202,7 +202,7 @@ export const Dashboard: React.FC = () => {
             </div>
             <div className="mt-6 sm:mt-8">
               <h3 className="text-2xl sm:text-3xl font-black text-amber-900 tracking-tight">Parenting Strategy Hub</h3>
-              <p className="text-xs sm:text-sm font-medium text-amber-800/80 mt-2 leading-relaxed italic">Evidence-based guidance for behavior, anxiety, and development.</p>
+              <p className="text-xs sm:text-sm font-medium text-amber-800 mt-2 leading-relaxed">Evidence-based guidance for behavior, anxiety, and development.</p>
             </div>
           </div>
         </div>

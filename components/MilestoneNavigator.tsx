@@ -187,11 +187,11 @@ export const MilestoneNavigator: React.FC = () => {
     const colors: Record<string, string> = {
       Motor: 'bg-blue-50 text-blue-600 border-blue-100',
       Language: 'bg-purple-50 text-purple-600 border-purple-100',
-      Social: 'bg-pink-50 text-pink-600 border-pink-100',
-      Cognitive: 'bg-amber-50 text-amber-600 border-amber-100',
+      Social: 'bg-pink-50 text-pink-700 border-pink-100',
+      Cognitive: 'bg-amber-50 text-amber-700 border-amber-100',
     };
     return (
-      <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border shadow-sm flex items-center gap-1.5 ${colors[category] || 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+      <span className={`px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm flex items-center gap-1.5 ${colors[category] || 'bg-slate-50 text-slate-500 border-slate-100'}`}>
         <span>{domain?.icon}</span>
         {category}
       </span>
@@ -204,12 +204,12 @@ export const MilestoneNavigator: React.FC = () => {
       <header className="sticky top-0 z-50 bg-[#FBFBFE]/95 backdrop-blur-xl border-b border-slate-100 px-4 py-4 -mx-4 md:static md:bg-transparent md:border-none md:p-0 md:m-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-             <div className="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-xl shadow-lg rotate-[-3deg]">✨</div>
-             <h2 className="text-2xl font-black text-slate-800 tracking-tighter italic">Milestone <span className="text-teal-600">Sync</span></h2>
+             <div className="w-10 h-10 bg-teal-700 rounded-xl flex items-center justify-center text-xl shadow-lg rotate-[-3deg]">✨</div>
+             <h2 className="text-2xl font-black text-slate-800 tracking-tighter">Milestone <span className="text-teal-700">Sync</span></h2>
           </div>
-          <button 
+          <button aria-label={showAddCustom ? 'Cancel adding a milestone' : 'Add a milestone'} 
             onClick={() => setShowAddCustom(!showAddCustom)}
-            className="bg-teal-50 text-teal-600 p-2.5 rounded-xl border border-teal-100 shadow-sm active:scale-95 transition-all"
+            className="bg-teal-50 text-teal-700 p-2.5 rounded-xl border border-teal-100 shadow-sm active:scale-95 transition-all"
             title="Add Observation"
           >
             {showAddCustom ? <span className="text-sm font-black">Cancel</span> : <span className="text-xl">➕</span>}
@@ -219,21 +219,21 @@ export const MilestoneNavigator: React.FC = () => {
 
       {/* Quick Source Link */}
       <div className="px-4 flex flex-wrap items-center gap-2">
-        <p className="text-slate-400 text-[10px] font-bold italic">Standardized Clinical Markers</p>
+        <p className="text-slate-600 text-xs font-bold">Standardized Clinical Markers</p>
         <div className="flex gap-1.5">
-          <a href="https://www.childrens.health.qld.gov.au/..." target="_blank" className="text-[8px] font-black text-teal-600 bg-teal-50 px-2 py-0.5 rounded uppercase tracking-widest border border-teal-100">QCH Flags ↗</a>
-          <a href="https://www.pedscases.com/..." target="_blank" className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-widest border border-blue-100">PedsCases ↗</a>
+          <a href="https://www.childrens.health.qld.gov.au/..." target="_blank" className="text-xs font-black text-teal-700 bg-teal-50 px-2 py-0.5 rounded uppercase tracking-widest border border-teal-100">QCH Flags ↗</a>
+          <a href="https://www.pedscases.com/..." target="_blank" className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-widest border border-blue-100">PedsCases ↗</a>
         </div>
       </div>
 
       {/* Floating Entry Panel */}
       {showAddCustom && (
         <div className="fixed inset-x-4 top-20 z-[60] bg-white p-6 rounded-[2.5rem] border-2 border-teal-100 shadow-2xl animate-in slide-in-from-top-4 space-y-6 md:relative md:top-0 md:inset-x-0 md:bg-teal-50/50">
-           <h3 className="text-lg font-black text-teal-900 italic tracking-tight">Log Private Observation for {activeAge}</h3>
+           <h3 className="text-lg font-black text-teal-900 tracking-tight">Log Private Observation for {activeAge}</h3>
            <div className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-black text-teal-600 uppercase tracking-widest ml-3">Observation</label>
-                <input 
+                <label htmlFor="milest-observation" className="text-xs font-black text-teal-700 uppercase tracking-widest ml-3">Observation</label>
+                <input id="milest-observation" 
                   placeholder="e.g. Points to birds, says 'Dada'..." 
                   value={customMilestone.description}
                   onChange={e => setCustomMilestone({...customMilestone, description: e.target.value})}
@@ -241,8 +241,8 @@ export const MilestoneNavigator: React.FC = () => {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[9px] font-black text-teal-600 uppercase tracking-widest ml-3">Category</label>
-                <select 
+                <label htmlFor="milest-category" className="text-xs font-black text-teal-700 uppercase tracking-widest ml-3">Category</label>
+                <select id="milest-category" 
                   value={customMilestone.category}
                   onChange={e => setCustomMilestone({...customMilestone, category: e.target.value as any})}
                   className="w-full p-4 rounded-xl bg-white border-2 border-teal-200 font-black text-slate-900 outline-none shadow-inner appearance-none"
@@ -253,7 +253,7 @@ export const MilestoneNavigator: React.FC = () => {
                   <option>Cognitive</option>
                 </select>
               </div>
-              <button onClick={handleAddCustom} className="w-full py-4 bg-teal-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Synchronize ✨</button>
+              <button onClick={handleAddCustom} className="w-full py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Synchronize ✨</button>
            </div>
         </div>
       )}
@@ -269,15 +269,15 @@ export const MilestoneNavigator: React.FC = () => {
               <button 
                 key={age} 
                 onClick={() => setActiveAge(age)} 
-                className={`relative px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all overflow-hidden border-2 ${
+                className={`relative px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all overflow-hidden border-2 ${
                   isActive 
-                    ? 'bg-teal-600 text-white border-teal-600 shadow-lg scale-105' 
-                    : 'bg-white text-slate-400 border-slate-100 hover:border-teal-100'
+                    ? 'bg-teal-700 text-white border-teal-600 shadow-lg scale-105' 
+                    : 'bg-white text-slate-600 border-slate-100 hover:border-teal-100'
                 }`}
               >
                 <div className="relative z-10 flex flex-col items-center gap-1">
                   <span>{age}</span>
-                  {stats.total > 0 && <span className="opacity-60 text-[8px]">{stats.completed}/{stats.total}</span>}
+                  {stats.total > 0 && <span className="text-xs">{stats.completed}/{stats.total}</span>}
                 </div>
                 {isActive && (
                   <div className="absolute bottom-0 left-0 h-1 bg-teal-300 opacity-50 transition-all duration-700" style={{ width: `${progress}%` }} />
@@ -291,8 +291,8 @@ export const MilestoneNavigator: React.FC = () => {
       {/* Filter Segmented Control */}
       <div className="px-4 space-y-4">
          <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner">
-            <button onClick={() => setShowRedFlags(false)} className={`flex-1 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${!showRedFlags ? 'bg-white text-teal-700 shadow-md' : 'text-slate-400'}`}>Standard Progress</button>
-            <button onClick={() => setShowRedFlags(true)} className={`flex-1 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${showRedFlags ? 'bg-rose-900 text-white shadow-md' : 'text-slate-400'}`}>Clinical Red Flags</button>
+            <button onClick={() => setShowRedFlags(false)} className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${!showRedFlags ? 'bg-white text-teal-700 shadow-md' : 'text-slate-600'}`}>Standard Progress</button>
+            <button onClick={() => setShowRedFlags(true)} className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${showRedFlags ? 'bg-rose-900 text-white shadow-md' : 'text-slate-600'}`}>Clinical Red Flags</button>
          </div>
 
          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
@@ -300,7 +300,7 @@ export const MilestoneNavigator: React.FC = () => {
               <button 
                 key={d.name} 
                 onClick={() => setSelectedDomain(d.name as any)}
-                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 flex items-center gap-2 ${selectedDomain === d.name ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-white border-slate-50 text-slate-400'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 flex items-center gap-2 ${selectedDomain === d.name ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-white border-slate-50 text-slate-600'}`}
               >
                 <span>{d.icon}</span>
                 {d.name}
@@ -334,14 +334,14 @@ export const MilestoneNavigator: React.FC = () => {
                   <div className="flex flex-col gap-2">
                     <CategoryBadge category={m.category} />
                     {m.isRedFlag && (
-                        <span className="bg-rose-800 text-white text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full w-fit shadow-sm">Urgent Alert</span>
+                        <span className="bg-rose-800 text-white text-xs font-black uppercase tracking-widest px-2 py-0.5 rounded-full w-fit shadow-sm">Urgent Alert</span>
                     )}
                   </div>
-                  <button 
+                  <button aria-label={m.completed ? `Mark "${m.description}" as not done` : `Mark "${m.description}" as done`} 
                     onClick={() => toggleMilestone(m.id)}
                     className={`w-11 h-11 rounded-[1rem] border-2 flex items-center justify-center transition-all z-10 ${
                       m.completed 
-                        ? (showRedFlags ? 'bg-rose-900 border-white text-white rotate-[360deg] shadow-lg' : 'bg-emerald-600 border-white text-white rotate-[360deg] shadow-lg') 
+                        ? (showRedFlags ? 'bg-rose-900 border-white text-white rotate-[360deg] shadow-lg' : 'bg-emerald-700 border-white text-white rotate-[360deg] shadow-lg') 
                         : 'bg-slate-50 border-slate-100 text-slate-200 hover:border-teal-200 active:scale-90 shadow-inner'
                     }`}
                   >
@@ -350,12 +350,12 @@ export const MilestoneNavigator: React.FC = () => {
                 </div>
                 
                 <div className="flex-1 space-y-3 z-10">
-                  <p className={`text-lg font-black leading-tight tracking-tight italic ${showRedFlags ? 'text-rose-950 underline decoration-rose-300' : 'text-slate-800'}`}>
+                  <p className={`text-lg font-black leading-tight tracking-tight  ${showRedFlags ? 'text-rose-950 underline decoration-rose-300' : 'text-slate-800'}`}>
                     {title}
                   </p>
                   {example && (
                     <div className={`p-3 rounded-2xl border ${showRedFlags ? 'bg-white/40 border-rose-200' : 'bg-slate-50 border-slate-100'}`}>
-                        <p className={`text-[10px] font-bold italic leading-snug ${showRedFlags ? 'text-rose-800' : 'text-slate-500'}`}>
+                        <p className={`text-xs font-bold  leading-snug ${showRedFlags ? 'text-rose-800' : 'text-slate-500'}`}>
                         "{example}"
                         </p>
                     </div>
@@ -363,19 +363,19 @@ export const MilestoneNavigator: React.FC = () => {
                 </div>
 
                 <div className={`pt-4 border-t z-10 space-y-2 ${showRedFlags ? 'border-rose-200' : 'border-slate-100'}`}>
-                   <label className={`text-[8px] font-black uppercase tracking-widest ml-2 ${showRedFlags ? 'text-rose-400' : 'text-slate-400'}`}>Journal Entry</label>
+                   <label className={`text-xs font-black uppercase tracking-widest ml-2 ${showRedFlags ? 'text-rose-700' : 'text-slate-600'}`}>Journal Entry</label>
                    <textarea 
                     value={m.notes || ''}
                     onChange={e => updateNotes(m.id, e.target.value)}
                     placeholder="Capture the moment..."
-                    className={`w-full h-20 p-4 rounded-2xl border font-bold italic text-xs outline-none focus:ring-2 transition-all shadow-inner resize-none ${
+                    className={`w-full h-20 p-4 rounded-2xl border font-bold  text-xs outline-none focus:ring-2 transition-all shadow-inner resize-none ${
                         showRedFlags ? 'bg-white/60 border-rose-100 focus:ring-rose-100 text-rose-900' : 'bg-white/50 border-slate-50 focus:ring-teal-100/50 text-slate-600'
                     }`}
                    />
                 </div>
 
                 {m.isRedFlag && !m.completed && (
-                  <div className="flex items-center gap-2 text-rose-600 font-black text-[8px] uppercase tracking-widest pt-2 border-t border-rose-200 bg-rose-50/80 p-4 rounded-2xl z-10">
+                  <div className="flex items-center gap-2 text-rose-700 font-black text-xs uppercase tracking-widest pt-2 border-t border-rose-200 bg-rose-50/80 p-4 rounded-2xl z-10">
                     <span className="text-xl animate-pulse">🚨</span>
                     <span className="leading-tight">Clinical Action Recommended if Observed.</span>
                   </div>
@@ -384,11 +384,11 @@ export const MilestoneNavigator: React.FC = () => {
             </div>
           );
         }) : (
-          <div className="col-span-full py-24 flex flex-col items-center justify-center bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[2.5rem] text-center opacity-60">
+          <div className="col-span-full py-24 flex flex-col items-center justify-center bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[2.5rem] text-center">
             <span className="text-6xl mb-6 grayscale">🌱</span>
             <div className="max-w-xs space-y-1">
                 <p className="font-black text-sm uppercase tracking-widest text-slate-500">No matching markers</p>
-                <p className="text-[10px] text-slate-400 font-bold italic">Try a different domain filter.</p>
+                <p className="text-xs text-slate-600 font-bold">Try a different domain filter.</p>
             </div>
           </div>
         )}
@@ -400,12 +400,12 @@ export const MilestoneNavigator: React.FC = () => {
           <div className="absolute top-0 right-0 -mr-10 -mt-10 w-48 h-48 bg-indigo-600 rounded-full opacity-10 blur-3xl"></div>
           <div className="flex items-center gap-4 relative z-10">
             <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-3xl shrink-0 border border-white/10 shadow-inner">📜</div>
-            <h4 className="text-xl font-black italic uppercase tracking-tighter text-indigo-100 leading-none">Clinical Consensus</h4>
+            <h4 className="text-xl font-black uppercase tracking-tighter text-indigo-100 leading-none">Clinical Consensus</h4>
           </div>
-          <p className="text-indigo-50/70 text-sm font-medium italic leading-relaxed relative z-10">
+          <p className="text-indigo-50/70 text-sm font-medium leading-relaxed relative z-10">
             "Developmental red flags represent high-specificity indicators for pediatric review. Loss of any previously acquired skill is an absolute red flag requiring urgent evaluation."
           </p>
-          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400 pt-4 border-t border-white/5">PediPulse Pipeline • QCH + PedsCases</p>
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-indigo-300 pt-4 border-t border-white/5">PediPulse Pipeline • QCH + PedsCases</p>
         </div>
       </div>
     </div>

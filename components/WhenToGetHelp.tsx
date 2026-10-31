@@ -27,7 +27,7 @@ const SEE_DOCTOR_TODAY = [
 export const WhenToGetHelp: React.FC = () => (
   <div className="space-y-8 pb-20">
     <header className="space-y-2">
-      <h2 className="text-3xl font-black text-slate-800">When to <span className="text-rose-600">Get Help</span></h2>
+      <h2 className="text-3xl font-black text-slate-800">When to <span className="text-rose-700">Get Help</span></h2>
       <p className="text-base font-medium text-slate-600 max-w-2xl">
         General guidance for parents. This app can't assess your child. If you're worried, trust your instincts and get help.
       </p>

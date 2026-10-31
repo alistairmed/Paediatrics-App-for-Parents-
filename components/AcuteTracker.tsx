@@ -154,19 +154,19 @@ export const AcuteTracker: React.FC = () => {
   };
 
   const inputBaseClass = "w-full p-4 bg-white border-2 border-slate-100 rounded-xl font-black text-slate-900 outline-none focus:border-indigo-600 transition-all placeholder:text-slate-200 text-sm shadow-sm";
-  const labelBaseClass = "text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 mb-1 block";
+  const labelBaseClass = "text-xs font-black text-slate-600 uppercase tracking-widest ml-2 mb-1 block";
 
   return (
     <div className="space-y-10 pb-24 animate-in fade-in">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 px-1">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tight italic leading-none">Acute <span className="text-rose-600">Surveillance</span></h2>
-          <p className="text-slate-500 font-bold italic mt-2">Track recovery and comfort.</p>
+          <h2 className="text-4xl font-black text-slate-800 tracking-tight leading-none">Acute <span className="text-rose-700">Surveillance</span></h2>
+          <p className="text-slate-500 font-bold mt-2">Track recovery and comfort.</p>
         </div>
         <div className="flex gap-3">
             <div className="bg-indigo-50 border border-indigo-100 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-sm">
-                <span className="text-indigo-600 font-black text-[10px] uppercase tracking-widest">Net Balance</span>
-                <span className={`font-black text-lg ${balanceStats.balance < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                <span className="text-indigo-600 font-black text-xs uppercase tracking-widest">Net Balance</span>
+                <span className={`font-black text-lg ${balanceStats.balance < 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
                     {balanceStats.balance > 0 ? '+' : ''}{balanceStats.balance} ml
                 </span>
             </div>
@@ -180,11 +180,11 @@ export const AcuteTracker: React.FC = () => {
                {['Fluid', 'Temperature', 'Output', 'Medication'].map((t) => (
                   <button 
                     key={t} 
-                    onClick={() => setType(t as any)} 
-                    className={`flex-1 py-5 px-2 rounded-2xl text-3xl transition-all min-w-[75px] ${type === t ? 'bg-white shadow-lg text-indigo-600 scale-105 z-10' : 'opacity-30 grayscale hover:opacity-100'}`}
+                    onClick={() => setType(t as any)} aria-pressed={type === t}
+                    className={`flex-1 py-5 px-2 rounded-2xl text-3xl transition-all min-w-[75px] ${type === t ? 'bg-white shadow-lg text-indigo-700 scale-105 z-10' : 'text-slate-700 hover:bg-white/60'}`}
                   >
                     <span className="block">{(icons as any)[t]}</span>
-                    <span className="text-[8px] font-black uppercase mt-2 block tracking-tight">{t}</span>
+                    <span className="text-xs font-black uppercase mt-2 block tracking-tight">{t}</span>
                   </button>
                ))}
             </div>
@@ -210,7 +210,7 @@ export const AcuteTracker: React.FC = () => {
 
                <div className="space-y-2">
                   <label className={labelBaseClass}>Notes / Observations</label>
-                  <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="How is your child feeling?" className={inputBaseClass + " h-28 resize-none italic font-bold text-base leading-relaxed"} />
+                  <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="How is your child feeling?" className={inputBaseClass + " h-28 resize-none  font-bold text-base leading-relaxed"} />
                </div>
                
                <button onClick={handleAdd} className="w-full py-7 bg-indigo-600 text-white font-black rounded-[2.5rem] shadow-2xl text-xs uppercase tracking-[0.2em] active:scale-95 transition-all hover:bg-indigo-700">
@@ -228,13 +228,13 @@ export const AcuteTracker: React.FC = () => {
                   <div className="flex items-center gap-4">
                      <span className="text-3xl">💧</span>
                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Hydration Balance</p>
-                        <p className="text-2xl font-black italic">{balanceStats.balance} ml</p>
+                        <p className="text-xs font-black uppercase tracking-widest">Hydration Balance</p>
+                        <p className="text-2xl font-black">{balanceStats.balance} ml</p>
                      </div>
                   </div>
                   <div className="text-right">
-                     <p className="text-[8px] font-black uppercase opacity-60">Status</p>
-                     <p className={`text-xs font-black uppercase ${balanceStats.balance < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                     <p className="text-xs font-black uppercase">Status</p>
+                     <p className={`text-xs font-black uppercase ${balanceStats.balance < 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
                         {balanceStats.balance < 0 ? 'Monitoring' : 'Well Hydrated'}
                      </p>
                   </div>
@@ -243,7 +243,7 @@ export const AcuteTracker: React.FC = () => {
           )}
 
           <div className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm space-y-8">
-              <h3 className="text-3xl font-black text-slate-800 tracking-tighter italic ml-4 leading-none">Recovery Timeline</h3>
+              <h3 className="text-3xl font-black text-slate-800 tracking-tighter ml-4 leading-none">Recovery Timeline</h3>
 
               <SearchFilterBar
                 searchQuery={searchQuery}
@@ -264,17 +264,17 @@ export const AcuteTracker: React.FC = () => {
                  {filteredAcuteLogs.length ? filteredAcuteLogs.map(entry => (
                     <div key={entry.id} className={`p-6 rounded-[2.5rem] border transition-all flex items-center justify-between group bg-white border-slate-100 shadow-sm`}>
                        <div className="flex items-center gap-8">
-                          <span className={`text-[10px] font-black w-14 shrink-0 uppercase text-slate-400`}>{formatLogTime(entry.timestamp)}</span>
+                          <span className={`text-xs font-black w-14 shrink-0 uppercase text-slate-600`}>{formatLogTime(entry.timestamp)}</span>
                           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 bg-slate-50`}>{(icons as any)[entry.type]}</div>
                           <div className="max-w-[200px] sm:max-w-md">
-                             <p className="text-base font-black leading-tight tracking-tight italic">{entry.value}</p>
-                             {entry.notes && <p className={`text-[11px] font-bold italic mt-3 leading-relaxed text-slate-500 border-l-2 border-slate-100 pl-4`}>{entry.notes}</p>}
+                             <p className="text-base font-black leading-tight tracking-tight">{entry.value}</p>
+                             {entry.notes && <p className={`text-xs font-bold  mt-3 leading-relaxed text-slate-500 border-l-2 border-slate-100 pl-4`}>{entry.notes}</p>}
                           </div>
                        </div>
-                       <button onClick={() => deleteEntry(entry.id)} className="opacity-0 group-hover:opacity-100 text-rose-500 p-4 font-black text-sm transition-all hover:scale-125">✕</button>
+                       <button aria-label="Delete entry" onClick={() => deleteEntry(entry.id)} className="sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 text-rose-700 p-4 font-black text-sm transition-all hover:scale-125">✕</button>
                     </div>
                  )) : (
-                    <div className="py-24 text-center text-slate-300 font-black uppercase text-xs italic">
+                    <div className="py-24 text-center text-slate-500 font-black uppercase text-xs">
                       {rawLogs.length ? 'No acute log entries match your filter criteria.' : 'No entries on record.'}
                     </div>
                  )}

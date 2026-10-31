@@ -28,7 +28,7 @@ const RULES = [
 export const MedicineInfo: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <div className="space-y-8 pb-20">
     <header className="space-y-2">
-      <h2 className="text-3xl font-black text-slate-800">Medicines <span className="text-emerald-600">& Pain Relief</span></h2>
+      <h2 className="text-3xl font-black text-slate-800">Medicines <span className="text-emerald-700">& Pain Relief</span></h2>
       <p className="text-base font-medium text-slate-600 max-w-2xl">
         General information only. PediPulse doesn't work out doses: the right dose depends on your child's weight and the strength of the product.
       </p>

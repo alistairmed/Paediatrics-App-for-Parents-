@@ -45,21 +45,21 @@ export const BondingJournal: React.FC = () => {
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-20">
       <header className="flex flex-col md:flex-row justify-between items-start gap-6">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tight italic">Bonding <span className="text-rose-600">& Attachment</span></h2>
-          <p className="text-slate-500 font-medium max-w-2xl mt-2 italic">
+          <h2 className="text-4xl font-black text-slate-800 tracking-tight">Bonding <span className="text-rose-700">& Attachment</span></h2>
+          <p className="text-slate-500 font-medium max-w-2xl mt-2">
             Documenting the "Invisible" work of connection. These insights help clinicians understand your child's social-emotional health.
           </p>
         </div>
         <div className="bg-rose-50 border border-rose-100 px-6 py-3 rounded-2xl flex items-center gap-3">
           <span className="text-xl">🛡️</span>
-          <span className="text-[10px] font-black text-rose-700 uppercase tracking-widest leading-tight">Secure Base<br/>Monitoring</span>
+          <span className="text-xs font-black text-rose-700 uppercase tracking-widest leading-tight">Secure Base<br/>Monitoring</span>
         </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm space-y-6">
-            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Attachment Behaviors</h4>
+            <h4 className="text-xs font-black text-slate-600 uppercase tracking-[0.2em] mb-4">Attachment Behaviors</h4>
             <div className="space-y-3">
               {OBSERVATION_CHECKLIST.map((item) => (
                 <button
@@ -75,7 +75,7 @@ export const BondingJournal: React.FC = () => {
                     {item.icon}
                   </span>
                   <div>
-                    <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${selectedObservations.has(item.id) ? 'text-rose-100' : 'text-rose-400'}`}>
+                    <p className={`text-xs font-black uppercase tracking-widest mb-1 ${selectedObservations.has(item.id) ? 'text-rose-100' : 'text-rose-700'}`}>
                       {item.category}
                     </p>
                     <p className="text-xs font-bold leading-snug">{item.label}</p>
@@ -90,7 +90,7 @@ export const BondingJournal: React.FC = () => {
             <h4 className="text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
               <span>🧠</span> Clinical Context
             </h4>
-            <p className="text-indigo-100 text-sm font-medium italic leading-relaxed">
+            <p className="text-indigo-100 text-sm font-medium leading-relaxed">
               "Attachment is the 'biological insurance' child uses to survive and thrive. Noticing how they seek comfort (Proximity) and go out to play (Exploration) provides a blueprint of their development."
             </p>
           </div>
@@ -102,22 +102,22 @@ export const BondingJournal: React.FC = () => {
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-rose-100">✍️</div>
+                <div className="w-14 h-14 bg-rose-50 text-rose-700 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-rose-100">✍️</div>
                 <div>
-                   <h3 className="text-xl font-black text-slate-800 italic">Daily Reflection</h3>
-                   <p className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Guide: {ATTACHMENT_PROMPTS[activePromptIdx].category}</p>
+                   <h3 className="text-xl font-black text-slate-800">Daily Reflection</h3>
+                   <p className="text-xs font-black text-rose-700 uppercase tracking-widest">Guide: {ATTACHMENT_PROMPTS[activePromptIdx].category}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                 <button 
+                 <button aria-label="Previous prompt" 
                   onClick={() => setActivePromptIdx(prev => (prev - 1 + ATTACHMENT_PROMPTS.length) % ATTACHMENT_PROMPTS.length)}
-                  className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all border border-slate-100"
+                  className="w-10 h-10 rounded-full bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-rose-50 hover:text-rose-700 transition-all border border-slate-100"
                  >
                    ←
                  </button>
-                 <button 
+                 <button aria-label="Next prompt" 
                   onClick={() => setActivePromptIdx(prev => (prev + 1) % ATTACHMENT_PROMPTS.length)}
-                  className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all border border-slate-100"
+                  className="w-10 h-10 rounded-full bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-rose-50 hover:text-rose-700 transition-all border border-slate-100"
                  >
                    →
                  </button>
@@ -125,7 +125,7 @@ export const BondingJournal: React.FC = () => {
             </div>
 
             <div className="bg-rose-50/50 p-6 rounded-[2rem] border border-rose-100 mb-8 relative z-10 animate-in fade-in zoom-in-95" key={activePromptIdx}>
-               <p className="text-rose-900 font-bold italic text-lg leading-relaxed">
+               <p className="text-rose-900 font-bold text-lg leading-relaxed">
                  "{ATTACHMENT_PROMPTS[activePromptIdx].prompt}"
                </p>
             </div>
@@ -133,18 +133,18 @@ export const BondingJournal: React.FC = () => {
             <textarea 
               value={observations} 
               onChange={e => handleUpdate(e.target.value)} 
-              className="w-full min-h-[400px] p-8 rounded-[3rem] border-2 border-slate-50 outline-none bg-slate-50/20 font-bold text-slate-700 text-xl leading-relaxed shadow-inner italic focus:ring-4 focus:ring-rose-100 focus:border-rose-100 transition-all z-10"
+              className="w-full min-h-[400px] p-8 rounded-[3rem] border-2 border-slate-50 outline-none bg-slate-50/20 font-bold text-slate-700 text-xl leading-relaxed shadow-inner focus:ring-4 focus:ring-rose-100 focus:border-rose-100 transition-all z-10"
               placeholder={`Share your thoughts about ${childProfile?.name || 'your child'} here...`}
             />
 
             <div className="mt-8 flex items-center justify-between relative z-10 pt-4 border-t border-slate-50">
-               <div className="flex items-center gap-2 text-rose-400">
+               <div className="flex items-center gap-2 text-rose-700">
                   <span className="text-xl">✨</span>
-                  <p className="text-[9px] font-black uppercase tracking-[0.2em]">Synchronized to Clinical Hub</p>
+                  <p className="text-xs font-black uppercase tracking-[0.2em]">Synchronized to Clinical Hub</p>
                </div>
                <button 
                 onClick={() => handleUpdate('')}
-                className="text-[10px] font-black text-slate-300 uppercase hover:text-rose-500 transition-colors"
+                className="text-xs font-black text-slate-500 uppercase hover:text-rose-700 transition-colors"
                >
                  Clear Journal
                </button>

@@ -91,7 +91,7 @@ export const MedicineLog: React.FC = () => {
           <span className="block text-sm font-bold text-slate-700 mb-1">Time given</span>
           <input type="datetime-local" value={givenAt} max={localInputValue(now)} onChange={e => setGivenAt(e.target.value)} className="w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-slate-900" />
         </label>
-        <button type="submit" className="min-h-[48px] px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest text-xs">Record Dose</button>
+        <button type="submit" className="min-h-[48px] px-5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black uppercase tracking-widest text-xs">Record Dose</button>
       </form>
     </section>
   );

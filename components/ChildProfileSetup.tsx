@@ -107,7 +107,7 @@ const ChildProfileForm: React.FC = () => {
             </div>
           </fieldset>
         </div>
-        <p className="text-sm font-medium text-slate-600">Record weight and height in the Red Book's growth section.</p>
+        <p className="text-sm font-medium text-slate-600">Record weight and height in Growth Charts.</p>
 
         {error && <p role="alert" className="text-sm font-bold text-rose-700">{error}</p>}
 

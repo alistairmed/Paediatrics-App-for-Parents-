@@ -63,8 +63,8 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
     <div className="space-y-8 sm:space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-28">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 italic tracking-tight">Sick Day <span className="text-rose-600">Action Plan</span></h2>
-          <p className="text-slate-500 font-medium italic mt-1 text-xs sm:text-sm">Personalized clinical guidelines for acute illness management.</p>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">Sick Day <span className="text-rose-700">Action Plan</span></h2>
+          <p className="text-slate-500 font-medium mt-1 text-xs sm:text-sm">Personalized clinical guidelines for acute illness management.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <button 
@@ -83,7 +83,7 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
         </div>
       </header>
 
-      <div className="bg-rose-600 p-5 sm:p-12 rounded-[2.5rem] sm:rounded-[4rem] text-white shadow-2xl relative overflow-hidden">
+      <div className="bg-rose-800 p-5 sm:p-12 rounded-[2.5rem] sm:rounded-[4rem] text-white shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-[80px]"></div>
         
         <div className="relative z-10 space-y-6 sm:space-y-10">
@@ -93,18 +93,18 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                     <div className="flex items-center gap-3 sm:gap-4">
                        <span className="text-3xl sm:text-5xl animate-pulse">🚑</span>
                        <div>
-                          <p className="text-xs font-black uppercase tracking-widest text-rose-600 leading-none">Emergency Threshold</p>
-                          <h3 className="text-lg sm:text-2xl font-black italic tracking-tighter uppercase mt-1">When to call an ambulance (000)</h3>
+                          <p className="text-xs font-black uppercase tracking-widest text-rose-700 leading-none">Emergency Threshold</p>
+                          <h3 className="text-lg sm:text-2xl font-black tracking-tighter uppercase mt-1">When to call an ambulance (000)</h3>
                        </div>
                     </div>
 
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-rose-500 uppercase tracking-widest ml-1">Critical Triggers (Specific to this child)</label>
-                        <textarea 
+                        <label htmlFor="sickda-critical-triggers-specific-to-" className="text-xs font-black text-rose-700 uppercase tracking-widest ml-1">Critical Triggers (Specific to this child)</label>
+                        <textarea id="sickda-critical-triggers-specific-to-" 
                           value={history.sickDayPlan.ambulanceTriggers} 
                           onChange={e => updateSickDayField('ambulanceTriggers', e.target.value)}
-                          className="w-full h-32 p-4 sm:p-6 rounded-2xl bg-rose-50 text-rose-900 font-black text-base sm:text-lg italic outline-none border border-rose-100 shadow-inner focus:ring-4 focus:ring-rose-200 transition-all placeholder:text-rose-200"
+                          className="w-full h-32 p-4 sm:p-6 rounded-2xl bg-rose-50 text-rose-900 font-black text-base sm:text-lg outline-none border border-rose-100 shadow-inner focus:ring-4 focus:ring-rose-200 transition-all placeholder:text-rose-200"
                           placeholder="e.g. Seizure > 5 mins, cyanosis, stridor at rest, unable to wake..."
                         />
                       </div>
@@ -115,7 +115,7 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                            <textarea 
                              value={history.sickDayPlan.dangerSigns} 
                              onChange={e => updateSickDayField('dangerSigns', e.target.value)}
-                             className="w-full h-28 p-4 sm:p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm italic outline-none border border-slate-100 shadow-inner"
+                             className="w-full h-28 p-4 sm:p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm outline-none border border-slate-100 shadow-inner"
                              placeholder="e.g. Tracheal tug, non-blanching rash, lethargy..."
                            />
                         </div>
@@ -124,7 +124,7 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                            <textarea 
                              value={history.sickDayPlan.carerActions} 
                              onChange={e => updateSickDayField('carerActions', e.target.value)}
-                             className="w-full h-28 p-4 sm:p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm italic outline-none border border-slate-100 shadow-inner"
+                             className="w-full h-28 p-4 sm:p-5 rounded-2xl bg-slate-50 text-slate-800 font-bold text-sm outline-none border border-slate-100 shadow-inner"
                              placeholder="e.g. Recovery position, keep upright, administer EpiPen..."
                            />
                         </div>
@@ -141,7 +141,7 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                     <textarea 
                     value={history.sickDayPlan.yellowZone} 
                     onChange={e => updateSickDayField('yellowZone', e.target.value)}
-                    className="w-full h-32 p-6 rounded-2xl bg-white/10 text-white font-bold text-base italic outline-none border border-white/10 shadow-inner focus:bg-white/20 transition-all"
+                    className="w-full h-32 p-6 rounded-2xl bg-white/10 text-white font-bold text-base outline-none border border-white/10 shadow-inner focus:bg-white/20 transition-all"
                     placeholder="Escalation steps: increase doses, call specialist/GP..."
                     />
                 </div>
@@ -155,7 +155,7 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                     <textarea 
                     value={history.sickDayPlan.greenZone} 
                     onChange={e => updateSickDayField('greenZone', e.target.value)}
-                    className="w-full h-24 p-6 rounded-2xl bg-white/10 text-white font-bold text-base italic outline-none border border-white/10 shadow-inner focus:bg-white/20 transition-all"
+                    className="w-full h-24 p-6 rounded-2xl bg-white/10 text-white font-bold text-base outline-none border border-white/10 shadow-inner focus:bg-white/20 transition-all"
                     placeholder="Routine unwell care when clinical signs are stable..."
                     />
                 </div>
@@ -166,14 +166,14 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                 <div className="flex items-center gap-4">
                     <span className="text-3xl">🛡️</span>
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 text-rose-100">Handover Context for ED Staff</p>
-                        <p className="text-[9px] font-bold text-rose-100/50 uppercase">Vital for non-regular doctors</p>
+                        <p className="text-xs font-black uppercase tracking-[0.3em] opacity-80 text-rose-100">Handover Context for ED Staff</p>
+                        <p className="text-xs font-bold text-rose-100 uppercase">Vital for non-regular doctors</p>
                     </div>
                 </div>
                 <textarea 
                 value={history.sickDayPlan.backgroundForED} 
                 onChange={e => updateSickDayField('backgroundForED', e.target.value)}
-                className="w-full h-24 p-6 rounded-2xl bg-white/5 text-white font-bold text-base italic outline-none border border-white/10 shadow-inner focus:bg-white/10 transition-all"
+                className="w-full h-24 p-6 rounded-2xl bg-white/5 text-white font-bold text-base outline-none border border-white/10 shadow-inner focus:bg-white/10 transition-all"
                 placeholder="Vital context for doctors who don't know your child (e.g. 'Difficult Airway', 'Immunosuppressed')..."
                 />
             </div>
@@ -189,7 +189,7 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                     <div key={item.field} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-3 hover:bg-white/10 transition-colors">
                         <div className="flex items-center gap-2">
                             <span className="text-lg opacity-70">{item.icon}</span>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">{item.label}</p>
+                            <p className="text-xs font-black uppercase tracking-[0.2em]">{item.label}</p>
                         </div>
                         <input 
                             className="w-full bg-transparent border-none outline-none font-black text-lg placeholder-white/20 text-white" 
@@ -207,9 +207,9 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                 <div className="flex justify-between items-center px-4">
                     <div className="flex items-center gap-3">
                         <span className="text-2xl">📸</span>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80">Attached Physical Reference</p>
+                        <p className="text-xs font-black uppercase tracking-[0.3em] opacity-80">Attached Physical Reference</p>
                     </div>
-                    <button onClick={() => updateSickDayField('planPhoto', '')} className="text-[10px] font-black uppercase text-rose-300 hover:text-white transition-colors">Remove Photo</button>
+                    <button onClick={() => updateSickDayField('planPhoto', '')} className="text-xs font-black uppercase text-rose-300 hover:text-white transition-colors">Remove Photo</button>
                 </div>
                 <div className="p-2 bg-white rounded-[3rem] shadow-2xl border-4 border-rose-400/30 overflow-hidden">
                     <img src={history.sickDayPlan.planPhoto} alt="Physical Plan" className="w-full rounded-[2.5rem] object-cover max-h-[600px]" />
@@ -220,10 +220,10 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
       </div>
 
       <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-lg flex items-center gap-8">
-        <div className="w-20 h-20 bg-rose-50 text-rose-600 rounded-[2rem] flex items-center justify-center text-4xl shadow-inner border border-rose-100">💡</div>
+        <div className="w-20 h-20 bg-rose-50 text-rose-700 rounded-[2rem] flex items-center justify-center text-4xl shadow-inner border border-rose-100">💡</div>
         <div>
             <h4 className="text-xl font-black text-slate-800 tracking-tight">Parenting Strategy</h4>
-            <p className="text-slate-500 font-medium leading-relaxed italic max-w-2xl mt-1">
+            <p className="text-slate-500 font-medium leading-relaxed max-w-2xl mt-1">
                 "Keep this document updated after every hospital admission or specialist visit. Having clear ambulance triggers helps reduce decision fatigue during a crisis."
             </p>
         </div>

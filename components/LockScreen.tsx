@@ -35,7 +35,7 @@ export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
 
         <form onSubmit={handleUnlock} className="space-y-4">
           <label className="block">
-            <span className="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-2 mb-1">Passcode</span>
+            <span className="block text-xs font-black text-slate-700 uppercase tracking-widest ml-2 mb-1">Passcode</span>
             <input
               type="password"
               autoComplete="current-password"
