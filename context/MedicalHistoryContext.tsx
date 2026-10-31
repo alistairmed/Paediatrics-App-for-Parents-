@@ -71,10 +71,9 @@ export const MedicalHistoryProvider: React.FC<{ children: React.ReactNode }> = (
   }, [setHistory]);
 
   const latestWeight = useMemo(() => {
-    if (history.growthRecords && history.growthRecords.length > 0) {
-      return history.growthRecords[history.growthRecords.length - 1].weight;
-    }
-    return undefined;
+    // Most recent measurement that includes a weight (some record only length or head size).
+    const withWeight = (history.growthRecords || []).filter(r => typeof r.weight === 'number' && r.weight > 0);
+    return withWeight.length ? withWeight[withWeight.length - 1].weight : undefined;
   }, [history.growthRecords]);
 
   const nextAppointment = useMemo(() => {

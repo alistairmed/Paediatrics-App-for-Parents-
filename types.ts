@@ -67,8 +67,8 @@ export interface MedicalReport {
 
 export interface GrowthRecord {
   age: number;
-  weight: number;
-  height: number;
+  weight?: number;
+  height?: number;
   headCircumference?: number;
   date: string;
 }

@@ -37,8 +37,9 @@ export const describeAge = (dob?: string): string | null => {
     years--;
     months += 12;
   }
-  if (years === 0) return `${months} months old`;
-  return `${years} years, ${months % 12} months`;
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+  if (years === 0) return `${plural(months, 'month')} old`;
+  return `${plural(years, 'year')}, ${plural(months % 12, 'month')}`;
 };
 
 export const ChildProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children: content }) => {

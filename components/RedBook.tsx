@@ -27,7 +27,7 @@ export const RedBook: React.FC = () => {
 
   const alerts = useMemo(() => {
     const vaccinations = history.vaccinations || [];
-    const growthRecords = history.growthRecords || [];
+    const growthRecords = (history.growthRecords || []).filter(r => typeof r.weight === 'number' && r.weight > 0);
     const milestones = history.milestones || [];
     
     const overdueVax = vaccinations.filter(v => v.status === 'pending' && new Date() > new Date(v.dueDate));
@@ -38,7 +38,7 @@ export const RedBook: React.FC = () => {
     if (growthRecords.length >= 2) {
       const last = growthRecords[growthRecords.length - 1];
       const prev = growthRecords[growthRecords.length - 2];
-      if (last.weight < prev.weight) {
+      if (last.weight! < prev.weight!) {
         growthAlert = true;
         growthSeverity = 'High';
       } else if (last.weight === prev.weight && last.age > prev.age) {
