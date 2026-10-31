@@ -122,6 +122,7 @@ export const analyzeScreening = async (testName: string, responses: any) => {
   const prompt = `${PEDI_PULSE_PROMPTS.v1.screeningAnalysis.replace('{testName}', testName)}\n\nRESPONSES: ${JSON.stringify(responses)}`;
 
   const data = await callGeminiProxy({
+    feature: 'screening-summary',
     model,
     contents: prompt,
     config: {
@@ -156,6 +157,7 @@ export const analyzeMedicalProfile = async (profileData: any) => {
   const prompt = `${PEDI_PULSE_PROMPTS.v1.isbarHandover}\n\nDATA: ${JSON.stringify(compactHistory)}`;
 
   const data = await callGeminiProxy({
+    feature: 'handover',
     model,
     contents: prompt,
   });
@@ -172,6 +174,7 @@ export const generateCalmingStory = async (childName: string, theme: string) => 
     .replace('{theme}', theme);
 
   const data = await callGeminiProxy({
+    feature: 'calm-story',
     model: 'gemini-2.5-flash',
     contents: [{ parts: [{ text: prompt }] }],
     config: {
@@ -188,6 +191,7 @@ export const getVaccineAdvice = async (vaccineName: string) => {
   const prompt = `Provide a general explanation of the ${vaccineName} vaccine in the context of the Australian National Immunisation Program. Include what it protects against, common side effects, and why it is important. Base it on the Australian Immunisation Handbook. Do not advise delaying, skipping or changing any vaccine; for questions about this child's vaccines, refer the parent to their GP or immunisation provider. Spell out "degree Celsius" for any temperature mentions.`;
 
   const data = await callGeminiProxy({
+    feature: 'vaccine-information',
     model,
     contents: prompt,
     config: { tools: [{ googleSearch: {} }] },
@@ -204,6 +208,7 @@ export const getParentingAdvice = async (ageGroup: string, challenge: string) =>
   const prompt = `Provide evidence-based parenting strategies for a child in the ${ageGroup} age group facing the following challenge: "${challenge}". Reference reliable Australian resources like the Raising Children Network or RCH Melbourne.`;
 
   const data = await callGeminiProxy({
+    feature: 'parenting-tips',
     model,
     contents: prompt,
     config: { tools: [{ googleSearch: {} }] },
@@ -222,14 +227,14 @@ export const explainMedicalTerm = async (term: string, ageGroup: string = 'infan
   Format your response clearly with:
   1. Simple Definition
   2. Common Symptoms
-  3. Actionable Advice
-  4. When to seek urgent care.
+  3. Questions the parent could ask their GP or child health nurse
+  Do not give advice about treatment, doses or when to seek care.
   Reference reliable Australian sources (RCH Melbourne, Raising Children Network).`;
 
   const data = await callGeminiProxy({
+    feature: 'medical-term',
     model,
     contents: prompt,
-    config: { tools: [{ googleSearch: {} }] },
   });
 
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -266,6 +271,7 @@ export const prepareAppointmentQuestions = async (
   FORMAT: Provide a bulleted list of questions.`;
 
   const data = await callGeminiProxy({
+    feature: 'appointment-questions',
     model,
     contents: prompt,
   });
@@ -277,6 +283,7 @@ export const prepareAppointmentQuestions = async (
 export const analyzeMedicalReport = async (imageBase64: string) => {
   const model = 'gemini-2.5-flash';
   const data = await callGeminiProxy({
+    feature: 'report-reading',
     model,
     contents: [
       {

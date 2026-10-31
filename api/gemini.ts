@@ -19,6 +19,14 @@ const ALLOWED_MODELS = ['gemini-2.5-flash'];
 // The only tool the app uses (grounded answers). Other tools are dropped.
 const ALLOWED_TOOLS = ['googleSearch'];
 
+// Every request names the app feature it comes from. Unknown features are refused.
+export const ALLOWED_FEATURES = [
+  'parenting-tips', 'vaccine-information', 'medical-term', 'screening-summary',
+  'handover', 'calm-story', 'appointment-questions', 'report-reading',
+] as const;
+// Google Search grounding is only for general parenting and vaccine information.
+export const SEARCH_FEATURES: readonly string[] = ['parenting-tips', 'vaccine-information'];
+
 // Best-effort limit per client IP. State lives in this server instance only,
 // so it slows abuse rather than guaranteeing a quota; for a hard limit, add a
 // Vercel Firewall rate-limit rule on /api/gemini (docs/AI_SAFEGUARDS.md).
@@ -67,13 +75,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
     if (!apiKey) {
-      return res.status(500).json({
-        error: 'Server configuration error: GEMINI_API_KEY environment variable is missing on Vercel.'
-      });
+      console.error('[api/gemini] GEMINI_API_KEY is not set.');
+      return res.status(500).json({ error: 'The AI service is not available right now.', status: 500 });
     }
 
     // The safety instruction is enforced here too, so callers can't leave it out.
-    const { model = 'gemini-2.5-flash', contents, config, systemInstruction } = withSafetyInstruction(req.body || {});
+    const { model = 'gemini-2.5-flash', contents, config, systemInstruction, feature } = withSafetyInstruction(req.body || {});
+
+    if (typeof feature !== 'string' || !(ALLOWED_FEATURES as readonly string[]).includes(feature)) {
+      return res.status(400).json({ error: 'Unknown or missing feature.' });
+    }
 
     if (!ALLOWED_MODELS.includes(model)) {
       return res.status(400).json({ error: `Model "${model}" is not allowed.` });
@@ -94,6 +105,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (config) {
       if (Array.isArray(config.tools)) {
         const tools = config.tools.filter((t: any) => t && Object.keys(t).every(k => ALLOWED_TOOLS.includes(k)));
+        if (tools.some((t: any) => 'googleSearch' in t) && !SEARCH_FEATURES.includes(feature)) {
+          return res.status(400).json({ error: 'Search is not allowed for this feature.' });
+        }
         if (tools.length) requestPayload.tools = tools;
       }
       
@@ -125,20 +139,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).json({
-        error: `Gemini API call failed with HTTP status ${response.status}`,
-        details: errorText,
-      });
+      // Google's error text can describe the key or project; keep it in the server log only.
+      console.error('[api/gemini] Upstream error', response.status, await response.text().catch(() => ''));
+      return res.status(response.status).json({ error: 'The AI service could not answer this request.', status: response.status });
     }
 
     const data = await response.json();
     return res.status(200).json(data);
   } catch (err: any) {
-    console.error('Error proxying Gemini API request:', err);
-    return res.status(500).json({
-      error: 'An internal server error occurred while contacting the Gemini API.',
-      message: err?.message || String(err),
-    });
+    console.error('[api/gemini] Proxy error', err);
+    return res.status(500).json({ error: 'The AI service is not available right now.', status: 500 });
   }
 }
