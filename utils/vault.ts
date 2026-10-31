@@ -7,7 +7,19 @@ import { deriveKey, encryptString, decryptString, isEncrypted, randomSalt, PBKDF
  * their decrypted values are held in memory and the key lives only in this
  * module (never in storage), so a reload or auto-lock requires the passcode.
  */
-export const SENSITIVE_KEYS = ['pedipulse_profile', 'pedipulse_history', 'pedipulse_governance_log'];
+// Record keys (and per-child variants such as pedipulse_history:<childId>) that hold health information.
+export const SENSITIVE_PREFIXES = ['pedipulse_profile', 'pedipulse_history', 'pedipulse_governance_log', 'pedipulse_children', 'pedipulse_medicine_log'];
+export const isSensitiveKey = (k: string): boolean => SENSITIVE_PREFIXES.some(p => k === p || k.startsWith(p + ':'));
+
+/** Every sensitive key currently in storage. */
+const storedSensitiveKeys = (): string[] => {
+  const keys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && isSensitiveKey(k)) keys.push(k);
+  }
+  return keys;
+};
 export const LOCK_META_KEY = 'pedipulse_lock';
 const CHECK_TEXT = 'pedipulse-lock-check';
 
@@ -33,7 +45,7 @@ const readMeta = (): LockMeta | null => {
 
 export const isLockEnabled = (): boolean => readMeta() !== null;
 export const isUnlocked = (): boolean => key !== null;
-const isProtected = (k: string) => SENSITIVE_KEYS.includes(k) && isLockEnabled();
+const isProtected = (k: string) => isSensitiveKey(k) && isLockEnabled();
 
 export function readItem(k: string): string | null {
   if (isProtected(k)) return cache.get(k) ?? null;
@@ -73,7 +85,7 @@ export async function unlock(passcode: string): Promise<boolean> {
   if (!meta) return true;
   const candidate = await checkPasscode(passcode, meta);
   if (!candidate) return false;
-  for (const k of SENSITIVE_KEYS) {
+  for (const k of storedSensitiveKeys()) {
     const raw = localStorage.getItem(k);
     cache.set(k, raw === null ? null : isEncrypted(raw) ? await decryptString(candidate, raw) : raw);
   }
@@ -90,7 +102,7 @@ export async function verifyPasscode(passcode: string): Promise<boolean> {
 export async function enableLock(passcode: string, iterations = PBKDF2_ITERATIONS): Promise<void> {
   const salt = randomSalt();
   const newKey = await deriveKey(passcode, salt, iterations);
-  const plain = SENSITIVE_KEYS.map(k => [k, localStorage.getItem(k)] as const);
+  const plain = storedSensitiveKeys().map(k => [k, localStorage.getItem(k)] as const);
   const encrypted = await Promise.all(plain.map(async ([k, v]) => [k, v === null ? null : await encryptString(newKey, v)] as const));
   const meta: LockMeta = { v: 1, salt, iterations, check: await encryptString(newKey, CHECK_TEXT) };
 
@@ -110,8 +122,7 @@ export async function enableLock(passcode: string, iterations = PBKDF2_ITERATION
 export async function disableLock(passcode: string): Promise<boolean> {
   if (!(await verifyPasscode(passcode))) return false;
   await writeChain;
-  for (const k of SENSITIVE_KEYS) {
-    const v = cache.get(k);
+  for (const [k, v] of cache) {
     if (v === null || v === undefined) localStorage.removeItem(k);
     else localStorage.setItem(k, v);
   }
