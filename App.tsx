@@ -19,6 +19,8 @@ import { AI_ENABLED } from './config/features';
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
 const WhenToGetHelp = lazy(() => import('./components/WhenToGetHelp').then(m => ({ default: m.WhenToGetHelp })));
 const GrowthTracker = lazy(() => import('./components/GrowthTracker').then(m => ({ default: m.GrowthTracker })));
+const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const TermsOfUse = lazy(() => import('./components/TermsOfUse').then(m => ({ default: m.TermsOfUse })));
 const MedicineInfo = lazy(() => import('./components/MedicineInfo').then(m => ({ default: m.MedicineInfo })));
 const MilestoneNavigator = lazy(() => import('./components/MilestoneNavigator').then(m => ({ default: m.MilestoneNavigator })));
 const CalmStory = lazy(() => import('./components/CalmStory').then(m => ({ default: m.CalmStory })));
@@ -42,9 +44,10 @@ const ViewLoading: React.FC = () => (
 
 const DisclaimerModal: React.FC = () => {
   const { hasAcceptedDisclaimer, acceptDisclaimer } = useGovernance();
-  const { navigateTo } = useNavigation();
+  const { activeView, navigateTo } = useNavigation();
 
-  if (hasAcceptedDisclaimer) return null;
+  // Let people read the privacy policy and terms before agreeing.
+  if (hasAcceptedDisclaimer || activeView === 'privacy' || activeView === 'terms') return null;
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -53,9 +56,9 @@ const DisclaimerModal: React.FC = () => {
          <div className="text-center space-y-4">
             <h2 className="text-3xl font-black text-slate-800 tracking-tight italic leading-none">Purpose & Safety Notice</h2>
             <div className="text-slate-500 font-medium italic space-y-4 leading-relaxed text-sm">
-               <p>PediPulse AI is a <strong>decision-support tool</strong>. It organizes data and highlights red flags locally.</p>
-               <p>It is <strong>NOT intended to provide medical advice, diagnosis, or treatment.</strong></p>
-               <p>If you observe dangerous signs, <strong>seek professional medical care immediately.</strong></p>
+               <p>PediPulse helps you keep your child's health records and find <strong>general information</strong>. Your records stay on this device.</p>
+               <p>It is <strong>NOT medical advice</strong> and doesn't diagnose, assess symptoms or calculate doses.</p>
+               <p><strong>In an emergency, call 000.</strong></p>
             </div>
          </div>
          <div className="space-y-3">
@@ -65,6 +68,9 @@ const DisclaimerModal: React.FC = () => {
            >
              I Understand & Agree
            </button>
+           <p className="text-center text-sm font-bold text-slate-600">
+             Read the <button onClick={() => navigateTo('privacy')} className="underline text-indigo-700">Privacy Policy</button> and <button onClick={() => navigateTo('terms')} className="underline text-indigo-700">Terms of Use</button>.
+           </p>
          </div>
       </div>
     </div>
@@ -100,7 +106,7 @@ const AppContent: React.FC = () => {
 
   // Airtight Persistence Redirect: Runs once on mount and when profile state changes
   useEffect(() => {
-    const publicViews: ViewType[] = ['ethics', 'regulatory', 'governance', 'setup'];
+    const publicViews: ViewType[] = ['ethics', 'regulatory', 'governance', 'setup', 'privacy', 'terms'];
     const isReady = !!childProfile || hasSkippedSetup;
     
     if (!isReady && !publicViews.includes(activeView)) {
@@ -140,6 +146,8 @@ const AppContent: React.FC = () => {
       handover: <HandoverSummary />,
       governance: <GovernanceLog />,
       ethics: <EthicsSafety />,
+      privacy: <PrivacyPolicy />,
+      terms: <TermsOfUse />,
       regulatory: <RegulatoryRisk />,
       sickday: <SickDayPlanView />
     };

@@ -91,6 +91,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
     dashboard: 'Home',
     setup: 'Child Profile',
     ethics: 'Ethics & SOP',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Use',
     growth: 'Growth',
     vaccines: 'Vaccines',
     medications: 'Medications',
@@ -168,6 +170,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
           <span className="text-xl">🛡️</span>
           <span className="text-[11px] font-black uppercase tracking-widest">Ethics & SOP</span>
         </button>
+        <div className="flex justify-center gap-4 mt-3 text-xs font-bold text-slate-500">
+          <button onClick={() => handleNav('privacy')} className="underline">Privacy</button>
+          <button onClick={() => handleNav('terms')} className="underline">Terms</button>
+        </div>
       </div>
     </div>
   );
@@ -220,6 +226,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
               <span className="text-2xl">🛡️</span>
               <span className="text-sm font-black">Ethics & SOP</span>
             </button>
+            <div className="flex justify-center gap-6 text-sm font-bold text-slate-600">
+              <button onClick={() => handleNav('privacy')} className="underline min-h-[44px]">Privacy Policy</button>
+              <button onClick={() => handleNav('terms')} className="underline min-h-[44px]">Terms of Use</button>
+            </div>
           </div>
         </div>
       )}
