@@ -1,16 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { openWithChild, trackErrors } from './helpers';
 
-test('medicine log shows when the next paracetamol dose is allowed', async ({ page }) => {
+test('medicine page records doses without giving dosing rules', async ({ page }) => {
   const errors = trackErrors(page);
   await openWithChild(page, 'dosage');
   const log = page.getByRole('region', { name: /Medicine log/ });
   await log.getByLabel('Medicine').selectOption('Paracetamol');
   await log.getByRole('button', { name: 'Record Dose' }).click();
-  await expect(log.getByText(/Next dose not before/)).toBeVisible();
-  await expect(log.getByText('1 of 4 doses in the last 24 hours')).toBeVisible();
-  // General information only: no child-specific dose is ever suggested.
-  await expect(page.getByText(/mg\/kg/)).toHaveCount(0);
+  await expect(log.getByText(/Last recorded at/)).toBeVisible();
+  await expect(log.getByText('1 dose recorded in the last 24 hours')).toBeVisible();
+  // General information only: no amounts, frequencies or maximums.
+  await expect(page.getByText('Check the product label and ask your pharmacist or doctor.')).toBeVisible();
+  const info = await page.locator('main').innerText();
+  expect(info).not.toMatch(/mg\/kg|times in 24 hours|hours apart|next dose|how much to give/i);
   expect(errors).toEqual([]);
 });
 
