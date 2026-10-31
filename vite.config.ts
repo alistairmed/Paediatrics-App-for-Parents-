@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -45,6 +46,25 @@ const geminiDevProxy = (apiKey?: string, enableAi?: string): Plugin => ({
   },
 });
 
+/**
+ * Writes sw.js at build time with the list of every built file, so the
+ * service worker can save the whole app for offline use.
+ */
+const serviceWorker = (): Plugin => ({
+  name: 'pedipulse-service-worker',
+  apply: 'build',
+  generateBundle(_options, bundle) {
+    const publicFiles = ['/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png', '/icons/favicon-32.png'];
+    const built = Object.keys(bundle).filter(f => !f.endsWith('.map')).map(f => '/' + f);
+    const precache = ['/', ...new Set([...built, ...publicFiles])];
+    const version = Date.now().toString(36);
+    const source = fs.readFileSync(path.resolve(__dirname, 'sw-template.js'), 'utf8')
+      .replaceAll('__PRECACHE__', JSON.stringify(precache))
+      .replaceAll('__VERSION__', version);
+    this.emitFile({ type: 'asset', fileName: 'sw.js', source });
+  },
+});
+
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
@@ -52,7 +72,7 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react(), geminiDevProxy(env.GEMINI_API_KEY || env.API_KEY, env.ENABLE_AI)],
+      plugins: [react(), geminiDevProxy(env.GEMINI_API_KEY || env.API_KEY, env.ENABLE_AI), serviceWorker()],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

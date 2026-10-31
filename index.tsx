@@ -20,6 +20,13 @@ window.addEventListener('vite:preloadError', (event) => {
   window.location.reload();
 });
 
+// Save the app on the device so it opens without a connection (production only).
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
 const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error("Could not find root element to mount to");

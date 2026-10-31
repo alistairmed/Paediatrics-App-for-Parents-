@@ -5,4 +5,4 @@
  * To turn them back on, set VITE_ENABLE_AI=true (read by the browser) and
  * ENABLE_AI=true (read by api/gemini.ts) in the environment, e.g. on Vercel.
  */
-export const AI_ENABLED = (import.meta as any).env?.VITE_ENABLE_AI === 'true';
+export const AI_ENABLED = import.meta.env.VITE_ENABLE_AI === 'true';
