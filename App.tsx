@@ -39,7 +39,6 @@ const AcuteTracker = lazy(() => import('./components/AcuteTracker').then(m => ({
 const HandoverSummary = lazy(() => import('./components/HandoverSummary').then(m => ({ default: m.HandoverSummary })));
 const GovernanceLog = lazy(() => import('./components/GovernanceLog').then(m => ({ default: m.GovernanceLog })));
 const EthicsSafety = lazy(() => import('./components/EthicsSafety').then(m => ({ default: m.EthicsSafety })));
-const RegulatoryRisk = lazy(() => import('./components/RegulatoryRisk').then(m => ({ default: m.RegulatoryRisk })));
 const SickDayPlanView = lazy(() => import('./components/SickDayPlanView').then(m => ({ default: m.SickDayPlanView })));
 
 const ViewLoading: React.FC = () => (
@@ -110,7 +109,7 @@ const AppContent: React.FC = () => {
 
   // Airtight Persistence Redirect: Runs once on mount and when profile state changes
   useEffect(() => {
-    const publicViews: ViewType[] = ['ethics', 'regulatory', 'governance', 'setup', 'privacy', 'terms'];
+    const publicViews: ViewType[] = ['ethics', 'governance', 'setup', 'privacy', 'terms'];
     const isReady = !!childProfile || hasSkippedSetup;
     
     if (!isReady && !publicViews.includes(activeView)) {
@@ -153,7 +152,6 @@ const AppContent: React.FC = () => {
       privacy: <PrivacyPolicy />,
       terms: <TermsOfUse />,
       summary: <PrintableSummary />,
-      regulatory: <RegulatoryRisk />,
       sickday: <SickDayPlanView />
     };
     return views[activeView] || views.dashboard;

@@ -76,7 +76,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
         { id: 'setup', label: 'Children', icon: '👶' },
         { id: 'ethics', label: 'Privacy, Backup & Lock', icon: '🛡️' },
         { id: 'governance', label: 'Activity Log', icon: '🗂️' },
-        { id: 'regulatory', label: 'About Regulation', icon: '⚖️' },
       ]
     }
   ];

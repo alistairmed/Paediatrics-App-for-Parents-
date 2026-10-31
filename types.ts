@@ -288,7 +288,6 @@ export const VIEW_TYPES = [
   'handover',
   'governance',
   'ethics',
-  'regulatory',
   'sickday',
   'privacy',
   'terms',
