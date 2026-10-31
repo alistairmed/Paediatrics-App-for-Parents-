@@ -1,5 +1,6 @@
 
 import { useState, useCallback, useRef } from "react";
+import { readItem, writeItem } from "../utils/vault";
 
 /** Fired on window when a value couldn't be saved (usually because storage is full). */
 export const STORAGE_ERROR_EVENT = "pedipulse:storage-error";
@@ -17,7 +18,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     }
 
     try {
-      const item = window.localStorage.getItem(key);
+      const item = readItem(key);
       return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
       console.warn(`Error reading localStorage key “${key}”:`, error);
@@ -33,15 +34,21 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   // saved value and announce the failure instead of pretending it saved.
   const setValue = useCallback((value: T | ((val: T) => T)) => {
     const valueToStore = value instanceof Function ? value(latest.current) : value;
-    try {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      }
-    } catch (error) {
+    const reportFailure = (error: unknown) => {
       console.warn(`Error setting localStorage key “${key}”:`, error);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key } }));
       }
+    };
+    try {
+      if (typeof window !== "undefined") {
+        // With the passcode lock on, records are encrypted asynchronously; a
+        // failed write is still reported, though the screen has already updated.
+        const pending = writeItem(key, JSON.stringify(valueToStore));
+        if (pending) pending.catch(reportFailure);
+      }
+    } catch (error) {
+      reportFailure(error);
       return;
     }
     latest.current = valueToStore;

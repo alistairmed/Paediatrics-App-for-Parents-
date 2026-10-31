@@ -1,60 +1,8 @@
 
 import React, { createContext, useContext, useMemo, useState, useCallback } from 'react';
-import { MedicalHistory, ClinicalEvent, AcuteLogEntry, Appointment, SpecialistContact, Investigation, SickDayPlan, DevelopmentalHistory, FamilyHistory } from '../types';
+import { MedicalHistory, ClinicalEvent, AcuteLogEntry, Appointment, SpecialistContact } from '../types';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-
-const DEFAULT_SICK_DAY: SickDayPlan = {
-  greenZone: '',
-  yellowZone: '',
-  redZone: '',
-  backgroundForED: '',
-  emergencyMeds: '',
-  fluidRequirements: '',
-  triggers: '',
-  emergencyContact: '',
-  ambulanceTriggers: '',
-  dangerSigns: '',
-  carerActions: '',
-  planPhoto: undefined
-};
-
-const DEFAULT_DEV_HISTORY: DevelopmentalHistory = {
-  prenatal: { complications: '', scansNormal: true, medications: '' },
-  perinatal: { gestation: '', deliveryType: '', birthWeight: '', apgars: '' },
-  neonatal: { nicuStay: false, jaundice: false, feedingIssues: '', earlyConcerns: '' }
-};
-
-const DEFAULT_FAMILY_HISTORY: FamilyHistory = {
-  maternal: '',
-  paternal: '',
-  siblings: '',
-  other: '',
-  members: []
-};
-
-const DEFAULT_HISTORY: MedicalHistory = {
-  pastMedicalHistory: '',
-  surgicalHistory: '',
-  bondingNotes: '',
-  consultationNotes: '',
-  currentMedications: [],
-  previousMedications: [],
-  allergies: [],
-  familyHistory: DEFAULT_FAMILY_HISTORY,
-  developmentalHistory: DEFAULT_DEV_HISTORY,
-  specialists: [],
-  appointments: [],
-  devices: [],
-  sickDayPlan: DEFAULT_SICK_DAY,
-  activeRecommendations: [],
-  medicalReports: [],
-  conditions: [],
-  vaccinations: [],
-  growthRecords: [],
-  milestones: [],
-  acuteLogs: [],
-  investigations: []
-};
+import { DEFAULT_HISTORY, withHistoryDefaults } from './historyDefaults';
 
 interface MedicalHistoryContextType {
   history: MedicalHistory;
@@ -70,7 +18,13 @@ interface MedicalHistoryContextType {
 const MedicalHistoryContext = createContext<MedicalHistoryContextType | undefined>(undefined);
 
 export const MedicalHistoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [history, setHistory] = useLocalStorage<MedicalHistory>('pedipulse_history', DEFAULT_HISTORY);
+  const [storedHistory, setStoredHistory] = useLocalStorage<MedicalHistory>('pedipulse_history', DEFAULT_HISTORY);
+  // Saved data from older versions can be missing fields that screens expect: fill them in.
+  const history = useMemo(() => withHistoryDefaults(storedHistory), [storedHistory]);
+  const setHistory = useCallback(
+    (update: (prev: MedicalHistory) => MedicalHistory) => setStoredHistory(prev => update(withHistoryDefaults(prev))),
+    [setStoredHistory]
+  );
   const [pendingEvents, setPendingEvents] = useState<ClinicalEvent[]>([]);
 
   const updateHistory = useCallback((updates: Partial<MedicalHistory>) => {

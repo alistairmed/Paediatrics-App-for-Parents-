@@ -1,3 +1,5 @@
+import { withSafetyInstruction } from '../services/prompts.js';
+
 interface VercelRequest {
   method?: string;
   body?: any;
@@ -14,6 +16,29 @@ interface VercelResponse {
 
 // Only the models the app uses. Stops other callers spending the key on pricier models.
 const ALLOWED_MODELS = ['gemini-2.5-flash'];
+// The only tool the app uses (grounded answers). Other tools are dropped.
+const ALLOWED_TOOLS = ['googleSearch'];
+
+// Best-effort limit per client IP. State lives in this server instance only,
+// so it slows abuse rather than guaranteeing a quota; for a hard limit, add a
+// Vercel Firewall rate-limit rule on /api/gemini.
+const RATE_LIMIT = { max: 20, windowMs: 10 * 60 * 1000 };
+const recentRequests = new Map<string, number[]>();
+
+export function isRateLimited(ip: string, now = Date.now()): boolean {
+  const windowStart = now - RATE_LIMIT.windowMs;
+  const times = (recentRequests.get(ip) || []).filter(t => t > windowStart);
+  const limited = times.length >= RATE_LIMIT.max;
+  if (!limited) times.push(now);
+  recentRequests.set(ip, times);
+  if (recentRequests.size > 5000) recentRequests.clear(); // bound memory
+  return limited;
+}
+
+const header = (req: VercelRequest, name: string): string | undefined => {
+  const v = req.headers?.[name];
+  return Array.isArray(v) ? v[0] : v;
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // No CORS headers: the app calls this from the same origin, and browsers on
@@ -28,6 +53,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method Not Allowed. Only POST requests are accepted.' });
   }
 
+  // Browsers mark requests made by other websites; the app's own calls are same-origin.
+  const fetchSite = header(req, 'sec-fetch-site');
+  if (fetchSite && fetchSite !== 'same-origin' && fetchSite !== 'none') {
+    return res.status(403).json({ error: 'Cross-site requests are not allowed.' });
+  }
+
+  const ip = (header(req, 'x-forwarded-for') || '').split(',')[0].trim() || 'unknown';
+  if (isRateLimited(ip)) {
+    return res.status(429).json({ error: 'Too many AI requests. Please try again later.' });
+  }
+
   try {
     const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
     if (!apiKey) {
@@ -36,7 +72,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    const { model = 'gemini-2.5-flash', contents, config, systemInstruction } = req.body || {};
+    // The safety instruction is enforced here too, so callers can't leave it out.
+    const { model = 'gemini-2.5-flash', contents, config, systemInstruction } = withSafetyInstruction(req.body || {});
 
     if (!ALLOWED_MODELS.includes(model)) {
       return res.status(400).json({ error: `Model "${model}" is not allowed.` });
@@ -55,8 +92,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     };
 
     if (config) {
-      if (config.tools) {
-        requestPayload.tools = config.tools;
+      if (Array.isArray(config.tools)) {
+        const tools = config.tools.filter((t: any) => t && Object.keys(t).every(k => ALLOWED_TOOLS.includes(k)));
+        if (tools.length) requestPayload.tools = tools;
       }
       
       const generationConfig: any = {};
