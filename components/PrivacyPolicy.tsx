@@ -80,7 +80,7 @@ export const PrivacyPolicy: React.FC = () => (
               The app is hosted by Vercel. Like any website, the hosting service receives technical information when the app loads, such as your IP address,
               browser type and the pages requested, and may keep it in short-term logs for security and reliability. These logs don't contain your child's records.
             </p>
-            <p>The app doesn't use advertising, analytics or tracking cookies.</p>
+            <p>The app doesn't use advertising, analytics or tracking cookies, and doesn't load anything from other websites (fonts are part of the app).</p>
           </>
         ),
       },
