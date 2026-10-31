@@ -31,15 +31,15 @@ export const describeAge = (dob?: string): string | null => {
   if (!dob) return null;
   const birth = new Date(dob);
   const now = new Date();
-  let years = now.getFullYear() - birth.getFullYear();
-  let months = now.getMonth() - birth.getMonth();
-  if (months < 0 || (months === 0 && now.getDate() < birth.getDate())) {
-    years--;
-    months += 12;
-  }
+  if (isNaN(birth.getTime())) return null;
+  // Whole months completed, counting a month only once its day of the month is reached.
+  let total = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
+  if (now.getDate() < birth.getDate()) total--;
+  total = Math.max(0, total);
+  const years = Math.floor(total / 12), months = total % 12;
   const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
   if (years === 0) return `${plural(months, 'month')} old`;
-  return `${plural(years, 'year')}, ${plural(months % 12, 'month')}`;
+  return `${plural(years, 'year')}, ${plural(months, 'month')}`;
 };
 
 export const ChildProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children: content }) => {

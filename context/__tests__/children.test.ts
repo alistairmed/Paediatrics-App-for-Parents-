@@ -59,3 +59,16 @@ describe('Children storage', () => {
     expect(s.children[0].name).toBe('Thomas');
   });
 });
+
+describe('Age description', () => {
+  test('Counts whole months, with correct plurals', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-10T12:00:00'));
+    const { describeAge } = await import('../ChildProfileContext');
+    expect(describeAge('2026-09-15')).toBe('0 months old');
+    expect(describeAge('2026-09-10')).toBe('1 month old');
+    expect(describeAge('2025-09-15')).toBe('1 year, 0 months');
+    expect(describeAge('2024-08-01')).toBe('2 years, 2 months');
+    vi.useRealTimers();
+  });
+});
