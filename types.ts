@@ -67,8 +67,8 @@ export interface MedicalReport {
 
 export interface GrowthRecord {
   age: number;
-  weight: number;
-  height: number;
+  weight?: number;
+  height?: number;
   headCircumference?: number;
   date: string;
 }
@@ -103,9 +103,6 @@ export interface ChildProfile {
   medications: Medication[];
   previousMedications: PreviousMedication[];
   allergies: string[];
-  email: string;
-  password?: string;
-  stayLoggedIn?: boolean;
 }
 
 export interface Vaccination {
@@ -293,6 +290,9 @@ export const VIEW_TYPES = [
   'ethics',
   'regulatory',
   'sickday',
+  'privacy',
+  'terms',
+  'summary',
 ] as const;
 
 export type ViewType = typeof VIEW_TYPES[number];

@@ -1,132 +1,130 @@
-
-import React, { useState, useEffect } from 'react';
-import { ChildProfile, Medication } from '../types';
+import React, { useState } from 'react';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useNavigation } from '../context/NavigationContext';
 import { useToast } from '../context/ToastContext';
+import { useConfirm } from '../context/ConfirmContext';
 
+/** Add a child, or edit / remove the active child's profile. */
 export const ChildProfileSetup: React.FC = () => {
-  const { childProfile, setChildProfile, setHasSkippedSetup } = useChildProfile();
+  const { isAddingChild, activeChildId } = useChildProfile();
+  // Start with a fresh form when switching between adding and editing, or between children.
+  return <ChildProfileForm key={`${isAddingChild ? 'add' : 'edit'}-${activeChildId}`} />;
+};
+
+const ChildProfileForm: React.FC = () => {
+  const { childProfile, setChildProfile, addChild, removeChild, setHasSkippedSetup, isAddingChild, setIsAddingChild, children } = useChildProfile();
   const { navigateTo } = useNavigation();
   const { showToast } = useToast();
-  const [isSaving, setIsSaving] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const confirm = useConfirm();
 
-  // Child Info
-  const [name, setName] = useState(childProfile?.name || '');
-  const [dob, setDob] = useState(childProfile?.dob || '');
-  const [sex, setSex] = useState<'Male' | 'Female' | 'Other'>(childProfile?.sex || 'Male');
-  const [weight, setWeight] = useState(childProfile?.weight?.toString() || '');
-  const [height, setHeight] = useState(childProfile?.height?.toString() || '');
-  const [medHistory, setMedHistory] = useState(childProfile?.pastMedicalHistory || '');
-  
-  // Account Info
-  const [email, setEmail] = useState(childProfile?.email || '');
-  const [password, setPassword] = useState(childProfile?.password || '');
-  const [stayLoggedIn, setStayLoggedIn] = useState(childProfile?.stayLoggedIn ?? true);
-  const [agreedToTerms, setAgreedToTerms] = useState(!!childProfile);
+  const editing = isAddingChild ? undefined : childProfile;
+  const [name, setName] = useState(editing?.name || '');
+  const [dob, setDob] = useState(editing?.dob || '');
+  const [sex, setSex] = useState<'Male' | 'Female' | 'Other'>(editing?.sex || 'Female');
+  const [error, setError] = useState<string | null>(null);
 
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const today = new Date().toISOString().split('T')[0];
+  const isFirstChild = children.length === 0;
 
-  useEffect(() => {
-    const errors = [];
-    if (!name) errors.push("Name is required");
-    if (!dob) errors.push("DOB is required");
-    if (!email) errors.push("Email is required");
-    if (!agreedToTerms) errors.push("Agreement required");
-    setValidationErrors(errors);
-  }, [name, dob, email, agreedToTerms]);
+  const finish = () => {
+    setIsAddingChild(false);
+    navigateTo('dashboard');
+  };
 
   const handleSkip = () => {
     setHasSkippedSetup(true);
-    navigateTo('dashboard');
+    finish();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (validationErrors.length > 0) {
-      return;
-    }
+    if (!name.trim()) return setError("Please enter your child's name.");
+    if (!dob) return setError('Please enter a date of birth.');
+    if (dob > today) return setError("The date of birth can't be in the future.");
 
-    const weightNum = parseFloat(weight);
-    if (weight && (weightNum < 2 || weightNum > 150)) {
-       showToast("Please enter a realistic weight between 2 kg and 150 kg.", 'error');
-       return;
+    const profile = {
+      medications: [], previousMedications: [], allergies: [],
+      ...editing,
+      name: name.trim(), dob, sex,
+    };
+    if (editing) {
+      setChildProfile(profile);
+      showToast(`${profile.name}'s profile is saved.`);
+    } else {
+      addChild(profile);
+      showToast(`${profile.name} has been added.`);
     }
-
-    setIsSaving(true);
-    
-    setTimeout(() => {
-      setChildProfile({
-        name,
-        dob,
-        sex,
-        weight: weight ? parseFloat(weight) : undefined,
-        height: height ? parseFloat(height) : undefined,
-        pastMedicalHistory: medHistory,
-        medications: childProfile?.medications || [],
-        previousMedications: childProfile?.previousMedications || [],
-        allergies: childProfile?.allergies || [],
-        email,
-        password,
-        stayLoggedIn
-      });
-      setHasSkippedSetup(false);
-      setIsSuccess(true);
-      
-      setTimeout(() => {
-        navigateTo('dashboard');
-        setIsSaving(false);
-      }, 800);
-    }, 1000);
+    setHasSkippedSetup(false);
+    finish();
   };
 
-  const inputClass = "w-full p-4 sm:p-5 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none font-black text-slate-900 text-base sm:text-lg transition-all placeholder:text-slate-400 shadow-sm min-h-[44px]";
-  const labelClass = "block text-xs font-black text-slate-700 uppercase tracking-widest ml-1 mb-1.5";
+  const handleRemove = async () => {
+    if (!editing) return;
+    const ok = await confirm({
+      title: `Remove ${editing.name}?`,
+      message: `This permanently deletes ${editing.name}'s profile and all of their records on this device. Save a backup first if you might need them.`,
+      confirmLabel: 'Remove',
+      danger: true,
+    });
+    if (!ok) return;
+    removeChild(editing.id);
+    showToast(`${editing.name} has been removed.`, 'info');
+    finish();
+  };
+
+  const inputClass = "w-full p-4 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-hidden font-bold text-slate-900 text-base";
+  const labelClass = "block text-sm font-bold text-slate-700 mb-1.5";
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-700 pb-28">
-      <header className="text-center space-y-3 sm:space-y-4">
-        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-indigo-600 text-white rounded-[2rem] flex items-center justify-center text-4xl sm:text-5xl mx-auto mb-4 sm:mb-6 shadow-2xl rotate-3 transition-transform hover:rotate-0 cursor-default">🩺</div>
-        <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight italic">
-          {childProfile ? 'Profile Edit' : 'Clinical Onboarding'}
+    <div className="max-w-2xl mx-auto space-y-8 pb-28">
+      <header className="text-center space-y-3">
+        <div className="w-20 h-20 bg-indigo-600 text-white rounded-4xl flex items-center justify-center text-4xl mx-auto shadow-xl" aria-hidden="true">👶</div>
+        <h2 className="text-3xl font-black text-slate-800 tracking-tight">
+          {editing ? `Edit ${editing.name}'s profile` : isFirstChild ? 'Add your child' : 'Add another child'}
         </h2>
-        <p className="text-slate-600 font-bold italic text-sm sm:text-base">Persistence for clinical baseline and alerts.</p>
-        
-        {!childProfile && !isSuccess && (
-          <div className="pt-2 sm:pt-4">
-            <button onClick={handleSkip} className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 hover:text-indigo-600 border-2 border-slate-200 px-6 sm:px-8 py-3 rounded-2xl transition-all min-h-[44px]">Skip →</button>
-          </div>
-        )}
+        <p className="text-base font-medium text-slate-600">Your child's details stay on this device.</p>
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
-        <section className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-200 shadow-xl space-y-6 sm:space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-            <div className="space-y-1">
-              <label className={labelClass}>Child's Name</label>
-              <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Full Name" className={inputClass} />
+      <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6" noValidate>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <label className="block sm:col-span-2">
+            <span className={labelClass}>Child's name</span>
+            <input type="text" autoComplete="off" value={name} onChange={e => setName(e.target.value)} placeholder="First name" className={inputClass} />
+          </label>
+          <label className="block">
+            <span className={labelClass}>Date of birth</span>
+            <input type="date" max={today} value={dob} onChange={e => setDob(e.target.value)} className={inputClass} />
+          </label>
+          <fieldset>
+            <legend className={labelClass}>Sex</legend>
+            <div className="flex gap-2">
+              {(['Female', 'Male', 'Other'] as const).map(option => (
+                <label key={option} className={`flex-1 text-center p-4 rounded-2xl border-2 font-bold cursor-pointer ${sex === option ? 'border-indigo-600 bg-indigo-50 text-indigo-800' : 'border-slate-300 text-slate-700'}`}>
+                  <input type="radio" name="sex" value={option} checked={sex === option} onChange={() => setSex(option)} className="sr-only" />
+                  {option}
+                </label>
+              ))}
             </div>
-            <div className="space-y-1">
-              <label className={labelClass}>Birth Date</label>
-              <input type="date" required max={new Date().toISOString().split('T')[0]} value={dob} onChange={(e) => setDob(e.target.value)} className={inputClass + " uppercase"} />
-            </div>
-            <div className="space-y-1">
-              <label className={labelClass}>Latest Weight (kg)</label>
-              <input type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="e.g. 12.5" className={inputClass} />
-            </div>
-            <div className="space-y-1">
-               <label className={labelClass}>Guardian Email</label>
-               <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="parent@example.com" className={inputClass} />
-            </div>
-          </div>
-        </section>
+          </fieldset>
+        </div>
+        <p className="text-sm font-medium text-slate-600">Record weight and height in Growth Charts.</p>
 
-        <div className="space-y-4">
-          <button type="submit" disabled={isSaving || validationErrors.length > 0} className={`w-full py-5 sm:py-7 min-h-[48px] text-white font-black rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl transition-all transform active:scale-95 text-sm sm:text-base uppercase tracking-[0.2em] flex items-center justify-center gap-3 ${isSuccess ? 'bg-emerald-500' : (validationErrors.length > 0 ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700')}`}>
-            {isSuccess ? 'Profile Ready ✓' : isSaving ? 'Saving...' : 'Sync Registry ✨'}
-          </button>
+        {error && <p role="alert" className="text-sm font-bold text-rose-700">{error}</p>}
+
+        <button type="submit" className="w-full py-5 min-h-[48px] text-white font-black rounded-4xl shadow-xl bg-indigo-600 hover:bg-indigo-700 uppercase tracking-widest">
+          {editing ? 'Save Profile' : `Add ${name.trim() || 'Child'}`}
+        </button>
+
+        <div className="flex flex-wrap justify-center gap-4">
+          {!editing && isFirstChild && (
+            <button type="button" onClick={handleSkip} className="text-sm font-bold text-slate-600 underline min-h-[44px]">Skip for now</button>
+          )}
+          {!isFirstChild && (
+            <button type="button" onClick={finish} className="text-sm font-bold text-slate-600 underline min-h-[44px]">Cancel</button>
+          )}
+          {editing && (
+            <button type="button" onClick={handleRemove} className="text-sm font-bold text-rose-700 underline min-h-[44px]">Remove this child</button>
+          )}
         </div>
       </form>
     </div>

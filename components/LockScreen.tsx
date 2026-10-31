@@ -35,14 +35,14 @@ export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
 
         <form onSubmit={handleUnlock} className="space-y-4">
           <label className="block">
-            <span className="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-2 mb-1">Passcode</span>
+            <span className="block text-xs font-black text-slate-700 uppercase tracking-widest ml-2 mb-1">Passcode</span>
             <input
               type="password"
               autoComplete="current-password"
               autoFocus
               value={passcode}
               onChange={e => setPasscode(e.target.value)}
-              className="w-full p-4 rounded-2xl border-2 border-slate-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none font-black text-xl text-slate-900"
+              className="w-full p-4 rounded-2xl border-2 border-slate-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-hidden font-black text-xl text-slate-900"
             />
           </label>
           {error && <p role="alert" className="text-sm font-bold text-rose-700">{error}</p>}

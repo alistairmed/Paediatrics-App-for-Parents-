@@ -3,6 +3,8 @@ import React, { createContext, useContext, useMemo, useState, useCallback } from
 import { MedicalHistory, ClinicalEvent, AcuteLogEntry, Appointment, SpecialistContact } from '../types';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { DEFAULT_HISTORY, withHistoryDefaults } from './historyDefaults';
+import { useChildProfile } from './ChildProfileContext';
+import { historyKey } from './children';
 
 interface MedicalHistoryContextType {
   history: MedicalHistory;
@@ -18,7 +20,9 @@ interface MedicalHistoryContextType {
 const MedicalHistoryContext = createContext<MedicalHistoryContextType | undefined>(undefined);
 
 export const MedicalHistoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [storedHistory, setStoredHistory] = useLocalStorage<MedicalHistory>('pedipulse_history', DEFAULT_HISTORY);
+  // Each child has their own history; switching child loads theirs.
+  const { activeChildId } = useChildProfile();
+  const [storedHistory, setStoredHistory] = useLocalStorage<MedicalHistory>(historyKey(activeChildId), DEFAULT_HISTORY);
   // Saved data from older versions can be missing fields that screens expect: fill them in.
   const history = useMemo(() => withHistoryDefaults(storedHistory), [storedHistory]);
   const setHistory = useCallback(
@@ -67,10 +71,9 @@ export const MedicalHistoryProvider: React.FC<{ children: React.ReactNode }> = (
   }, [setHistory]);
 
   const latestWeight = useMemo(() => {
-    if (history.growthRecords && history.growthRecords.length > 0) {
-      return history.growthRecords[history.growthRecords.length - 1].weight;
-    }
-    return undefined;
+    // Most recent measurement that includes a weight (some record only length or head size).
+    const withWeight = (history.growthRecords || []).filter(r => typeof r.weight === 'number' && r.weight > 0);
+    return withWeight.length ? withWeight[withWeight.length - 1].weight : undefined;
   }, [history.growthRecords]);
 
   const nextAppointment = useMemo(() => {

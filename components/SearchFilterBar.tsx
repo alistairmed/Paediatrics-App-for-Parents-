@@ -79,16 +79,16 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       <div className="flex flex-col sm:flex-row gap-3 items-center">
         {/* Keyword Search Input */}
         <div className="relative flex-1 w-full">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg opacity-60">🔍</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🔍</span>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full pl-12 pr-10 py-3.5 bg-slate-50 border-2 border-slate-200 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-100 rounded-2xl text-slate-800 font-bold text-sm transition-all placeholder:text-slate-400"
+            className="w-full pl-12 pr-10 py-3.5 bg-slate-50 border-2 border-slate-200 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-100 rounded-2xl text-slate-800 font-bold text-sm transition-all placeholder:text-slate-600"
           />
           {searchQuery && (
-            <button
+            <button aria-label="Clear search"
               onClick={() => onSearchChange('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-xs font-black transition-colors"
               title="Clear search text"
@@ -118,7 +118,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         {hasActiveFilters && (
           <button
             onClick={handleClear}
-            className="px-4 py-3.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border-2 border-rose-100 rounded-2xl font-black text-xs uppercase tracking-wider transition-all"
+            className="px-4 py-3.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-100 rounded-2xl font-black text-xs uppercase tracking-wider transition-all"
           >
             Clear Filters
           </button>
@@ -128,7 +128,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {/* Category Pills (If categories provided) */}
       {categories && categories.length > 0 && (
         <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 scrollbar-none">
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 shrink-0 mr-1">
+          <span className="text-xs font-black uppercase tracking-widest text-slate-600 shrink-0 mr-1">
             Category:
           </span>
           {categories.map((cat) => {
@@ -139,7 +139,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 onClick={() => onCategoryChange && onCategoryChange(cat.value)}
                 className={`px-4 py-1.5 rounded-full font-black text-xs transition-all shrink-0 ${
                   isSelected
-                    ? 'bg-violet-600 text-white shadow-sm scale-105'
+                    ? 'bg-violet-600 text-white shadow-xs scale-105'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -155,7 +155,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         <div className="pt-3 border-t border-slate-100 space-y-4 animate-in slide-in-from-top-2">
           {/* Presets */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mr-2">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-600 mr-2">
               Presets:
             </span>
             <button
@@ -193,10 +193,10 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           {/* Explicit Start and End Date inputs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+              <label htmlFor="search-from-date" className="block text-xs font-black uppercase tracking-widest text-slate-600 mb-1">
                 From Date
               </label>
-              <input
+              <input id="search-from-date"
                 type="date"
                 value={startDate}
                 onChange={(e) => onStartDateChange(e.target.value)}
@@ -204,10 +204,10 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               />
             </div>
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+              <label htmlFor="search-to-date" className="block text-xs font-black uppercase tracking-widest text-slate-600 mb-1">
                 To Date
               </label>
-              <input
+              <input id="search-to-date"
                 type="date"
                 value={endDate}
                 onChange={(e) => onEndDateChange(e.target.value)}
@@ -221,7 +221,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {/* Active Filter Badges & Count Feedback */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs font-bold border-t border-slate-100/80">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <span className="text-xs font-black uppercase tracking-widest text-slate-600">
             Results:
           </span>
           <span className="px-3 py-1 bg-violet-50 text-violet-700 rounded-full font-black text-xs">
@@ -232,9 +232,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           {searchQuery && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold">
               <span>Text: &quot;{searchQuery}&quot;</span>
-              <button
+              <button aria-label="Clear search text"
                 onClick={() => onSearchChange('')}
-                className="hover:text-rose-600 font-black"
+                className="hover:text-rose-700 font-black"
               >
                 ✕
               </button>
@@ -244,9 +244,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           {startDate && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">
               <span>From: {startDate}</span>
-              <button
+              <button aria-label="Clear start date"
                 onClick={() => onStartDateChange('')}
-                className="hover:text-rose-600 font-black"
+                className="hover:text-rose-700 font-black"
               >
                 ✕
               </button>
@@ -256,9 +256,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           {endDate && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">
               <span>To: {endDate}</span>
-              <button
+              <button aria-label="Clear end date"
                 onClick={() => onEndDateChange('')}
-                className="hover:text-rose-600 font-black"
+                className="hover:text-rose-700 font-black"
               >
                 ✕
               </button>
@@ -267,7 +267,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         </div>
 
         {filteredCount === 0 && totalCount > 0 && (
-          <p className="text-rose-500 italic text-xs font-bold">
+          <p className="text-rose-700 text-xs font-bold">
             No entries match your search criteria.
           </p>
         )}

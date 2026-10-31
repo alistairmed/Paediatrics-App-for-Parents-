@@ -1,0 +1,16 @@
+{
+  "name": "PediPulse – Child Health Records",
+  "short_name": "PediPulse",
+  "description": "Keep your child's health records and find trusted general information. Records stay on your device.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FBFBFE",
+  "theme_color": "#4F46E5",
+  "lang": "en-AU",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

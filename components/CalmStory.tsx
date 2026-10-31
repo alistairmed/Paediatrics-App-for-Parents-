@@ -110,7 +110,7 @@ export const CalmStory: React.FC = () => {
   return (
     <div className="space-y-6">
       <header>
-        <h2 className="text-3xl font-black text-slate-800 italic tracking-tight">CalmCast <span className="text-indigo-600">Stories</span></h2>
+        <h2 className="text-3xl font-black text-slate-800 tracking-tight">CalmCast <span className="text-indigo-600">Stories</span></h2>
         <p className="text-slate-500 text-sm font-medium">Instant soothing stories for doctor visits or bedtime.</p>
       </header>
 
@@ -119,18 +119,18 @@ export const CalmStory: React.FC = () => {
         
         <div className="space-y-8 relative z-10">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-2">Who is the story for?</label>
-            <input 
+            <label htmlFor="calmst-who-is-the-story-for" className="block text-xs font-black text-slate-600 uppercase tracking-[0.2em] mb-3 ml-2">Who is the story for?</label>
+            <input id="calmst-who-is-the-story-for" 
               type="text" 
               value={childName}
               onChange={e => setChildName(e.target.value)}
               placeholder="Enter child's name..."
-              className="w-full p-6 rounded-2xl border-2 border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-none bg-indigo-50/30 text-indigo-950 font-black text-lg placeholder-indigo-300 transition-all shadow-inner" 
+              className="w-full p-6 rounded-2xl border-2 border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-hidden bg-indigo-50/30 text-indigo-950 font-black text-lg placeholder-indigo-300 transition-all shadow-inner" 
             />
           </div>
 
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-2">Choose a Magical Theme</label>
+            <label className="block text-xs font-black text-slate-600 uppercase tracking-[0.2em] mb-4 ml-2">Choose a Magical Theme</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {themes.map(t => (
                 <button
@@ -139,11 +139,11 @@ export const CalmStory: React.FC = () => {
                   className={`p-5 rounded-3xl border-2 flex flex-col items-center gap-3 transition-all ${
                     theme === t.name 
                       ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl scale-105' 
-                      : 'bg-white border-slate-50 text-slate-400 hover:border-indigo-100 hover:bg-slate-50'
+                      : 'bg-white border-slate-50 text-slate-600 hover:border-indigo-100 hover:bg-slate-50'
                   }`}
                 >
                   <span className="text-4xl filter drop-shadow-md">{t.icon}</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest">{t.name}</span>
+                  <span className="text-xs font-black uppercase tracking-widest">{t.name}</span>
                 </button>
               ))}
             </div>
@@ -154,7 +154,7 @@ export const CalmStory: React.FC = () => {
               <span className="text-3xl animate-pulse">🔊</span>
               <div>
                 <p className="font-black text-emerald-900 text-sm">A soothing audio story is playing now!</p>
-                <p className="text-emerald-700 text-xs font-bold italic">Adjust volume on your device to keep it calm and comfortable.</p>
+                <p className="text-emerald-700 text-xs font-bold">Adjust volume on your device to keep it calm and comfortable.</p>
               </div>
             </div>
           )}
@@ -183,7 +183,7 @@ export const CalmStory: React.FC = () => {
               <button 
               onClick={handleGenerate}
               disabled={loading || !childName}
-              className={`w-full py-6 rounded-[2rem] font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
+              className={`w-full py-6 rounded-4xl font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
                 loading || !childName ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700'
               }`}
             >
@@ -218,7 +218,7 @@ export const CalmStory: React.FC = () => {
                   <h4 className="font-black text-indigo-950 text-sm uppercase tracking-widest">
                     {theme} Bedtime Tale for {childName || 'Child'}
                   </h4>
-                  <p className="text-slate-800 font-bold italic leading-relaxed text-sm">
+                  <p className="text-slate-800 font-bold leading-relaxed text-sm">
                     {getFallbackStoryText()}
                   </p>
                 </div>
@@ -232,7 +232,7 @@ export const CalmStory: React.FC = () => {
         <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-indigo-50 shrink-0">
           💡
         </div>
-        <p className="text-indigo-800 text-sm font-bold italic leading-relaxed">
+        <p className="text-indigo-800 text-sm font-bold leading-relaxed">
           "Try generating a story when your child feels anxious about a check-up. Use their favorite animals in the theme to build a positive clinical association."
         </p>
       </div>
