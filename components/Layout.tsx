@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { ViewType } from '../types';
 import { useNavigation } from '../context/NavigationContext';
 import { useEnvironment } from '../context/EnvironmentContext';
+import { useChildProfile } from '../context/ChildProfileContext';
+import { ChildSwitcher } from './ChildSwitcher';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,6 +15,7 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { mode } = useEnvironment();
+  const { childProfile } = useChildProfile();
 
   const groups = [
     {
@@ -138,6 +141,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
           </div>
         </div>
 
+        <ChildSwitcher className="px-2" />
+
         <div className="space-y-8 pb-10">
           {groups.map((group) => (
             <div key={group.title} className="space-y-2">
@@ -184,7 +189,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
         <button onClick={() => handleNav('dashboard')} aria-label="PediPulse home" className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 shrink-0 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-xl shadow-md">👶</span>
           <span className="min-w-0 text-left">
-            <span className="block text-[11px] font-black text-indigo-600 uppercase tracking-widest leading-none">PediPulse AI</span>
+            <span className="block text-[11px] font-black text-indigo-600 uppercase tracking-widest leading-none truncate">{childProfile ? `PediPulse · ${childProfile.name}` : 'PediPulse AI'}</span>
             <span className="block text-lg font-black text-slate-800 tracking-tight truncate">{currentTitle}</span>
           </span>
         </button>
@@ -198,6 +203,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
             <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu" className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-2xl text-slate-700">×</button>
           </div>
           <div className="px-4 pt-4 pb-[calc(2rem+env(safe-area-inset-bottom))] space-y-6">
+            <ChildSwitcher onNavigate={() => setIsMobileMenuOpen(false)} />
             {groups.map(group => (
               <section key={group.title} className="space-y-2">
                 <h3 className={`text-xs font-black ${group.color} uppercase tracking-widest px-1`}>{group.title}</h3>

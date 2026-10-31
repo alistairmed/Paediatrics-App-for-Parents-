@@ -30,6 +30,15 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   // Latest value, so updater functions called in quick succession build on each other.
   const latest = useRef(storedValue);
 
+  // The key can change (e.g. switching to another child's records): load that key's value.
+  const [loadedKey, setLoadedKey] = useState(key);
+  if (loadedKey !== key) {
+    const value = readValue();
+    latest.current = value;
+    setLoadedKey(key);
+    setStoredValue(value);
+  }
+
   // Persist first, then update state. If the write fails, keep the last
   // saved value and announce the failure instead of pretending it saved.
   const setValue = useCallback((value: T | ((val: T) => T)) => {

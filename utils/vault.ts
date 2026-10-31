@@ -71,6 +71,12 @@ export function writeItem(k: string, value: string): Promise<void> | void {
   return write;
 }
 
+/** Deletes a record (and its in-memory copy when the passcode lock is on). */
+export function removeItem(k: string): void {
+  cache.delete(k);
+  localStorage.removeItem(k);
+}
+
 async function checkPasscode(passcode: string, meta: LockMeta): Promise<CryptoKey | null> {
   const candidate = await deriveKey(passcode, meta.salt, meta.iterations);
   try {

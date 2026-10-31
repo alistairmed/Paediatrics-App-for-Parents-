@@ -103,9 +103,6 @@ export interface ChildProfile {
   medications: Medication[];
   previousMedications: PreviousMedication[];
   allergies: string[];
-  email: string;
-  password?: string;
-  stayLoggedIn?: boolean;
 }
 
 export interface Vaccination {
