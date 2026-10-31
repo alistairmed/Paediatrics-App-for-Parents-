@@ -22,6 +22,7 @@ const WhenToGetHelp = lazy(() => import('./components/WhenToGetHelp').then(m => 
 const GrowthTracker = lazy(() => import('./components/GrowthTracker').then(m => ({ default: m.GrowthTracker })));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const TermsOfUse = lazy(() => import('./components/TermsOfUse').then(m => ({ default: m.TermsOfUse })));
+const MedicineLog = lazy(() => import('./components/MedicineLog').then(m => ({ default: m.MedicineLog })));
 const MedicineInfo = lazy(() => import('./components/MedicineInfo').then(m => ({ default: m.MedicineInfo })));
 const MilestoneNavigator = lazy(() => import('./components/MilestoneNavigator').then(m => ({ default: m.MilestoneNavigator })));
 const CalmStory = lazy(() => import('./components/CalmStory').then(m => ({ default: m.CalmStory })));
@@ -137,7 +138,7 @@ const AppContent: React.FC = () => {
       setup: <ChildProfileSetup />,
       symptoms: <WhenToGetHelp />,
       growth: <GrowthTracker />,
-      dosage: <MedicineInfo />,
+      dosage: <MedicineInfo><MedicineLog /></MedicineInfo>,
       milestones: <MilestoneNavigator />,
       bonding: <BondingJournal />,
       vaccines: <VaccineTracker />,

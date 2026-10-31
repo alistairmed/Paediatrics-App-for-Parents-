@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { AcuteLogEntry } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { SearchFilterBar } from './SearchFilterBar';
+import { useToast } from '../context/ToastContext';
 
 const icons = { 
   Fluid: '🥤', 
@@ -19,7 +20,14 @@ const units: Record<string, string> = {
   Temperature: '°C',
   Output: 'ml',
   Vomit: 'ml',
-  Medication: 'mg/ml'
+  Medication: 'amount, e.g. 7.5 mL'
+};
+
+// Values outside these ranges are almost certainly typing errors (or Fahrenheit).
+const VALID_RANGES: Record<string, { min: number; max: number; message: string }> = {
+  Temperature: { min: 34, max: 43, message: 'Please enter a temperature in degrees Celsius between 34 and 43.' },
+  Fluid: { min: 1, max: 3000, message: 'Please enter an amount in mL between 1 and 3000.' },
+  Output: { min: 1, max: 3000, message: 'Please enter an amount in mL between 1 and 3000.' },
 };
 
 const formatLogTime = (isoString: string) => {
@@ -36,7 +44,9 @@ export const AcuteTracker: React.FC = () => {
   const [type, setType] = useState<AcuteLogEntry['type']>('Fluid');
   const [value, setValue] = useState('');
   const [notes, setNotes] = useState('');
-  const [selectedMed, setSelectedMed] = useState<'Paracetamol' | 'Ibuprofen'>('Paracetamol');
+  const [selectedMed, setSelectedMed] = useState<'Paracetamol' | 'Ibuprofen' | 'Other'>('Paracetamol');
+  const [otherMedName, setOtherMedName] = useState('');
+  const { showToast } = useToast();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -120,14 +130,22 @@ export const AcuteTracker: React.FC = () => {
   }, [history.acuteLogs]);
 
   const handleAdd = () => {
-    if (!value) return;
+    if (!value.trim()) return;
+    const range = VALID_RANGES[type];
+    if (range) {
+      const n = Number(value.trim().replace(',', '.'));
+      if (!Number.isFinite(n) || n < range.min || n > range.max) {
+        showToast(range.message, 'error');
+        return;
+      }
+    }
 
     addAcuteLog({
       timestamp: new Date().toISOString(),
       type,
-      value: type === 'Temperature' ? `${value} degree Celsius` : `${value} ${units[type] || ''}`,
+      value: type === 'Temperature' ? `${value.trim()} degree Celsius` : type === 'Medication' ? value.trim() : `${value.trim()} ${units[type] || ''}`.trim(),
       notes: notes.trim(),
-      medicationName: type === 'Medication' ? selectedMed : undefined
+      medicationName: type === 'Medication' ? (selectedMed === 'Other' ? otherMedName.trim() || 'Other medicine' : selectedMed) : undefined
     });
     setValue('');
     setNotes('');
@@ -170,6 +188,19 @@ export const AcuteTracker: React.FC = () => {
             </div>
             
             <div className="space-y-8">
+               {type === 'Medication' && (
+                 <div className="space-y-2">
+                   <label className={labelBaseClass} htmlFor="acute-med">Medicine</label>
+                   <select id="acute-med" value={selectedMed} onChange={e => setSelectedMed(e.target.value as typeof selectedMed)} className={inputBaseClass}>
+                     <option>Paracetamol</option>
+                     <option>Ibuprofen</option>
+                     <option>Other</option>
+                   </select>
+                   {selectedMed === 'Other' && (
+                     <input aria-label="Medicine name" value={otherMedName} onChange={e => setOtherMedName(e.target.value)} placeholder="Medicine name" className={inputBaseClass} />
+                   )}
+                 </div>
+               )}
                <div className="space-y-2">
                  <label className={labelBaseClass}>{type} Entry ({units[type] || 'Value'})</label>
                  <input value={value} onChange={e => setValue(e.target.value)} placeholder="..." className={inputBaseClass + " text-2xl py-6"} />
