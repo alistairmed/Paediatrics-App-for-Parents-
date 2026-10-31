@@ -22,6 +22,7 @@ const WhenToGetHelp = lazy(() => import('./components/WhenToGetHelp').then(m => 
 const GrowthTracker = lazy(() => import('./components/GrowthTracker').then(m => ({ default: m.GrowthTracker })));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const TermsOfUse = lazy(() => import('./components/TermsOfUse').then(m => ({ default: m.TermsOfUse })));
+const PrintableSummary = lazy(() => import('./components/PrintableSummary').then(m => ({ default: m.PrintableSummary })));
 const MedicineLog = lazy(() => import('./components/MedicineLog').then(m => ({ default: m.MedicineLog })));
 const MedicineInfo = lazy(() => import('./components/MedicineInfo').then(m => ({ default: m.MedicineInfo })));
 const MilestoneNavigator = lazy(() => import('./components/MilestoneNavigator').then(m => ({ default: m.MilestoneNavigator })));
@@ -150,6 +151,7 @@ const AppContent: React.FC = () => {
       ethics: <EthicsSafety />,
       privacy: <PrivacyPolicy />,
       terms: <TermsOfUse />,
+      summary: <PrintableSummary />,
       regulatory: <RegulatoryRisk />,
       sickday: <SickDayPlanView />
     };
@@ -159,7 +161,7 @@ const AppContent: React.FC = () => {
   return (
     <Layout activeView={activeView} onNavigate={navigateTo}>
       <DisclaimerModal />
-      <div className="bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-sm space-y-1">
+      <div className="print:hidden bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-sm space-y-1">
         <p className="text-[10px] font-black text-rose-600 uppercase tracking-wider sm:tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
         <p className="hidden sm:block text-[9px] text-rose-500 italic font-bold">{AI_ENABLED ? 'AI features send your entries to Google Gemini' : 'Data remains on this device'} • Replaces no clinical judgment.</p>
       </div>

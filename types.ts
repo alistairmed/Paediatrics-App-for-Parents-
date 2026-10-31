@@ -292,6 +292,7 @@ export const VIEW_TYPES = [
   'sickday',
   'privacy',
   'terms',
+  'summary',
 ] as const;
 
 export type ViewType = typeof VIEW_TYPES[number];

@@ -49,6 +49,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
       items: [
         { id: 'diagnostics', label: 'Investigation Results', icon: '🧪' },
         { id: 'reports', label: 'Specialist Letters', icon: '✉️' },
+        { id: 'summary', label: 'Summary for Doctor', icon: '🖨️' },
         { id: 'handover', label: 'ISBAR Handover', icon: '📄' },
       ]
     },
@@ -184,8 +185,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
   );
 
   return (
-    <div className={`min-h-screen flex flex-col md:flex-row bg-[#FBFBFE]`}>
-      <header className="md:hidden flex items-center justify-between gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div className={`min-h-screen print:min-h-0 flex flex-col md:flex-row bg-[#FBFBFE] print:bg-white`}>
+      <header className="md:hidden print:hidden flex items-center justify-between gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <button onClick={() => handleNav('dashboard')} aria-label="PediPulse home" className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 shrink-0 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-xl shadow-md">👶</span>
           <span className="min-w-0 text-left">
@@ -240,15 +241,15 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
         </div>
       )}
 
-      <nav className="hidden md:flex w-72 bg-white border-r border-slate-200 p-4 sticky top-0 h-screen flex-col justify-between overflow-y-auto no-scrollbar shadow-2xl z-50">
+      <nav className="hidden md:flex print:hidden w-72 bg-white border-r border-slate-200 p-4 sticky top-0 h-screen flex-col justify-between overflow-y-auto no-scrollbar shadow-2xl z-50">
         <NavContent />
       </nav>
 
-      <main className="flex-1 p-4 sm:p-6 md:p-10 lg:p-12 overflow-y-auto">
-        <div className="max-w-5xl mx-auto pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-24">{children}</div>
+      <main className="flex-1 p-4 sm:p-6 md:p-10 lg:p-12 print:p-0 overflow-y-auto">
+        <div className="max-w-5xl mx-auto pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-24 print:pb-0">{children}</div>
       </main>
 
-      <nav aria-label="Main" className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.12)] pb-[env(safe-area-inset-bottom)]">
+      <nav aria-label="Main" className="md:hidden print:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.12)] pb-[env(safe-area-inset-bottom)]">
         <div className="grid grid-cols-5 gap-1 px-2 py-1.5">
           {bottomNavItems.map(item => {
             const isActive = activeView === item.id && !isMobileMenuOpen;
