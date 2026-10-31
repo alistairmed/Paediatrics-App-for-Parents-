@@ -17,9 +17,9 @@ import { AI_ENABLED } from './config/features';
 
 // Each screen is loaded on demand so the first page doesn't download the whole app.
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
-const SymptomChecker = lazy(() => import('./components/SymptomChecker').then(m => ({ default: m.SymptomChecker })));
+const WhenToGetHelp = lazy(() => import('./components/WhenToGetHelp').then(m => ({ default: m.WhenToGetHelp })));
 const GrowthTracker = lazy(() => import('./components/GrowthTracker').then(m => ({ default: m.GrowthTracker })));
-const DoseCalculator = lazy(() => import('./components/DoseCalculator').then(m => ({ default: m.DoseCalculator })));
+const MedicineInfo = lazy(() => import('./components/MedicineInfo').then(m => ({ default: m.MedicineInfo })));
 const MilestoneNavigator = lazy(() => import('./components/MilestoneNavigator').then(m => ({ default: m.MilestoneNavigator })));
 const CalmStory = lazy(() => import('./components/CalmStory').then(m => ({ default: m.CalmStory })));
 const VaccineTracker = lazy(() => import('./components/VaccineTracker').then(m => ({ default: m.VaccineTracker })));
@@ -128,9 +128,9 @@ const AppContent: React.FC = () => {
       developmental: <MedicalProfile />,
       redbook: <RedBook />,
       setup: <ChildProfileSetup />,
-      symptoms: <SymptomChecker />,
+      symptoms: <WhenToGetHelp />,
       growth: <GrowthTracker />,
-      dosage: <DoseCalculator />,
+      dosage: <MedicineInfo />,
       milestones: <MilestoneNavigator />,
       bonding: <BondingJournal />,
       vaccines: <VaccineTracker />,

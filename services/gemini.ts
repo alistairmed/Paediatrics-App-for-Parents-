@@ -110,35 +110,6 @@ export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<
   }
 }
 
-export const analyzeSymptoms = async (description: string, imageBase64?: string, activeRedFlags: string[] = []) => {
-  const model = 'gemini-2.5-flash';
-  const parts: any[] = [
-    {
-      text: `${PEDI_PULSE_PROMPTS.v1.clinicalTriage.replace('{redFlags}', activeRedFlags.join(', '))}\n\nPATIENT REPORT: "${description}"\n${imageBase64 ? 'VISUAL EVIDENCE: A photo is attached.' : ''}`,
-    },
-  ];
-
-  if (imageBase64) {
-    parts.unshift({
-      inlineData: {
-        mimeType: 'image/jpeg',
-        data: imageBase64.split(',')[1] || imageBase64,
-      },
-    });
-  }
-
-  const data = await callGeminiProxy({
-    model,
-    contents: [{ parts }],
-    config: { tools: [{ googleSearch: {} }] },
-  });
-
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const sources = data.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-
-  return { text, sources };
-};
-
 export const analyzeScreening = async (testName: string, responses: any) => {
   const model = 'gemini-2.5-flash';
   const prompt = `${PEDI_PULSE_PROMPTS.v1.screeningAnalysis.replace('{testName}', testName)}\n\nRESPONSES: ${JSON.stringify(responses)}`;

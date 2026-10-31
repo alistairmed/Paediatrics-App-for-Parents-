@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { ViewType } from '../types';
 import { useNavigation } from '../context/NavigationContext';
 import { useEnvironment } from '../context/EnvironmentContext';
-import { AI_ENABLED } from '../config/features';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -21,10 +20,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
       color: 'text-rose-600',
       bgColor: 'bg-rose-50',
       items: [
-        { id: 'symptoms', label: AI_ENABLED ? 'Triage AI' : 'Symptom Triage', icon: '🩺', highContrast: true },
+        { id: 'symptoms', label: 'When to Get Help', icon: '🩺', highContrast: true },
         { id: 'sickday', label: 'Sick Day Plan', icon: '🚨', highContrast: true },
         { id: 'acutelogs', label: 'Acute Log Review', icon: '📈' },
-        { id: 'dosage', label: 'Dosage Verification', icon: '💊' },
+        { id: 'dosage', label: 'Medicines', icon: '💊' },
       ]
     },
     {
@@ -83,9 +82,9 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
 
   const bottomNavItems: { id: ViewType; label: string; icon: string }[] = [
     { id: 'dashboard', label: 'Home', icon: '🏠' },
-    { id: 'symptoms', label: 'Triage', icon: '🩺' },
+    { id: 'symptoms', label: 'Get Help', icon: '🩺' },
     { id: 'sickday', label: 'Sick Plan', icon: '🚨' },
-    { id: 'dosage', label: 'Dose', icon: '💊' },
+    { id: 'dosage', label: 'Medicines', icon: '💊' },
   ];
 
   const screenTitles: Partial<Record<ViewType, string>> = {

@@ -40,9 +40,9 @@ export const RegulatoryRisk: React.FC = () => {
             <div className="space-y-3">
               {[
                 { label: 'Provides health information', status: true },
-                { label: 'Calculates a medicine dose for a specific child', status: true },
-                { label: 'Gives consumers symptom triage / urgency advice', status: true },
-                { label: 'Scores screening questionnaires', status: true },
+                { label: 'Calculates a medicine dose for a specific child', status: false },
+                { label: 'Gives consumers symptom triage / urgency advice', status: false },
+                { label: 'Diagnoses or scores screening results', status: false },
                 { label: 'Replaces clinician judgment', status: false },
                 { label: 'Directly controls therapy', status: false },
               ].map((item, i) => (
@@ -55,7 +55,7 @@ export const RegulatoryRisk: React.FC = () => {
               ))}
             </div>
             <div className="mt-6 pt-4 border-t border-slate-200 text-center">
-              <p className="text-[10px] font-black text-amber-700 uppercase">Status: Not assessed by the TGA. Dose and triage features may make this a regulated medical device.</p>
+              <p className="text-[10px] font-black text-amber-700 uppercase">Status: Not assessed by the TGA. Designed as a record-keeping and general-information tool.</p>
             </div>
           </div>
         </div>
@@ -196,7 +196,7 @@ export const RegulatoryRisk: React.FC = () => {
         <div className="relative z-10 space-y-4">
           <h4 className="text-2xl font-black italic tracking-tighter">Regulatory Position Statement</h4>
           <p className="text-indigo-100 text-sm leading-relaxed max-w-2xl font-medium italic opacity-90">
-            "PediPulse is a pilot prototype. Its regulatory status has not been assessed by the TGA. Features that calculate a medicine dose for an individual child or give consumers triage advice may make it software as a medical device (SaMD) under Australian regulations. Regulatory advice should be obtained before it is offered to the public."
+            "PediPulse is a pilot prototype for keeping a child's health records and finding general information. It does not calculate doses or assess a child's symptoms; it links to trusted sources such as the Royal Children's Hospital Melbourne instead. Its regulatory status has not been assessed by the TGA, and regulatory advice should be obtained before it is offered to the public."
           </p>
           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
              <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Version 1.0</span>

@@ -29,8 +29,7 @@ export const Dashboard: React.FC = () => {
     return {
       totalRecent: recent.length,
       maxTemp: Math.max(...recent.filter(r => r.type === 'Temperature').map(r => parseFloat(r.value) || 0), 0),
-      fluidIntake: recent.filter(r => r.type === 'Fluid').reduce((acc, curr) => acc + (parseInt(curr.value) || 0), 0),
-      hasAlerts: recent.some(r => r.type === 'Triage' && r.value.includes('Urgent'))
+      fluidIntake: recent.filter(r => r.type === 'Fluid').reduce((acc, curr) => acc + (parseInt(curr.value) || 0), 0)
     };
   }, [history.acuteLogs]);
 
@@ -67,19 +66,6 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {acuteStats.hasAlerts && (
-        <div role="alert" className="bg-rose-600 text-white p-5 sm:p-8 rounded-[2rem] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <span className="text-3xl shrink-0" aria-hidden="true">🚨</span>
-            <div className="space-y-1">
-              <p className="text-lg font-black leading-tight">Urgent warning signs were logged in the last 24 hours</p>
-              <p className="text-sm font-bold text-rose-50">If your child still has these signs, call 000 or go to the nearest emergency department now.</p>
-            </div>
-          </div>
-          <button onClick={() => navigateTo('acutelogs')} className="shrink-0 min-h-[44px] px-6 py-3 bg-white text-rose-700 rounded-2xl font-black text-xs uppercase tracking-widest">View Log</button>
-        </div>
-      )}
-
       <section className="space-y-3 sm:space-y-4">
          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-2 sm:ml-4">Vital Management</h4>
          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -96,8 +82,8 @@ export const Dashboard: React.FC = () => {
                <span className="text-xs font-black uppercase text-slate-700">Track Vomit</span>
             </button>
             <button onClick={() => navigateTo('symptoms')} className="p-4 sm:p-6 min-h-[90px] bg-white border border-slate-200 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm flex flex-col items-center justify-center gap-2 hover:scale-105 transition-all group active:bg-slate-50">
-               <span className="text-3xl sm:text-4xl group-hover:rotate-12 transition-transform">✨</span>
-               <span className="text-xs font-black uppercase text-slate-700">AI Triage</span>
+               <span className="text-3xl sm:text-4xl group-hover:rotate-12 transition-transform">🩺</span>
+               <span className="text-xs font-black uppercase text-slate-700">When to Get Help</span>
             </button>
          </div>
       </section>
