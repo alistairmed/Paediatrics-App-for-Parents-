@@ -2,9 +2,10 @@ import { PEDI_PULSE_PROMPTS, withSafetyInstruction } from './prompts';
 
 export { withSafetyInstruction };
 import { AI_ENABLED } from '../config/features';
+import { ensureAiConsent, takeAiQuota, AI_DAILY_LIMIT } from './aiGuard';
 import { MedicalHistory, Appointment } from '../types';
 
-export type GeminiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'UNKNOWN';
+export type GeminiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'CONSENT' | 'UNKNOWN';
 
 export class GeminiError extends Error {
   type: GeminiErrorType;
@@ -26,6 +27,12 @@ export class GeminiError extends Error {
 export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<any> {
   if (!AI_ENABLED) {
     throw new GeminiError('AI features are switched off in this version.', 'DISABLED');
+  }
+  if (!(await ensureAiConsent())) {
+    throw new GeminiError('Nothing was sent. AI features need your permission first.', 'CONSENT');
+  }
+  if (!takeAiQuota()) {
+    throw new GeminiError(`You've used today's ${AI_DAILY_LIMIT} AI requests on this device. Please try again tomorrow.`, 'RATE_LIMIT', 429);
   }
 
   const controller = new AbortController();

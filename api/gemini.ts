@@ -21,7 +21,7 @@ const ALLOWED_TOOLS = ['googleSearch'];
 
 // Best-effort limit per client IP. State lives in this server instance only,
 // so it slows abuse rather than guaranteeing a quota; for a hard limit, add a
-// Vercel Firewall rate-limit rule on /api/gemini.
+// Vercel Firewall rate-limit rule on /api/gemini (docs/AI_SAFEGUARDS.md).
 const RATE_LIMIT = { max: 20, windowMs: 10 * 60 * 1000 };
 const recentRequests = new Map<string, number[]>();
 

@@ -9,6 +9,7 @@ import { GovernanceProvider, useGovernance } from './context/GovernanceContext';
 import { EnvironmentProvider } from './context/EnvironmentContext';
 import { ToastProvider } from './context/ToastContext';
 import { ConfirmProvider } from './context/ConfirmContext';
+import { AiConsentBridge } from './components/AiConsent';
 import { LockScreen } from './components/LockScreen';
 import { isLockEnabled, isUnlocked, lockNow } from './utils/vault';
 
@@ -192,6 +193,7 @@ const App: React.FC = () => {
     <NavigationProvider>
       <ToastProvider>
       <ConfirmProvider>
+        <AiConsentBridge />
         <EnvironmentProvider>
           <GovernanceProvider>
             <ChildProfileProvider>
