@@ -22,6 +22,14 @@ test('a growth measurement is plotted with a WHO percentile', async ({ page }) =
   await page.getByLabel('Weight (kg)').fill('7.6');
   await page.getByRole('button', { name: 'Save Measurement' }).click();
   await expect(page.getByText(/Latest: 7.6 kg .* percentile/)).toBeVisible();
+  await page.getByLabel('Date measured').fill('2026-06-15');
+  await page.getByLabel('Weight (kg)').fill('8.4');
+  await page.getByLabel('Length or height (cm)').fill('70');
+  await page.getByRole('button', { name: 'Save Measurement' }).click();
+  const table = page.getByRole('region', { name: 'All measurements with WHO percentiles' });
+  await expect(table.getByRole('row')).toHaveCount(3); // header + 2 measurements
+  await expect(table.getByText(/percentile/)).toHaveCount(3); // 2 weights + 1 length
+  await expect(page.getByText('Percentiles are for information. Discuss growth concerns with your GP or child health nurse.')).toBeVisible();
 
   await page.getByLabel('Weight (kg)').fill('900');
   await page.getByRole('button', { name: 'Save Measurement' }).click();
