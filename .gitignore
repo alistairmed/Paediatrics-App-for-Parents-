@@ -26,3 +26,18 @@ dist-ssr
 # Playwright
 test-results/
 playwright-report/
+
+# Secrets and signing keys: never commit
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+*.provisionprofile
+keystore.properties
+android/key.properties
+google-services.json
+GoogleService-Info.plist

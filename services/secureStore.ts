@@ -11,8 +11,9 @@ let nativeStore: Promise<KeyValueStore> | null = null;
 
 /**
  * Keychain (iOS) / Keystore-backed storage (Android), via
- * @aparajita/capacitor-secure-storage. Never synced to iCloud Keychain.
- * `thisDeviceOnly` items don't move to a new phone in a backup.
+ * @aparajita/capacitor-secure-storage. Never synced to iCloud Keychain, and
+ * kept on this phone only: the records themselves are excluded from backups
+ * (AppDelegate.swift, data_extraction_rules.xml), so their lock settings are too.
  */
 export function nativeSecureStore(): Promise<KeyValueStore> {
   nativeStore ??= (async () => {
@@ -24,14 +25,14 @@ export function nativeSecureStore(): Promise<KeyValueStore> {
         const value = await SecureStorage.get(key, false, false);
         return typeof value === 'string' ? value : null;
       },
-      set: (key, value) => SecureStorage.set(key, value, false, false, KeychainAccess.whenUnlocked),
+      set: (key, value) => SecureStorage.set(key, value, false, false, KeychainAccess.whenUnlockedThisDeviceOnly),
       remove: async key => { await SecureStorage.remove(key, false); },
     };
   })();
   return nativeStore;
 }
 
-/** Same as nativeSecureStore, but items stay on this device (not restored to a new phone). */
+/** Stores an item on this device only (same as nativeSecureStore's set; kept for clarity at call sites). */
 export async function setThisDeviceOnly(key: string, value: string): Promise<void> {
   const { SecureStorage, KeychainAccess } = await import('@aparajita/capacitor-secure-storage');
   await nativeSecureStore();

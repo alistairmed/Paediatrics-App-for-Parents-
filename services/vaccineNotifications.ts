@@ -28,7 +28,8 @@ export async function syncVaccineReminders(childId: string, plan: PlannedReminde
       id: r.id,
       title: r.title,
       body: r.body,
-      schedule: { at: r.at, allowWhileIdle: true },
+      // Inexact on purpose: exact alarms need a special Play permission a vaccine reminder doesn't need.
+      schedule: { at: r.at },
       extra: { kind: 'vaccine', childId },
     })),
   });
