@@ -873,7 +873,7 @@ export const MedicalProfile: React.FC = () => {
           }}
           className="text-xs font-black uppercase tracking-[0.4em] text-ink-500 hover:text-terracotta-700 transition-colors"
         >
-          Factory Reset Medical Hub 🗑️
+          Delete Everything on This Device 🗑️
         </button>
       </div>
     </div>

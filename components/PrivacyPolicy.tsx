@@ -27,12 +27,14 @@ export const PrivacyPolicy: React.FC = () => (
         body: (
           <>
             <p>
-              Your records are stored <strong>only on this device</strong>, in this browser's storage. There is no account, and your records are not
-              uploaded to our servers or any cloud service.
+              Your records are stored <strong>only on this device</strong>: in the browser's storage on the website, or in the app's own storage in the
+              iPhone and Android apps. There is no account, and your records are not uploaded to our servers or any cloud service.
             </p>
             <ul>
+              <li>The iPhone and Android apps keep your records out of iCloud, computer and Google backups, so they stay on this phone. Use an encrypted backup file to move them.</li>
               <li>If you clear this browser's data, uninstall the app or lose the device, your records are deleted unless you have made a backup.</li>
-              <li>Anyone who can use this device and browser may be able to open the app. Turn on the passcode lock to protect your records.</li>
+              <li>Anyone who can use this device may be able to open the app. Turn on the passcode lock to protect your records.</li>
+              <li>Vaccine reminders in the apps are optional notifications scheduled on the phone itself. Nothing is sent to us, and they don't include your child's name.</li>
             </ul>
           </>
         ),
@@ -44,6 +46,11 @@ export const PrivacyPolicy: React.FC = () => (
             <p>
               With the optional passcode lock, your records are encrypted on the device (AES-256-GCM, with a key made from your passcode using PBKDF2).
               The passcode and key are never stored, so nobody, including us, can recover your records if you forget the passcode.
+            </p>
+            <p>
+              In the iPhone and Android apps, the lock's settings are kept in the phone's secure storage (the iOS Keychain or Android Keystore). If you turn
+              on the optional Face ID or fingerprint unlock, the key is also kept there, on this phone only, and released only after your face or fingerprint
+              is recognised. Anyone whose face or fingerprint is set up on the phone could then open your records.
             </p>
             <p>
               Limitation: in a web browser the encrypted records sit in ordinary browser storage. The lock protects them from someone reading the
@@ -85,6 +92,13 @@ export const PrivacyPolicy: React.FC = () => (
               Anthropic may process the information outside Australia, under their own terms. Paeds Pouch's server does not store what is sent; it keeps a
               count of premium requests per access code for monthly limits, and its logs may record that a request failed.
             </p>
+            <p>
+              <strong>Overseas disclosure (Australian Privacy Principle 8).</strong> Using an AI feature discloses the information described above to
+              Google LLC or Anthropic PBC, which are based in the United States and may process it in the United States and other countries where they
+              operate. They are not bound by the Australian Privacy Principles, and Australian law may not give you the same protection or remedies there.
+              The app tells you this before anything is sent, and sends it only if you agree. If you don't agree, don't use the AI features: everything
+              else works without them.
+            </p>
           </>
         ),
       },
@@ -109,8 +123,20 @@ export const PrivacyPolicy: React.FC = () => (
         body: (
           <ul>
             <li>You can view, change or delete any record in the app at any time.</li>
-            <li>You can erase everything from the device using the reset option in the Medical Record section.</li>
+            <li>You can withdraw permission for AI features in Privacy, Backup &amp; Lock.</li>
             <li>Because we don't hold your records, we can't access, correct or delete them for you.</li>
+          </ul>
+        ),
+      },
+      {
+        heading: 'Deleting your data',
+        body: (
+          <ul>
+            <li><strong>One child:</strong> in Children, choose the child, then Remove this child.</li>
+            <li><strong>Everything on this device:</strong> in Health Overview, choose "Delete Everything on This Device" at the bottom of the page, or "Forgot your passcode?" then "Erase all data" on the lock screen. This deletes all children, records, settings and the passcode lock, including anything kept in the phone's secure storage.</li>
+            <li><strong>Removing the app or clearing browser data</strong> also deletes the records on that device.</li>
+            <li><strong>Backup files</strong> you exported are yours to delete wherever you saved them.</li>
+            <li><strong>AI features:</strong> we don't keep what you send. Google and Anthropic handle it under their own terms; contact them about anything they keep.</li>
           </ul>
         ),
       },

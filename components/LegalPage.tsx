@@ -11,7 +11,7 @@ export const LegalPage: React.FC<{ title: string; intro: React.ReactNode; sectio
   <article className="max-w-3xl mx-auto space-y-6 pb-20">
     <header className="space-y-2">
       <h2 className="text-3xl font-black text-ink-800">{title}</h2>
-      <p className="text-sm font-bold text-ink-500">Last updated {LEGAL.lastUpdated}</p>
+      <p className="text-sm font-bold text-ink-600">Effective {LEGAL.effectiveDate} · Last updated {LEGAL.lastUpdated}</p>
       <div className="text-base font-medium text-ink-700 leading-relaxed">{intro}</div>
     </header>
     {sections.map((section, i) => (
@@ -20,7 +20,7 @@ export const LegalPage: React.FC<{ title: string; intro: React.ReactNode; sectio
         <div className="text-base font-medium text-ink-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1">{section.body}</div>
       </section>
     ))}
-    <p className="text-sm font-bold text-ink-500">
+    <p className="text-sm font-bold text-ink-600">
       Questions? Contact {LEGAL.operator} at {LEGAL.contactEmail}.
     </p>
   </article>

@@ -7,5 +7,7 @@ export const LEGAL = {
   appName: 'Paeds Pouch',
   operator: '[Your name or organisation]',
   contactEmail: '[contact email address]',
+  /** The date these documents first apply, e.g. the public launch date. */
+  effectiveDate: '[effective date]',
   lastUpdated: '1 November 2026',
 };
