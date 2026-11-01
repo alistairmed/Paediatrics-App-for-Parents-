@@ -97,7 +97,10 @@ export const PrintableSummary: React.FC = () => {
               : none}
           </Section>
           <Section title="Conditions">{conditions.length ? <ul className="list-disc pl-5">{conditions.map(c => <li key={c.id}>{c.name}{c.status === 'Under Investigation' ? ' (being investigated)' : ''}</li>)}</ul> : none}</Section>
-          <Section title="Growth">{growth.length ? <ul className="list-disc pl-5">{growth.map(([k, v]) => <li key={k}><strong>{k}:</strong> {v}</li>)}</ul> : none}</Section>
+          <Section title="Growth">
+            {growth.length ? <ul className="list-disc pl-5">{growth.map(([k, v]) => <li key={k}><strong>{k}:</strong> {v}</li>)}</ul> : none}
+            {growth.length > 0 && <p className="text-xs text-slate-600 mt-1">Percentiles are for information. Discuss growth concerns with your GP or child health nurse.</p>}
+          </Section>
         </div>
 
         {(history.pastMedicalHistory || history.surgicalHistory) && (
