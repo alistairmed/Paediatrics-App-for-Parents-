@@ -7,6 +7,7 @@ import { useNavigation } from '../context/NavigationContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
+import { eraseAllData } from '../utils/vault';
 import { useConfirm } from '../context/ConfirmContext';
 import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
 import { PremiumComingSoon } from './PremiumNotice';
@@ -867,8 +868,7 @@ export const MedicalProfile: React.FC = () => {
         <button 
           onClick={async () => {
             if (await confirm({ title: 'Delete everything on this device?', message: 'This deletes all children and all records stored in Paeds Pouch on this device. It cannot be undone, so export a backup first if you might want them back.', confirmLabel: 'Delete Everything', danger: true })) {
-               localStorage.clear();
-               window.location.reload();
+               await eraseAllData();
             }
           }}
           className="text-xs font-black uppercase tracking-[0.4em] text-ink-500 hover:text-terracotta-700 transition-colors"

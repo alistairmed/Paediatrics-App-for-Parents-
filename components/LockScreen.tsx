@@ -70,7 +70,7 @@ export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
             </label>
             <div className="flex gap-2">
               <button
-                onClick={eraseAllData}
+                onClick={() => { void eraseAllData(); }}
                 disabled={eraseText.trim().toUpperCase() !== 'ERASE'}
                 className="flex-1 py-3 rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-terracotta-300"
               >

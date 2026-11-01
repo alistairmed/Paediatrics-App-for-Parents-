@@ -3,6 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { isNativeApp } from './config/platform';
+import { lockStoreForPlatform } from './services/secureStore';
+import { initVault } from './utils/vault';
 // Self-hosted font (no request to Google Fonts; works offline).
 import '@fontsource/quicksand/300.css';
 import '@fontsource/quicksand/400.css';
@@ -21,8 +23,8 @@ window.addEventListener('vite:preloadError', (event) => {
   window.location.reload();
 });
 
-// Save the app on the device so it opens without a connection (production only).
-// Offline support for the website only: the native apps already ship their files on the device.
+// Save the app on the device so it opens without a connection (website only,
+// production only: the native apps already ship their files on the device).
 if ('serviceWorker' in navigator && import.meta.env.PROD && !isNativeApp()) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
@@ -35,8 +37,22 @@ if (!rootElement) {
 }
 
 const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+
+// In the apps, the passcode lock settings live in the Keychain/Keystore; load
+// them (moving any from older storage) before the first screen decides whether
+// to show the lock screen.
+const start = async () => {
+  try {
+    const store = await lockStoreForPlatform();
+    if (store) await initVault(store);
+  } catch (err) {
+    console.error('[Paeds Pouch] Secure storage unavailable; using device storage.', err);
+  }
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+};
+
+void start();
