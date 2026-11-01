@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { growthPercentile, describePercentile, ageInMonthsAt, GrowthSex } from '../clinical/growth';
-import { NIP_SCHEDULE, vaccineReminders } from '../clinical/vaccineSchedule';
+import { nipStatuses, formatNipDate, NIP_FOOTNOTE, NIP_VISITS } from '../clinical/vaccineSchedule';
 
 const fmtDate = (d: string | Date | undefined) => {
   if (!d) return '';
@@ -36,8 +36,16 @@ export const PrintableSummary: React.FC = () => {
   }, [history.growthRecords, childProfile?.dob, sex]);
 
   const vaccines = useMemo(() => {
-    const list = history.vaccinations?.length ? history.vaccinations : childProfile?.dob ? NIP_SCHEDULE(new Date(childProfile.dob)) : [];
-    return { given: list.filter(v => v.status === 'completed'), ...vaccineReminders(list) };
+    const statuses = childProfile?.dob ? nipStatuses(childProfile.dob, history.vaccinations || []) : [];
+    const nipIds = new Set(NIP_VISITS.map(v => v.id));
+    return {
+      known: statuses.length > 0,
+      given: statuses.filter(s => s.status === 'given'),
+      overdue: statuses.filter(s => s.status === 'overdue'),
+      dueNow: statuses.filter(s => s.status === 'due'),
+      next: statuses.find(s => s.status === 'upcoming'),
+      other: (history.vaccinations || []).filter(v => !nipIds.has(v.id) && v.status === 'completed'),
+    };
   }, [history.vaccinations, childProfile?.dob]);
 
   const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
@@ -100,9 +108,15 @@ export const PrintableSummary: React.FC = () => {
         )}
 
         <Section title="Vaccines">
-          <p><strong>Recorded as given:</strong> {vaccines.given.length ? vaccines.given.map(v => `${v.name}${v.receivedDate ? ` (${fmtDate(v.receivedDate)})` : ''}`).join(', ') : 'none recorded'}</p>
-          {vaccines.overdue.length > 0 && <p><strong>Not yet recorded:</strong> {vaccines.overdue.map(v => v.name).join(', ')}</p>}
-          {vaccines.dueSoon.length > 0 && <p><strong>Due soon:</strong> {vaccines.dueSoon.map(v => `${v.name} (${fmtDate(v.dueDate)})`).join(', ')}</p>}
+          {!vaccines.known && <p className="text-slate-500">Add a date of birth to show the NIP schedule.</p>}
+          {vaccines.known && <>
+            <p><strong>Given:</strong> {vaccines.given.length ? vaccines.given.map(s => `${s.visit.name}${s.givenDate ? ` (${formatNipDate(s.givenDate)})` : ''}`).join(', ') : 'none recorded'}</p>
+            {vaccines.overdue.length > 0 && <p><strong>Overdue (not recorded):</strong> {vaccines.overdue.map(s => s.visit.name).join(', ')}</p>}
+            {vaccines.dueNow.length > 0 && <p><strong>Due now:</strong> {vaccines.dueNow.map(s => s.visit.name).join(', ')}</p>}
+            {vaccines.next && <p><strong>Next due:</strong> {vaccines.next.visit.name}, {formatNipDate(vaccines.next.dueDate)}</p>}
+          </>}
+          {vaccines.other.length > 0 && <p><strong>Other vaccines recorded:</strong> {vaccines.other.map(v => `${v.name}${v.receivedDate ? ` (${fmtDate(v.receivedDate)})` : ''}`).join(', ')}</p>}
+          <p className="text-xs text-slate-600">{NIP_FOOTNOTE}</p>
         </Section>
 
         <Section title="Last 7 days (from the parent's log)">

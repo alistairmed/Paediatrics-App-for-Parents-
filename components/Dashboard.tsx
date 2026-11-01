@@ -4,7 +4,7 @@ import { ViewType } from '../types';
 import { useNavigation } from '../context/NavigationContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
-import { NIP_SCHEDULE, vaccineReminders } from '../clinical/vaccineSchedule';
+import { nipStatuses, formatNipDate, NIP_FOOTNOTE } from '../clinical/vaccineSchedule';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart, Line
 } from 'recharts';
@@ -22,11 +22,16 @@ export const Dashboard: React.FC = () => {
   const { childProfile, childAge, hasSkippedSetup } = useChildProfile();
   const { latestWeight, history } = useMedicalHistory();
 
-  // Saved vaccine records, or the standard schedule if the vaccine screen hasn't been opened yet.
+  // NIP status from the date of birth and the doses recorded as given.
   const vaccines = useMemo(() => {
-    const saved = history.vaccinations || [];
-    const list = saved.length ? saved : childProfile?.dob ? NIP_SCHEDULE(new Date(childProfile.dob)) : [];
-    return vaccineReminders(list);
+    if (!childProfile?.dob) return null;
+    const statuses = nipStatuses(childProfile.dob, history.vaccinations || []);
+    return {
+      overdue: statuses.filter(s => s.status === 'overdue'),
+      dueNow: statuses.filter(s => s.status === 'due'),
+      next: statuses.find(s => s.status === 'upcoming'),
+      allGiven: statuses.every(s => s.status === 'given'),
+    };
   }, [history.vaccinations, childProfile?.dob]);
 
   const acuteStats = useMemo(() => {
@@ -74,21 +79,29 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {(vaccines.overdue.length > 0 || vaccines.dueSoon.length > 0) && (
+      {vaccines && (
         <section aria-labelledby="vaccine-reminder-title" className="bg-white border-2 border-teal-200 rounded-4xl p-5 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
           <div className="flex items-start gap-4">
             <span className="text-3xl shrink-0" aria-hidden="true">💉</span>
             <div className="space-y-1">
               <h3 id="vaccine-reminder-title" className="text-lg font-black text-slate-800">Vaccines</h3>
               {vaccines.overdue.length > 0 && (
-                <p className="text-base font-bold text-rose-700">Not yet recorded: {vaccines.overdue.map(v => v.name).join(', ')}</p>
-              )}
-              {vaccines.dueSoon.length > 0 && (
-                <p className="text-base font-bold text-slate-700">
-                  Due soon: {vaccines.dueSoon.map(v => `${v.name} (${new Date(v.dueDate).toLocaleDateString([], { day: 'numeric', month: 'short' })})`).join(', ')}
+                <p className="text-base font-bold text-rose-700">
+                  Overdue: {vaccines.overdue.map(s => s.visit.name).join(', ')}
                 </p>
               )}
-              <p className="text-sm font-medium text-slate-600">Book with your GP or immunisation provider, or mark them as given if they're done.</p>
+              {vaccines.dueNow.length > 0 && (
+                <p className="text-base font-bold text-amber-800">
+                  Due now: {vaccines.dueNow.map(s => s.visit.name).join(', ')}
+                </p>
+              )}
+              {vaccines.next && (
+                <p className="text-base font-bold text-slate-800">
+                  Next due: {vaccines.next.visit.name}, {formatNipDate(vaccines.next.dueDate)}
+                </p>
+              )}
+              {vaccines.allGiven && <p className="text-base font-bold text-emerald-800">All scheduled vaccines are recorded as given.</p>}
+              <p className="text-sm font-medium text-slate-600">{NIP_FOOTNOTE}</p>
             </div>
           </div>
           <button onClick={() => navigateTo('vaccines')} className="shrink-0 min-h-[44px] px-6 py-3 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Open Vaccines</button>

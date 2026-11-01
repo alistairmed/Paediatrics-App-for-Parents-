@@ -5,6 +5,8 @@ import { VaccineTracker } from './VaccineTracker';
 import { GrowthTracker } from './GrowthTracker';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useNavigation } from '../context/NavigationContext';
+import { useChildProfile } from '../context/ChildProfileContext';
+import { nipStatuses } from '../clinical/vaccineSchedule';
 
 const INITIAL_CHECKS: HealthCheck[] = [
   { id: '1', ageMilestone: 'Birth', completed: false, notes: '' },
@@ -21,6 +23,7 @@ const INITIAL_CHECKS: HealthCheck[] = [
 export const RedBook: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
   const { navigateTo } = useNavigation();
+  const { childProfile } = useChildProfile();
   const [checks, setChecks] = useState<HealthCheck[]>(INITIAL_CHECKS);
   const [activeTab, setActiveTab] = useState<'checks' | 'vax' | 'growth'>('checks');
   const [activeCheck, setActiveCheck] = useState<string | null>(null);
@@ -30,7 +33,7 @@ export const RedBook: React.FC = () => {
     const growthRecords = (history.growthRecords || []).filter(r => typeof r.weight === 'number' && r.weight > 0);
     const milestones = history.milestones || [];
     
-    const overdueVax = vaccinations.filter(v => v.status === 'pending' && new Date() > new Date(v.dueDate));
+    const overdueVax = childProfile?.dob ? nipStatuses(childProfile.dob, vaccinations).filter(st => st.status === 'overdue') : [];
     const vaxClusterConcern = overdueVax.length >= 3;
 
     let growthAlert = false;
@@ -49,7 +52,7 @@ export const RedBook: React.FC = () => {
 
     const activeRedFlags = milestones.filter(m => m.isRedFlag && m.completed);
     return { overdueVax, vaxClusterConcern, growthAlert, growthSeverity, activeRedFlags };
-  }, [history.vaccinations, history.growthRecords, history.milestones]);
+  }, [history.vaccinations, history.growthRecords, history.milestones, childProfile?.dob]);
 
   const toggleCheck = (id: string) => {
     setChecks(prev => prev.map(c => c.id === id ? { ...c, completed: !c.completed } : c));
@@ -94,8 +97,8 @@ export const RedBook: React.FC = () => {
               <div className="flex items-start gap-3 bg-rose-50 p-4 rounded-2xl border border-rose-100">
                 <span className="text-xl">💉</span>
                 <div className="flex-1">
-                  <p className="font-black text-rose-900 text-sm">Missed Immunisations</p>
-                  <p className="text-rose-700/70 text-xs font-bold mt-0.5">{alerts.overdueVax.length} doses are overdue. Community risk increased.</p>
+                  <p className="font-black text-rose-900 text-sm">Vaccines not yet recorded</p>
+                  <p className="text-rose-800 text-xs font-bold mt-0.5">Overdue: {alerts.overdueVax.map(st => st.visit.name).join(', ')}. Book with your GP or immunisation provider, or record them if they've been given.</p>
                 </div>
               </div>
             )}

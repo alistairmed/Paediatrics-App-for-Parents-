@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Vaccination } from '../types';
 import { getVaccineAdvice, AiError } from '../services/ai';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
@@ -6,7 +6,14 @@ import { useChildProfile } from '../context/ChildProfileContext';
 import { useToast } from '../context/ToastContext';
 import { AI_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
-import { NIP_SCHEDULE } from '../clinical/vaccineSchedule';
+import { syncNipRecords, nipStatuses, NIP_STATUS_LABEL, NIP_FOOTNOTE, NIP_EXTRAS_NOTE, formatNipDate, NipStatus } from '../clinical/vaccineSchedule';
+
+const BADGE: Record<NipStatus, string> = {
+  given: 'bg-emerald-100 text-emerald-900',
+  due: 'bg-amber-100 text-amber-900',
+  upcoming: 'bg-slate-100 text-slate-700',
+  overdue: 'bg-rose-700 text-white',
+};
 
 export const VaccineTracker: React.FC = () => {
   const { history, updateHistory, addClinicalEvent } = useMedicalHistory();
@@ -21,13 +28,18 @@ export const VaccineTracker: React.FC = () => {
   const [showAddCustom, setShowAddCustom] = useState(false);
   const [customVax, setCustomVax] = useState<Partial<Vaccination>>({ name: '', dueDate: new Date() });
 
+  // Keep saved records in line with the NIP schedule (adds new visits, keeps what was recorded).
   useEffect(() => {
-    if (childProfile?.dob && (!history.vaccinations || history.vaccinations.length === 0)) {
-      updateHistory({ vaccinations: NIP_SCHEDULE(new Date(childProfile.dob)) });
-    }
-  }, [childProfile?.dob]);
+    if (!childProfile?.dob) return;
+    const synced = syncNipRecords(history.vaccinations || [], childProfile.dob);
+    if (JSON.stringify(synced) !== JSON.stringify(history.vaccinations || [])) updateHistory({ vaccinations: synced });
+  }, [childProfile?.dob, history.vaccinations]);
 
   const schedule = history.vaccinations || [];
+  const statusById = useMemo(
+    () => new Map(childProfile?.dob ? nipStatuses(childProfile.dob, schedule).map(st => [st.visit.id, st]) : []),
+    [childProfile?.dob, schedule]
+  );
 
   const toggleStatus = (id: string) => {
     const next = schedule.map(v => 
@@ -97,16 +109,13 @@ export const VaccineTracker: React.FC = () => {
     }
   };
 
-  const isOverdue = (dueDate: Date) => {
-    return new Date() > new Date(dueDate);
-  };
-
   return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h2 className="text-4xl font-black text-slate-800 tracking-tight">Immunisation <span className="text-indigo-600">Sync</span></h2>
-          <p className="text-slate-500 font-medium">Australian National Immunisation Program (NIP) tracker.</p>
+          <p className="text-slate-600 font-medium">Australian National Immunisation Program (NIP) schedule, from birth to the Year 10 school program.</p>
+          <p className="text-sm font-bold text-slate-700 mt-2">{NIP_FOOTNOTE}</p>
         </div>
         <button 
           onClick={() => setShowAddCustom(!showAddCustom)}
@@ -140,7 +149,9 @@ export const VaccineTracker: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {schedule.sort((a,b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()).map((vaccine) => {
-            const overdue = vaccine.status === 'pending' && isOverdue(vaccine.dueDate);
+            const nip = statusById.get(vaccine.id);
+            const status: NipStatus | null = vaccine.status === 'completed' ? 'given' : nip ? nip.status : null;
+            const overdue = status === 'overdue';
             const isEditing = editingId === vaccine.id;
             const isSynced = syncedIds.has(vaccine.id);
             
@@ -179,22 +190,23 @@ export const VaccineTracker: React.FC = () => {
                         <h4 className={`text-2xl font-black tracking-tight leading-none ${vaccine.status === 'completed' ? 'text-emerald-900' : 'text-slate-800'}`}>
                           {vaccine.name}
                         </h4>
-                        <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full ${overdue ? 'bg-rose-700 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                          {vaccine.status === 'completed' ? 'Received' : overdue ? 'OVERDUE' : 'Due Soon'}
+                        <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full ${status ? BADGE[status] : 'bg-slate-100 text-slate-700'}`}>
+                          {status ? NIP_STATUS_LABEL[status] : 'Not yet given'}
                         </span>
                       </div>
                       <p className="text-xs font-black text-slate-600 mt-2 uppercase tracking-widest flex items-center gap-2">
                         {vaccine.status === 'completed' 
                           ? <span>📅 Administered: {vaccine.receivedDate ? new Date(vaccine.receivedDate).toLocaleDateString() : '--'}</span> 
-                          : <span>🎯 Milestone Date: {new Date(vaccine.dueDate).toLocaleDateString()}</span>
+                          : <span>📅 {nip?.visit.schoolProgram ? 'From about' : 'Due'}: {nip ? formatNipDate(nip.dueDate) : new Date(vaccine.dueDate).toLocaleDateString('en-AU')}</span>
                         }
                       </p>
                     </div>
 
                     <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                       <p className="text-xs font-bold text-slate-700 leading-relaxed">
+                       <p className="text-sm font-bold text-slate-800 leading-relaxed">
                           {vaccine.description}
                        </p>
+                       {nip?.visit.note && <p className="text-xs font-medium text-slate-700 mt-2">{nip.visit.note}</p>}
                     </div>
 
                     <div className="flex flex-wrap gap-4 pt-2">
@@ -230,8 +242,8 @@ export const VaccineTracker: React.FC = () => {
                   <div className="px-10 pb-10 pt-4 bg-white/60 border-t border-slate-100 animate-in slide-in-from-top-4 space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-2">
-                        <label htmlFor="vaccin-date-administered" className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Date Administered</label>
-                        <input id="vaccin-date-administered" 
+                        <label htmlFor={`vaccin-date-administered-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Date Administered</label>
+                        <input id={`vaccin-date-administered-${vaccine.id}`} 
                           type="date" 
                           value={vaccine.receivedDate ? new Date(vaccine.receivedDate).toISOString().split('T')[0] : ''}
                           onChange={(e) => updateDetails(vaccine.id, 'receivedDate', new Date(e.target.value))}
@@ -239,8 +251,8 @@ export const VaccineTracker: React.FC = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="vaccin-clinic-pharmacy" className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Clinic / Pharmacy</label>
-                        <input id="vaccin-clinic-pharmacy" 
+                        <label htmlFor={`vaccin-clinic-pharmacy-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Clinic / Pharmacy</label>
+                        <input id={`vaccin-clinic-pharmacy-${vaccine.id}`} 
                           type="text" 
                           placeholder="e.g. Melbourne Children's GP"
                           value={vaccine.clinic || ''}
@@ -249,8 +261,8 @@ export const VaccineTracker: React.FC = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="vaccin-manufacturer-brand" className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Manufacturer / Brand</label>
-                        <input id="vaccin-manufacturer-brand" 
+                        <label htmlFor={`vaccin-manufacturer-brand-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Manufacturer / Brand</label>
+                        <input id={`vaccin-manufacturer-brand-${vaccine.id}`} 
                           type="text" 
                           placeholder="e.g. GSK (Infanrix Hexa)"
                           value={vaccine.manufacturer || ''}
@@ -259,8 +271,8 @@ export const VaccineTracker: React.FC = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="vaccin-batch-lot-number" className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Batch / Lot Number</label>
-                        <input id="vaccin-batch-lot-number" 
+                        <label htmlFor={`vaccin-batch-lot-number-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Batch / Lot Number</label>
+                        <input id={`vaccin-batch-lot-number-${vaccine.id}`} 
                           type="text" 
                           placeholder="e.g. Lot #99X21"
                           value={vaccine.lotNumber || ''}
@@ -270,8 +282,8 @@ export const VaccineTracker: React.FC = () => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                       <label htmlFor="vaccin-reactions-or-side-effects" className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Reactions or Side Effects</label>
-                       <textarea id="vaccin-reactions-or-side-effects" 
+                       <label htmlFor={`vaccin-reactions-or-side-effects-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Reactions or Side Effects</label>
+                       <textarea id={`vaccin-reactions-or-side-effects-${vaccine.id}`} 
                         placeholder="Fever, localized redness, irritability..."
                         value={vaccine.sideEffects || ''}
                         onChange={(e) => updateDetails(vaccine.id, 'sideEffects', e.target.value)}
@@ -283,6 +295,7 @@ export const VaccineTracker: React.FC = () => {
               </div>
             );
           })}
+          <p role="note" className="bg-teal-50 border-2 border-teal-200 rounded-3xl p-5 text-sm font-bold text-teal-950">{NIP_EXTRAS_NOTE}</p>
         </div>
 
         <div className="lg:col-span-1">
