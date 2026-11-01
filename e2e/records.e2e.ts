@@ -69,3 +69,38 @@ test('an encrypted backup file can be saved', async ({ page }) => {
   await form.getByRole('button', { name: 'Save Backup File' }).click();
   expect((await download).suggestedFilename()).toMatch(/^pedipulse-backup-.*\.json$/);
 });
+
+test('a backup can be restored after the records change, with a confirmation first', async ({ page }) => {
+  await openWithChild(page, 'ethics');
+  const save = page.locator('form').filter({ has: page.getByRole('button', { name: 'Save Backup File' }) });
+  await save.getByLabel(/Backup password/).fill('correct horse battery');
+  await save.getByLabel('Repeat password').fill('correct horse battery');
+  const download = page.waitForEvent('download');
+  await save.getByRole('button', { name: 'Save Backup File' }).click();
+  const backupPath = await (await download).path();
+
+  // Change the records after the backup was made.
+  await page.evaluate(() => {
+    const state = JSON.parse(localStorage.getItem('pedipulse_children')!);
+    state.children[0].name = 'Changed';
+    localStorage.setItem('pedipulse_children', JSON.stringify(state));
+  });
+  await page.reload();
+
+  const restore = page.locator('form').filter({ has: page.getByRole('heading', { name: 'Restore a backup' }) });
+  await restore.locator('input[type=file]').setInputFiles(backupPath);
+
+  await restore.getByLabel('Backup password').fill('wrong passphrase');
+  await restore.getByRole('button', { name: 'Restore Backup' }).click();
+  await expect(restore.getByRole('alert')).toHaveText("That password doesn't open this backup.");
+
+  await restore.getByLabel('Backup password').fill('correct horse battery');
+  await restore.getByRole('button', { name: 'Restore Backup' }).click();
+  const dialog = page.getByRole('alertdialog').or(page.getByRole('dialog'));
+  await expect(dialog.getByText(/This replaces all records on this device/)).toBeVisible();
+  await dialog.getByRole('button', { name: 'Restore' }).click();
+
+  await page.waitForLoadState('load');
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('pedipulse_children')!).children[0].name)).toBe('Mia');
+});
+
