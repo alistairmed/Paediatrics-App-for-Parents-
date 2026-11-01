@@ -82,7 +82,7 @@ export const MedicineLog: React.FC = () => {
         </label>
         <label className="block">
           <span className="block text-sm font-bold text-ink-700 mb-1">Amount given (optional)</span>
-          <input value={amount} onChange={e => setAmount(e.target.value)} placeholder="e.g. 7.5 mL" className="w-full p-3 rounded-xl border-2 border-ink-300 font-bold text-ink-900" />
+          <input value={amount} onChange={e => setAmount(e.target.value)} placeholder="As measured, from the label" className="w-full p-3 rounded-xl border-2 border-ink-300 font-bold text-ink-900" />
         </label>
         <label className="block">
           <span className="block text-sm font-bold text-ink-700 mb-1">Time given</span>
