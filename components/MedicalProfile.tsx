@@ -8,7 +8,8 @@ import { useChildProfile } from '../context/ChildProfileContext';
 import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
 import { useConfirm } from '../context/ConfirmContext';
-import { AI_ENABLED } from '../config/features';
+import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
+import { PremiumComingSoon } from './PremiumNotice';
 import { AiOffNotice } from './AiOffNotice';
 import { readImageAsCompressedDataUrl } from '../utils/image';
 
@@ -395,7 +396,10 @@ export const MedicalProfile: React.FC = () => {
           </h2>
           <p className="text-slate-500 font-medium">Standard clinical record systems.</p>
         </div>
-        {currentSection === 'overview' && AI_ENABLED && (
+        {currentSection === 'overview' && !PREMIUM_ENABLED && (
+          <div className="max-w-xs"><PremiumComingSoon feature="Handover summary" compact /></div>
+        )}
+        {currentSection === 'overview' && PREMIUM_ENABLED && (
           <button onClick={handleGenerateHandover} disabled={loading} className="bg-indigo-600 text-white px-8 py-5 rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition-all active:scale-95">
             {loading ? 'Synthesizing...' : 'Generate ISBAR ✨'}
           </button>

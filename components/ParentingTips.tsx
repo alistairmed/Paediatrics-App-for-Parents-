@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getParentingAdvice, explainMedicalTerm, AiError } from '../services/ai';
-import { AI_ENABLED } from '../config/features';
+import { getParentingAdvice, getParentingGuidance, explainMedicalTerm, AiError } from '../services/ai';
+import { PremiumComingSoon } from './PremiumNotice';
+import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
 
 const COMMON_CHALLENGES = [
@@ -206,7 +207,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
     }
   }, [preselectedChallenge]);
 
-  const handleGetAdvice = async (selectedChallenge?: string) => {
+  const handleGetAdvice = async (selectedChallenge?: string, inDepth = false) => {
     const finalChallenge = selectedChallenge || challenge;
     if (!finalChallenge) return;
     
@@ -215,7 +216,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
     setAdviceError(null);
     setActiveTab('tips');
     try {
-      const res = await getParentingAdvice(age, finalChallenge);
+      const res = await (inDepth ? getParentingGuidance : getParentingAdvice)(age, finalChallenge);
       setAdvice(res);
     } catch (error: any) {
       console.error(error);
@@ -460,6 +461,20 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                     null
                   )}
                 </div>
+              </div>
+              <div className="space-y-2">
+                <p className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-2">In-depth guidance</p>
+                {PREMIUM_ENABLED ? (
+                  <button
+                    onClick={() => handleGetAdvice(undefined, true)}
+                    disabled={loading || !challenge.trim()}
+                    className="w-full min-h-[48px] px-5 rounded-2xl bg-violet-700 hover:bg-violet-800 disabled:opacity-60 text-white font-black text-xs uppercase tracking-widest"
+                  >
+                    ⭐ Get In-Depth Guidance (Premium)
+                  </button>
+                ) : (
+                  <PremiumComingSoon feature="In-depth parenting guidance" />
+                )}
               </div>
             </div>
             
