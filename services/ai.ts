@@ -250,7 +250,7 @@ export const prepareAppointmentQuestions = async (
     pastMedicalHistory: history.pastMedicalHistory,
     currentMedications: history.currentMedications,
     recentAcuteLogs: history.acuteLogs?.slice(0, 10),
-    recentSafetyAlerts: recentRedFlags,
+    notedToDiscuss: recentRedFlags,
     appointment: {
       provider: appointment.provider,
       specialty: appointment.specialty,
@@ -259,7 +259,7 @@ export const prepareAppointmentQuestions = async (
   };
 
   const prompt = `Based on the following medical history and the purpose of the upcoming appointment, generate 5-7 high-quality, clinical questions for the parent to ask the specialist (${appointment.specialty}) during the visit.
-  Specifically address these recent safety alerts: ${recentRedFlags.join(', ') || 'None identified'}.
+  Include questions about anything the parent has noted to discuss: ${recentRedFlags.join(', ') || 'nothing noted'}.
   
   CONTEXT:
   ${JSON.stringify(context)}
