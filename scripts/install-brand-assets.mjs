@@ -8,7 +8,7 @@
  *   brand/icons/parent-32.png, parent-16.png -> public/icons/favicon-32.png, favicon-16.png
  *   brand/icons/parent-180.png             -> public/icons/apple-touch-icon.png
  *   brand/svg/logo-parent.svg              -> public/brand/logo.svg (lock screen and setup)
- *   brand/svg/icon-parent.svg              -> assets/icon.svg (for npx @capacitor/assets generate)
+ *   brand/svg/icon-parent.svg              -> assets/logo.svg (npm run assets: native icons and splash screens)
  *
  * Files missing from brand/ are reported and skipped; nothing else is changed.
  */
