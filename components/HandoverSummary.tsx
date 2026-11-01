@@ -2,10 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { generateHandoverData } from '../clinical/handover';
-import { analyzeMedicalProfile, GeminiError } from '../services/gemini';
+import { analyzeMedicalProfile, AiError } from '../services/ai';
 import { useToast } from '../context/ToastContext';
-import { AI_ENABLED } from '../config/features';
-import { AiOffNotice } from './AiOffNotice';
+import { PREMIUM_ENABLED } from '../config/features';
+import { PremiumComingSoon } from './PremiumNotice';
 
 export const HandoverSummary: React.FC = () => {
   const { history, latestWeight } = useMedicalHistory();
@@ -47,11 +47,11 @@ export const HandoverSummary: React.FC = () => {
     setAiLoading(true);
     setAiError(null);
     try {
-      const res = await analyzeMedicalProfile({ childProfile, history, childAge, latestWeight });
+      const res = await analyzeMedicalProfile({ history, childName: childProfile?.name, age: childAge, sex: childProfile?.sex });
       setAiSummary(res);
     } catch (err: any) {
       console.error(err);
-      if (err instanceof GeminiError) {
+      if (err instanceof AiError) {
         setAiError(err.message);
       } else {
         setAiError(err?.message || "Failed to generate AI ISBAR synthesis.");
@@ -109,9 +109,9 @@ export const HandoverSummary: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <h3 className="text-2xl font-black text-slate-800">AI Clinical ISBAR Synthesis</h3>
-                <p className="text-slate-500 text-xs font-bold">Generate an automated clinical narrative powered by Gemini AI.</p>
+                <p className="text-slate-600 text-xs font-bold">Premium: a de-identified summary (no name, date of birth or contact details) is sent to Anthropic's Claude to draft a handover or GP letter.</p>
               </div>
-              {AI_ENABLED ? (
+              {PREMIUM_ENABLED ? (
                   <button
                   onClick={handleGenerateAiISBAR}
                   disabled={aiLoading}
@@ -127,7 +127,7 @@ export const HandoverSummary: React.FC = () => {
                   )}
                 </button>
               ) : (
-                <AiOffNotice feature="The AI narrative" />
+                <PremiumComingSoon feature="The handover and GP letter summary" />
               )}
             </div>
 

@@ -30,3 +30,9 @@ body {
     cursor: pointer;
   }
 }
+
+@media print {
+  body {
+    background-color: #fff;
+  }
+}

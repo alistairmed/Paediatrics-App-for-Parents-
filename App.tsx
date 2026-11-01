@@ -39,7 +39,6 @@ const AcuteTracker = lazy(() => import('./components/AcuteTracker').then(m => ({
 const HandoverSummary = lazy(() => import('./components/HandoverSummary').then(m => ({ default: m.HandoverSummary })));
 const GovernanceLog = lazy(() => import('./components/GovernanceLog').then(m => ({ default: m.GovernanceLog })));
 const EthicsSafety = lazy(() => import('./components/EthicsSafety').then(m => ({ default: m.EthicsSafety })));
-const RegulatoryRisk = lazy(() => import('./components/RegulatoryRisk').then(m => ({ default: m.RegulatoryRisk })));
 const SickDayPlanView = lazy(() => import('./components/SickDayPlanView').then(m => ({ default: m.SickDayPlanView })));
 
 const ViewLoading: React.FC = () => (
@@ -110,7 +109,7 @@ const AppContent: React.FC = () => {
 
   // Airtight Persistence Redirect: Runs once on mount and when profile state changes
   useEffect(() => {
-    const publicViews: ViewType[] = ['ethics', 'regulatory', 'governance', 'setup', 'privacy', 'terms'];
+    const publicViews: ViewType[] = ['ethics', 'governance', 'setup', 'privacy', 'terms'];
     const isReady = !!childProfile || hasSkippedSetup;
     
     if (!isReady && !publicViews.includes(activeView)) {
@@ -153,7 +152,6 @@ const AppContent: React.FC = () => {
       privacy: <PrivacyPolicy />,
       terms: <TermsOfUse />,
       summary: <PrintableSummary />,
-      regulatory: <RegulatoryRisk />,
       sickday: <SickDayPlanView />
     };
     return views[activeView] || views.dashboard;
@@ -164,7 +162,7 @@ const AppContent: React.FC = () => {
       <DisclaimerModal />
       <div className="print:hidden bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-xs space-y-1">
         <p className="text-xs font-black text-rose-700 uppercase tracking-wider sm:tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
-        <p className="hidden sm:block text-xs text-rose-700 font-bold">{AI_ENABLED ? 'AI features send your entries to Google Gemini' : 'Data remains on this device'} • Replaces no clinical judgment.</p>
+        <p className="hidden sm:block text-xs text-rose-700 font-bold">{AI_ENABLED ? 'AI features send what you enter to an AI service' : 'Data remains on this device'} • Replaces no clinical judgment.</p>
       </div>
       <Suspense fallback={<ViewLoading />}>
         {ViewComponent}

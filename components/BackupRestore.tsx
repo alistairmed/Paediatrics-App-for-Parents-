@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { createBackup, readBackup, restoreRecords, backupFileName, BackupError, MIN_BACKUP_PASSWORD } from '../utils/backup';
+import { createBackup, readBackup, restoreRecords, backupFileName, BackupError, MIN_BACKUP_PASSWORD, MAX_BACKUP_BYTES } from '../utils/backup';
 import { useToast } from '../context/ToastContext';
 import { useConfirm } from '../context/ConfirmContext';
 
@@ -47,8 +47,10 @@ export const BackupRestore: React.FC = () => {
     setRestoreError(null);
     setBusy(true);
     try {
+      if (restoreFile.size > MAX_BACKUP_BYTES) throw new BackupError('This file is too large to be a PediPulse backup.');
       const { records, createdAt } = await readBackup(await restoreFile.text(), restorePassword);
-      const made = new Date(createdAt).toLocaleString();
+      const date = new Date(createdAt);
+      const made = isNaN(date.getTime()) ? 'an unknown date' : date.toLocaleString('en-AU');
       // Replacing everything is the point of a restore, but it must be deliberate.
       if (!(await confirm({ title: 'Restore this backup?', message: `This replaces all records on this device with the backup from ${made}. Records not in the backup will be removed.`, confirmLabel: 'Restore', danger: true }))) return;
       await restoreRecords(records);

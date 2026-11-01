@@ -1,5 +1,5 @@
 /**
- * Sent as the system instruction on every Gemini request (see withSafetyInstruction),
+ * Sent as the system instruction on every AI request, Gemini or Claude (see withSafetyInstruction),
  * so no feature can ask the model for advice without these limits.
  */
 export const SAFETY_SYSTEM_INSTRUCTION = `
@@ -16,7 +16,7 @@ You support parents and carers in Australia with general health information abou
 /**
  * Adds the shared safety instruction to a request, keeping any
  * feature-specific system instruction after it. Safe to apply twice
- * (the app adds it, and api/gemini.ts enforces it on the server).
+ * (the app adds it, and api/ai.ts enforces it on the server).
  */
 export function withSafetyInstruction(payload: any): any {
   const own = payload.systemInstruction;

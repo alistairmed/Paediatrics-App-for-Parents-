@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generateCalmingStory, GeminiError } from '../services/gemini';
+import { generateCalmingStory, AiError } from '../services/ai';
 import { AI_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
 
@@ -72,7 +72,7 @@ export const CalmStory: React.FC = () => {
       }
     } catch (error: any) {
       console.error(error);
-      if (error instanceof GeminiError) {
+      if (error instanceof AiError) {
         setErrorMessage(error.message);
       } else {
         setErrorMessage(error?.message || "Failed to generate audio story. Please try again.");

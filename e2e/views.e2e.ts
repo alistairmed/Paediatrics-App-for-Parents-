@@ -5,7 +5,7 @@ const VIEWS = [
   'dashboard', 'symptoms', 'sickday', 'dosage', 'acutelogs', 'appointments',
   'profile', 'history', 'familyhistory', 'devices', 'diagnostics', 'reports', 'summary', 'handover',
   'growth', 'vaccines', 'redbook', 'milestones', 'developmental', 'screening',
-  'parenting', 'bonding', 'stories', 'setup', 'ethics', 'governance', 'regulatory', 'privacy', 'terms',
+  'parenting', 'bonding', 'stories', 'setup', 'ethics', 'governance', 'privacy', 'terms',
 ];
 
 for (const view of VIEWS) {

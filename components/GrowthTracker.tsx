@@ -91,6 +91,18 @@ export const GrowthTracker: React.FC = () => {
     return rows.sort((a, b) => (a.age as number) - (b.age as number));
   }, [points, sex, measure.id]);
 
+  /** Every measurement, newest first, each with its WHO percentile. */
+  const measurementRows = useMemo(() => [...records].sort((a, b) => b.date.localeCompare(a.date)).map(r => {
+    const age = ageOf(r);
+    const cell = (m: typeof MEASURES[number]) => {
+      const value = r[m.field] as number | undefined;
+      if (typeof value !== 'number' || !Number.isFinite(value)) return null;
+      const p = age >= 0 ? growthPercentile(sex, m.id, age, value) : null;
+      return { value, percentile: p };
+    };
+    return { key: `${r.date}-${r.weight}-${r.height}-${r.headCircumference}`, date: r.date, age, cells: MEASURES.map(cell) };
+  }), [records, sex, childProfile?.dob]);
+
   const latest = points[points.length - 1];
   const latestPercentile = latest ? growthPercentile(sex, measure.id, latest.age, latest.value!) : null;
   const olderThanWho = latest && latest.age > WHO_MAX_MONTHS;
@@ -176,11 +188,51 @@ export const GrowthTracker: React.FC = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-base font-bold text-slate-800">
+            Percentiles are for information. Discuss growth concerns with your GP or child health nurse.
+          </p>
           <p className="text-sm font-medium text-slate-600">
-            Percentiles describe how a measurement compares with other children; a single reading isn't good or bad. Your child health nurse or GP can explain your child's growth pattern.
+            A percentile shows how a measurement compares with other children of the same age and sex; a single reading isn't good or bad.
           </p>
         </section>
       </div>
+
+      {measurementRows.length > 0 && (
+        <section className="bg-white p-6 rounded-4xl border border-slate-200 shadow-xs space-y-3" aria-labelledby="growth-history-title">
+          <h3 id="growth-history-title" className="font-black text-slate-800">All measurements</h3>
+          <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="All measurements with WHO percentiles">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b-2 border-slate-200 text-slate-700">
+                  <th scope="col" className="py-2 pr-4 font-black">Date</th>
+                  <th scope="col" className="py-2 pr-4 font-black">Age</th>
+                  {MEASURES.map(m => <th key={m.id} scope="col" className="py-2 pr-4 font-black">{m.label} ({m.unit})</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {measurementRows.map(row => (
+                  <tr key={row.key} className="border-b border-slate-100 align-top">
+                    <td className="py-2 pr-4 font-bold text-slate-800 whitespace-nowrap">{new Date(row.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td className="py-2 pr-4 text-slate-700 whitespace-nowrap">{row.age >= 0 ? `${Math.round(row.age * 10) / 10} mo` : '–'}</td>
+                    {row.cells.map((cell, i) => (
+                      <td key={MEASURES[i].id} className="py-2 pr-4 text-slate-800">
+                        {cell ? (
+                          <>
+                            <span className="font-bold">{cell.value}</span>
+                            <span className="block text-xs font-medium text-slate-600">
+                              {cell.percentile !== null ? `${describePercentile(cell.percentile)} percentile` : 'no WHO percentile'}
+                            </span>
+                          </>
+                        ) : <span className="text-slate-500">–</span>}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

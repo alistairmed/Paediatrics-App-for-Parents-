@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Appointment } from '../types';
-import { prepareAppointmentQuestions, GeminiError } from '../services/gemini';
+import { prepareAppointmentQuestions, AiError } from '../services/ai';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useGovernance } from '../context/GovernanceContext';
 import { AI_ENABLED } from '../config/features';
@@ -47,7 +47,7 @@ export const AppointmentManager: React.FC = () => {
       });
     } catch (e: any) {
       console.error(e);
-      const msg = e instanceof GeminiError ? e.message : (e?.message || "Error generating prep questions.");
+      const msg = e instanceof AiError ? e.message : (e?.message || "Error generating prep questions.");
       setPrepErrors(prev => ({ ...prev, [apt.id]: msg }));
     } finally {
       setPrepLoading(null);

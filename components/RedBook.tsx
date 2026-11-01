@@ -5,6 +5,8 @@ import { VaccineTracker } from './VaccineTracker';
 import { GrowthTracker } from './GrowthTracker';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useNavigation } from '../context/NavigationContext';
+import { useChildProfile } from '../context/ChildProfileContext';
+import { nipStatuses } from '../clinical/vaccineSchedule';
 
 const INITIAL_CHECKS: HealthCheck[] = [
   { id: '1', ageMilestone: 'Birth', completed: false, notes: '' },
@@ -21,35 +23,20 @@ const INITIAL_CHECKS: HealthCheck[] = [
 export const RedBook: React.FC = () => {
   const { history, updateHistory } = useMedicalHistory();
   const { navigateTo } = useNavigation();
+  const { childProfile } = useChildProfile();
   const [checks, setChecks] = useState<HealthCheck[]>(INITIAL_CHECKS);
   const [activeTab, setActiveTab] = useState<'checks' | 'vax' | 'growth'>('checks');
   const [activeCheck, setActiveCheck] = useState<string | null>(null);
 
   const alerts = useMemo(() => {
     const vaccinations = history.vaccinations || [];
-    const growthRecords = (history.growthRecords || []).filter(r => typeof r.weight === 'number' && r.weight > 0);
     const milestones = history.milestones || [];
     
-    const overdueVax = vaccinations.filter(v => v.status === 'pending' && new Date() > new Date(v.dueDate));
-    const vaxClusterConcern = overdueVax.length >= 3;
-
-    let growthAlert = false;
-    let growthSeverity: 'Low' | 'High' = 'Low';
-    if (growthRecords.length >= 2) {
-      const last = growthRecords[growthRecords.length - 1];
-      const prev = growthRecords[growthRecords.length - 2];
-      if (last.weight! < prev.weight!) {
-        growthAlert = true;
-        growthSeverity = 'High';
-      } else if (last.weight === prev.weight && last.age > prev.age) {
-        growthAlert = true; 
-        growthSeverity = 'Low';
-      }
-    }
-
+    const overdueVax = childProfile?.dob ? nipStatuses(childProfile.dob, vaccinations).filter(st => st.status === 'overdue') : [];
+    // Milestones the parent has marked to discuss. The app doesn't judge growth or development itself.
     const activeRedFlags = milestones.filter(m => m.isRedFlag && m.completed);
-    return { overdueVax, vaxClusterConcern, growthAlert, growthSeverity, activeRedFlags };
-  }, [history.vaccinations, history.growthRecords, history.milestones]);
+    return { overdueVax, activeRedFlags };
+  }, [history.vaccinations, history.milestones, childProfile?.dob]);
 
   const toggleCheck = (id: string) => {
     setChecks(prev => prev.map(c => c.id === id ? { ...c, completed: !c.completed } : c));
@@ -71,7 +58,7 @@ export const RedBook: React.FC = () => {
     return history.vaccinations.find(v => v.ageMilestone === age);
   };
 
-  const hasAlerts = alerts.overdueVax.length > 0 || alerts.growthAlert || alerts.activeRedFlags.length > 0;
+  const hasAlerts = alerts.overdueVax.length > 0 || alerts.activeRedFlags.length > 0;
 
   const tabs = [
     { id: 'checks', label: 'Checks', icon: '🗓️' },
@@ -94,8 +81,8 @@ export const RedBook: React.FC = () => {
               <div className="flex items-start gap-3 bg-rose-50 p-4 rounded-2xl border border-rose-100">
                 <span className="text-xl">💉</span>
                 <div className="flex-1">
-                  <p className="font-black text-rose-900 text-sm">Missed Immunisations</p>
-                  <p className="text-rose-700/70 text-xs font-bold mt-0.5">{alerts.overdueVax.length} doses are overdue. Community risk increased.</p>
+                  <p className="font-black text-rose-900 text-sm">Vaccines not yet recorded</p>
+                  <p className="text-rose-800 text-xs font-bold mt-0.5">Overdue: {alerts.overdueVax.map(st => st.visit.name).join(', ')}. Book with your GP or immunisation provider, or record them if they've been given.</p>
                 </div>
               </div>
             )}
@@ -103,8 +90,8 @@ export const RedBook: React.FC = () => {
               <div className="flex items-start gap-3 bg-rose-100 p-4 rounded-2xl border border-rose-200">
                 <span className="text-xl">🚩</span>
                 <div className="flex-1">
-                  <p className="font-black text-rose-900 text-sm">Red Flags Identified</p>
-                  <p className="text-rose-800 text-xs font-bold mt-0.5">{alerts.activeRedFlags.length} concerns require review by a Pediatrician.</p>
+                  <p className="font-black text-rose-900 text-sm">Things to discuss</p>
+                  <p className="text-rose-800 text-xs font-bold mt-0.5">You've noted {alerts.activeRedFlags.length} {alerts.activeRedFlags.length === 1 ? 'item' : 'items'} on the milestones page. Talk to your GP or child health nurse about them.</p>
                 </div>
               </div>
             )}

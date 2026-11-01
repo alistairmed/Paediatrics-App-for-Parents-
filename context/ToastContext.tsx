@@ -18,8 +18,8 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 const TOAST_DURATION_MS = 4000;
 
 const toneStyles: Record<ToastTone, { box: string; icon: string }> = {
-  success: { box: 'bg-emerald-600 text-white', icon: '✓' },
-  error: { box: 'bg-rose-600 text-white', icon: '⚠️' },
+  success: { box: 'bg-emerald-700 text-white', icon: '✓' },
+  error: { box: 'bg-rose-700 text-white', icon: '⚠️' },
   info: { box: 'bg-slate-900 text-white', icon: 'ℹ️' },
 };
 

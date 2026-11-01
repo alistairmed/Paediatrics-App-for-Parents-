@@ -1,20 +1,60 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# PediPulse
 
-# Run and deploy your AI Studio app
+A web app for Australian parents and carers to keep their children's health
+records: growth (WHO percentiles), vaccines (National Immunisation Program),
+medicines given, appointments, a printable summary for the doctor, and links to
+trusted general information (RCH Kids Health Info, healthdirect).
 
-This contains everything you need to run your app locally.
+It does not give medical advice, calculate doses or assess symptoms. Records
+stay on the device (optionally passcode-locked), with encrypted backup files.
 
-View your app in AI Studio: https://ai.studio/apps/9bb8dbfc-a504-496a-a6bc-0282a7b2337c
+## Run locally
 
-## Run Locally
+Prerequisite: Node.js 22.
 
-**Prerequisites:**  Node.js
+```sh
+npm install
+cp .env.example .env.local   # optional: only needed for AI features
+npm run dev
+```
 
+## Checks
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```sh
+npx tsc --noEmit        # type check
+npm test                # unit tests (Vitest)
+npm run build           # production build
+npm run test:e2e        # end-to-end and accessibility tests (Playwright + axe)
+```
+
+GitHub Actions runs all four on every pull request (`.github/workflows/ci.yml`).
+On a machine with Chromium already installed, set `PW_CHROMIUM_PATH` to its
+path instead of running `npx playwright install`.
+
+## AI features (off by default)
+
+All AI requests go through one server endpoint, `api/ai.ts`, so API keys never
+reach the browser:
+
+- **Free tier:** Google Gemini 2.5 Flash (vaccine information, calming story,
+  appointment questions, short parenting tips and more).
+- **Premium tier:** Anthropic Claude (handover / GP letter summary, in-depth
+  parenting guidance). Needs an entitlement token and only ever receives a
+  de-identified summary. Shown as "Premium (coming soon)" until switched on;
+  there are no payments yet.
+
+`config/aiFeatures.ts` decides which tier each feature needs, and the server
+enforces it. Every request needs the parent's consent first.
+
+To switch AI on, and for every safeguard (rate limits, caps, the Vercel
+Firewall checklist, entitlement tokens and `npm run mint-token` for test
+tokens), see [docs/AI_SAFEGUARDS.md](docs/AI_SAFEGUARDS.md). Settings are
+listed in [.env.example](.env.example).
+
+## Other docs
+
+- [docs/REGULATORY_NOTES.md](docs/REGULATORY_NOTES.md): internal TGA
+  self-assessment and risk register (not reviewed by the TGA).
+- Privacy Policy and Terms of Use are in the app (`#/privacy`, `#/terms`);
+  fill in the operator details in `config/legal.ts` and have them reviewed
+  before launch.

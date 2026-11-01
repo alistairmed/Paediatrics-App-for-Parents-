@@ -14,14 +14,33 @@ export const PERCENTILE_LINES = [
   { label: '97th', z: 1.881 },
 ];
 
+/**
+ * WHO measures lying length before 24 months and standing height from 24
+ * months; height reads about 0.7 cm lower. The generated table blends the two
+ * at month 24, so the published 24-month LMS for each is applied here:
+ * length up to (not including) 24 months, height from 24 months.
+ */
+export const LENGTH_HEIGHT_AT_24: Record<GrowthSex, { length: LmsRow; height: LmsRow }> = {
+  male: { length: [1, 87.8161, 0.03479], height: [1, 87.1161, 0.03507] },
+  female: { length: [1, 86.4153, 0.03734], height: [1, 85.7153, 0.03764] },
+};
+
+const row = (sex: GrowthSex, measure: GrowthMeasure, month: number, ageMonths: number): LmsRow => {
+  if (measure === 'length' && month === 24) {
+    return ageMonths < 24 ? LENGTH_HEIGHT_AT_24[sex].length : LENGTH_HEIGHT_AT_24[sex].height;
+  }
+  return WHO_GROWTH[sex][measure][month];
+};
+
 /** LMS at an age in months (0-60), interpolating between whole months. */
 export function lmsAt(sex: GrowthSex, measure: GrowthMeasure, ageMonths: number): LmsRow | null {
   if (!(ageMonths >= 0 && ageMonths <= WHO_MAX_MONTHS)) return null;
-  const rows = WHO_GROWTH[sex][measure];
+  const last = WHO_GROWTH[sex][measure].length - 1;
   const i = Math.floor(ageMonths);
-  const j = Math.min(i + 1, rows.length - 1);
+  const j = Math.min(i + 1, last);
   const f = ageMonths - i;
-  return [0, 1, 2].map(k => rows[i][k] + (rows[j][k] - rows[i][k]) * f) as LmsRow;
+  const a = row(sex, measure, i, ageMonths), b = row(sex, measure, j, ageMonths);
+  return [0, 1, 2].map(k => a[k] + (b[k] - a[k]) * f) as LmsRow;
 }
 
 export function valueAtZ([L, M, S]: LmsRow, z: number): number {
