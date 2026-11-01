@@ -4,6 +4,11 @@ import { Milestone } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { RCH_FACT_SHEETS } from '../clinical/factSheets';
 
+/** Items about losing skills a child already had: these get their own, firmer line. */
+export const REGRESSION_IDS = new Set(['loss-skills']);
+export const REGRESSION_LINE = "If your child has stopped doing things they could do before, see your GP soon. Don't wait for the next routine check.";
+export const DISCUSS_LINE = 'If you notice this, tick it and mention it to your GP or child health nurse.';
+
 export const INITIAL_DATA: Milestone[] = [
   // 6-8 WEEKS
   { id: "6w-m1", ageRange: "6-8 Weeks", category: "Motor", description: "Lifts head briefly when prone. Example: Can clear chin from the floor for a few seconds.", completed: false, isRedFlag: false },
@@ -384,9 +389,13 @@ export const MilestoneNavigator: React.FC = () => {
                    />
                 </div>
 
-                {m.isRedFlag && !m.completed && (
+                {REGRESSION_IDS.has(m.id) ? (
                   <p className="text-amber-950 font-bold text-sm pt-2 border-t border-amber-200 bg-amber-50 p-4 rounded-2xl z-10">
-                    If you notice this, tick it and mention it to your GP or child health nurse.
+                    {REGRESSION_LINE}
+                  </p>
+                ) : m.isRedFlag && !m.completed && (
+                  <p className="text-amber-950 font-bold text-sm pt-2 border-t border-amber-200 bg-amber-50 p-4 rounded-2xl z-10">
+                    {DISCUSS_LINE}
                   </p>
                 )}
               </div>
@@ -412,8 +421,8 @@ export const MilestoneNavigator: React.FC = () => {
             <h4 className="text-xl font-black uppercase tracking-tighter text-terracotta-100 leading-none">About milestones</h4>
           </div>
           <p className="text-terracotta-50 text-sm font-medium leading-relaxed relative z-10">
-            Milestones are a guide, not a test, and every child develops at their own pace. If your child stops doing things they could do before,
-            or you're worried about their hearing, vision, movement, speech or play, talk to your GP or child health nurse. They can also do the checks in your child's Red Book.
+            Milestones are a guide, not a test, and every child develops at their own pace. If your child stops doing things they could do before, see your GP soon.
+            If you're worried about their hearing, vision, movement, speech or play, talk to your GP or child health nurse. They can also do the checks in your child's Red Book.
           </p>
           <p className="text-xs font-black uppercase tracking-[0.3em] text-terracotta-300 pt-4 border-t border-white/5">General information, not a diagnosis</p>
         </div>

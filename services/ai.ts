@@ -240,17 +240,13 @@ export const explainMedicalTerm = async (term: string, ageGroup: string = 'infan
   return { text, sources };
 };
 
-export const prepareAppointmentQuestions = async (
-  history: MedicalHistory,
-  appointment: Appointment,
-  recentRedFlags: string[] = []
-) => {
-
+/** The prompt for appointment questions: practical questions for the parent, no clinical judgement. */
+export function appointmentQuestionsPrompt(history: MedicalHistory, appointment: Appointment, notedToDiscuss: string[] = []): string {
   const context = {
     pastMedicalHistory: history.pastMedicalHistory,
     currentMedications: history.currentMedications,
     recentAcuteLogs: history.acuteLogs?.slice(0, 10),
-    notedToDiscuss: recentRedFlags,
+    notedToDiscuss,
     appointment: {
       provider: appointment.provider,
       specialty: appointment.specialty,
@@ -258,13 +254,21 @@ export const prepareAppointmentQuestions = async (
     },
   };
 
-  const prompt = `Based on the following medical history and the purpose of the upcoming appointment, generate 5-7 high-quality, clinical questions for the parent to ask the specialist (${appointment.specialty}) during the visit.
-  Include questions about anything the parent has noted to discuss: ${recentRedFlags.join(', ') || 'nothing noted'}.
-  
+  return `Based on the following medical history and the purpose of the upcoming appointment, generate 5-7 practical questions for the parent to ask the specialist (${appointment.specialty}) during the visit.
+  Include questions about anything the parent has noted to discuss: ${notedToDiscuss.join(', ') || 'nothing noted'}.
+
   CONTEXT:
   ${JSON.stringify(context)}
-  
+
   FORMAT: Provide a bulleted list of questions.`;
+}
+
+export const prepareAppointmentQuestions = async (
+  history: MedicalHistory,
+  appointment: Appointment,
+  notedToDiscuss: string[] = []
+) => {
+  const prompt = appointmentQuestionsPrompt(history, appointment, notedToDiscuss);
 
   const data = await callAi({
     feature: 'appointment-questions',
