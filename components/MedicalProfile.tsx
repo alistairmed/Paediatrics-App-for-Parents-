@@ -866,7 +866,7 @@ export const MedicalProfile: React.FC = () => {
       <div className="flex justify-center mt-12">
         <button 
           onClick={async () => {
-            if (await confirm({ title: 'Delete everything on this device?', message: 'This deletes all children and all records stored in PediPulse on this device. It cannot be undone, so export a backup first if you might want them back.', confirmLabel: 'Delete Everything', danger: true })) {
+            if (await confirm({ title: 'Delete everything on this device?', message: 'This deletes all children and all records stored in Paeds Pouch on this device. It cannot be undone, so export a backup first if you might want them back.', confirmLabel: 'Delete Everything', danger: true })) {
                localStorage.clear();
                window.location.reload();
             }

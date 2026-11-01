@@ -1,7 +1,7 @@
 {
-  "name": "PediPulse – Child Health Records",
-  "short_name": "PediPulse",
-  "description": "Keep your child's health records and find trusted general information. Records stay on your device.",
+  "name": "Paeds Pouch – Child Health Records",
+  "short_name": "Paeds Pouch",
+  "description": "Keep your child's growth, vaccines and appointments in one private place on your phone. Records stay on your device.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

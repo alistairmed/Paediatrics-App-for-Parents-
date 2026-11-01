@@ -5,7 +5,7 @@ import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
 import { setAiConsentPrompt, hasAiConsent, withdrawAiConsent, AI_DAILY_LIMIT, getPremiumCode, setPremiumCode } from '../services/aiGuard';
 
 const CONSENT_MESSAGE =
-  'To answer, PediPulse sends what you typed or uploaded for this feature, and any child details it needs (such as age), ' +
+  'To answer, Paeds Pouch sends what you typed or uploaded for this feature, and any child details it needs (such as age), ' +
   "to an AI service through our server: Google's Gemini for most features" +
   (PREMIUM_ENABLED ? ", and Anthropic's Claude for premium features, which receive a de-identified summary only (no name, date of birth or contact details)" : '') +
   '. These companies may process it outside Australia. ' +
@@ -49,8 +49,8 @@ export const AiConsentSettings: React.FC = () => {
       <h3 id="ai-consent-title" className="text-xl font-black text-slate-800">AI features</h3>
       <p className="text-base font-medium text-slate-700">
         {given
-          ? 'You have allowed PediPulse to send the questions you ask to an AI service.'
-          : "You haven't allowed AI features. PediPulse will ask before sending anything."}
+          ? 'You have allowed Paeds Pouch to send the questions you ask to an AI service.'
+          : "You haven't allowed AI features. Paeds Pouch will ask before sending anything."}
       </p>
       {given && (
         <button

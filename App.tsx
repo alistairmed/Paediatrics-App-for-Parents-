@@ -59,7 +59,7 @@ const DisclaimerModal: React.FC = () => {
          <div className="text-center space-y-4">
             <h2 id="disclaimer-title" className="text-3xl font-black text-slate-800 tracking-tight leading-none">Purpose & Safety Notice</h2>
             <div className="text-slate-700 font-medium space-y-4 leading-relaxed text-base">
-               <p>PediPulse helps you keep your child's health records and find <strong>general information</strong>. Your records stay on this device.</p>
+               <p>Paeds Pouch helps you keep your child's health records and find <strong>general information</strong>. Your records stay on this device.</p>
                <p>It is <strong>NOT medical advice</strong> and doesn't diagnose, assess symptoms or calculate doses.</p>
                <p><strong>In an emergency, call 000.</strong></p>
             </div>

@@ -18,7 +18,7 @@ const load = async () => {
 describe('Backup', () => {
   beforeEach(() => { (globalThis as any).localStorage = new MemoryStorage(); });
 
-  test('Backs up PediPulse records only, encrypted, and restores them', async () => {
+  test('Backs up Paeds Pouch records only, encrypted, and restores them', async () => {
     localStorage.setItem('pedipulse_profile', '{"name":"Mia"}');
     localStorage.setItem('pedipulse_history', '{"allergies":["peanut"]}');
     localStorage.setItem('other_app', 'not ours');
@@ -44,8 +44,8 @@ describe('Backup', () => {
     await expect(backup.createBackup('short')).rejects.toThrow(/at least 8/);
     const file = await backup.createBackup('long-password', undefined, 1000);
     await expect(backup.readBackup(file, 'wrong-password')).rejects.toThrow("That password doesn't open this backup.");
-    await expect(backup.readBackup('{"hello":1}', 'x')).rejects.toThrow(/isn't a PediPulse backup/);
-    await expect(backup.readBackup('not json', 'x')).rejects.toThrow(/isn't a PediPulse backup/);
+    await expect(backup.readBackup('{"hello":1}', 'x')).rejects.toThrow(/isn't a Paeds Pouch backup/);
+    await expect(backup.readBackup('not json', 'x')).rejects.toThrow(/isn't a Paeds Pouch backup/);
   });
 
   test('With the passcode lock on, backs up decrypted records and restores them encrypted', async () => {
@@ -104,7 +104,7 @@ describe('Backup file checks', () => {
     await expect(backup.readBackup(' '.repeat(backup.MAX_BACKUP_BYTES + 1), 'long-password')).rejects.toThrow(/too large/);
   });
 
-  test('Contents that are not PediPulse records are refused', async () => {
+  test('Contents that are not Paeds Pouch records are refused', async () => {
     const { backup } = await load();
     for (const bad of [['not', 'an', 'object'], { other_app: 'x' }, { pedipulse_children: 42 }]) {
       const file = await backup.createBackup('long-password', bad as any, 1000);

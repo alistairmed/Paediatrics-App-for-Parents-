@@ -66,7 +66,7 @@ export const Dashboard: React.FC = () => {
            <div className="hidden sm:flex w-24 h-24 bg-white/20 rounded-[2.5rem] items-center justify-center text-4xl sm:text-5xl shadow-inner border border-white/10 rotate-[-4deg] shrink-0">🏠</div>
            <div className="text-center md:text-left">
               <p className="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2">{childProfile ? (childAge || 'Health records') : 'Guest mode'}</p>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tighter leading-none mb-3 sm:mb-4">{childProfile ? `${childProfile.name.split(' ')[0]}'s records` : 'Welcome to PediPulse'}</h2>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tighter leading-none mb-3 sm:mb-4">{childProfile ? `${childProfile.name.split(' ')[0]}'s records` : 'Welcome to Paeds Pouch'}</h2>
               <p className="hidden sm:block text-indigo-100 font-medium opacity-90 max-w-lg text-base">
                 Log how your child is going today with the buttons below, or open their records from the menu.
               </p>

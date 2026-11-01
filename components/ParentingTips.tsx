@@ -689,9 +689,6 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                   <p className="text-indigo-100 text-sm font-medium leading-relaxed opacity-80">
                     "Frameworks aren't rules; they are lenses to see your child's behavior clearly. Instead of asking 'How do I stop this behavior?', these models help you ask 'What is my child trying to tell me?'"
                   </p>
-                  <div className="pt-6 border-t border-white/10">
-                     <p className="text-xs font-black uppercase tracking-[0.3em] text-indigo-700">PediPulse Professional Logic v1.0</p>
-                  </div>
                </div>
             </div>
           </div>

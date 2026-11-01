@@ -52,7 +52,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Saving failed (useLocalStorage keeps the last saved data): tell the user.
   useEffect(() => {
     const onStorageError = () => showToast(
-      "Couldn't save: this device's storage for PediPulse is full. Remove some photos or old entries, then try again.",
+      "Couldn't save: this device's storage for Paeds Pouch is full. Remove some photos or old entries, then try again.",
       'error'
     );
     window.addEventListener(STORAGE_ERROR_EVENT, onStorageError);

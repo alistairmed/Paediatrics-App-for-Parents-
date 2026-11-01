@@ -4,7 +4,7 @@
  * and have both documents reviewed by a lawyer.
  */
 export const LEGAL = {
-  appName: 'PediPulse',
+  appName: 'Paeds Pouch',
   operator: '[Your name or organisation]',
   contactEmail: '[contact email address]',
   lastUpdated: '1 November 2026',

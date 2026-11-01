@@ -47,7 +47,7 @@ export const BackupRestore: React.FC = () => {
     setRestoreError(null);
     setBusy(true);
     try {
-      if (restoreFile.size > MAX_BACKUP_BYTES) throw new BackupError('This file is too large to be a PediPulse backup.');
+      if (restoreFile.size > MAX_BACKUP_BYTES) throw new BackupError('This file is too large to be a Paeds Pouch backup.');
       const { records, createdAt } = await readBackup(await restoreFile.text(), restorePassword);
       const date = new Date(createdAt);
       const made = isNaN(date.getTime()) ? 'an unknown date' : date.toLocaleString('en-AU');

@@ -67,7 +67,7 @@ export const PrivacyPolicy: React.FC = () => (
           <>
             {!AI_ENABLED && <p>AI features are switched off in this version. Nothing you enter is sent to any AI service.</p>}
             <p>
-              {AI_ENABLED ? 'When AI features are used, PediPulse' : 'If AI features are switched on in a later version, PediPulse'} uses two AI providers, through its own server:
+              {AI_ENABLED ? 'When AI features are used, Paeds Pouch' : 'If AI features are switched on in a later version, Paeds Pouch'} uses two AI providers, through its own server:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>
@@ -82,7 +82,7 @@ export const PrivacyPolicy: React.FC = () => (
             </ul>
             <p>
               Nothing is sent unless you choose to use one of these features and agree first, and you can withdraw that permission at any time. Google and
-              Anthropic may process the information outside Australia, under their own terms. PediPulse's server does not store what is sent; it keeps a
+              Anthropic may process the information outside Australia, under their own terms. Paeds Pouch's server does not store what is sent; it keeps a
               count of premium requests per access code for monthly limits, and its logs may record that a request failed.
             </p>
           </>

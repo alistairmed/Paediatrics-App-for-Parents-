@@ -29,7 +29,7 @@ export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
       <div className="bg-white rounded-[2.5rem] max-w-md w-full p-8 sm:p-10 shadow-2xl space-y-6 border border-slate-100">
         <div className="text-center space-y-3">
           <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg mx-auto" aria-hidden="true">🔒</div>
-          <h1 className="text-2xl font-black text-slate-800 tracking-tight">PediPulse is locked</h1>
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight">Paeds Pouch is locked</h1>
           <p className="text-sm font-bold text-slate-600">Enter your passcode to open your child's records.</p>
         </div>
 

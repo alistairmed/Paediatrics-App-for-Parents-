@@ -140,7 +140,7 @@ export const PrintableSummary: React.FC = () => {
         )}
 
         <footer className="text-xs text-slate-500 border-t border-slate-200 pt-2">
-          Recorded by the parent or carer in PediPulse. Not a clinical record; please confirm details with the family.
+          Recorded by the parent or carer in Paeds Pouch. Not a clinical record; please confirm details with the family.
         </footer>
       </article>
     </div>

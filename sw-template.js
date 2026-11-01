@@ -1,5 +1,6 @@
-/* PediPulse service worker: makes the app open and work offline.
+/* Paeds Pouch service worker: makes the app open and work offline.
    The build fills in the file list and version (see vite.config.ts). */
+// The cache prefix keeps the app's old name (PediPulse) so updates still clear older caches.
 const CACHE = 'pedipulse-__VERSION__';
 const PRECACHE = __PRECACHE__;
 

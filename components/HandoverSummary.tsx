@@ -253,7 +253,7 @@ export const HandoverSummary: React.FC = () => {
            
            <div className="pt-8 border-t border-slate-100 flex justify-between items-center opacity-40">
               <p className="text-xs font-black uppercase tracking-widest">Verified by caregiver on {new Date().toLocaleDateString('en-AU')}</p>
-              <p className="text-xs font-black uppercase tracking-widest">Prepared in PediPulse • ISBAR format</p>
+              <p className="text-xs font-black uppercase tracking-widest">Prepared in Paeds Pouch • ISBAR format</p>
            </div>
         </div>
       )}

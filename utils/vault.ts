@@ -20,6 +20,9 @@ const storedSensitiveKeys = (): string[] => {
   }
   return keys;
 };
+// Kept from the app's old name (PediPulse): existing passcode locks are stored
+// under this key and verified against this text, so renaming them would lock
+// existing users out of their records.
 export const LOCK_META_KEY = 'pedipulse_lock';
 const CHECK_TEXT = 'pedipulse-lock-check';
 

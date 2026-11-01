@@ -1,4 +1,4 @@
-import { PEDI_PULSE_PROMPTS, withSafetyInstruction } from './prompts';
+import { APP_PROMPTS, withSafetyInstruction } from './prompts';
 
 export { withSafetyInstruction };
 import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
@@ -95,7 +95,7 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
     clearTimeout(timeoutId);
 
     if (err instanceof AiError) {
-      console.error('[PediPulse AI Error]', { type: err.type, status: err.status, message: err.message });
+      console.error('[Paeds Pouch Error]', { type: err.type, status: err.status, message: err.message });
       throw err;
     }
 
@@ -105,7 +105,7 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
         'TIMEOUT',
         408
       );
-      console.error('[PediPulse AI Error]', { type: timeoutError.type, message: timeoutError.message });
+      console.error('[Paeds Pouch Error]', { type: timeoutError.type, message: timeoutError.message });
       throw timeoutError;
     }
 
@@ -113,13 +113,13 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
       'Unable to connect to AI services. Please check your network connection and try again.',
       'NETWORK'
     );
-    console.error('[PediPulse AI Error]', { type: netError.type, originalError: err?.message || String(err) });
+    console.error('[Paeds Pouch Error]', { type: netError.type, originalError: err?.message || String(err) });
     throw netError;
   }
 }
 
 export const analyzeScreening = async (testName: string, responses: any) => {
-  const prompt = `${PEDI_PULSE_PROMPTS.v1.screeningAnalysis.replace('{testName}', testName)}\n\nRESPONSES: ${JSON.stringify(responses)}`;
+  const prompt = `${APP_PROMPTS.v1.screeningAnalysis.replace('{testName}', testName)}\n\nRESPONSES: ${JSON.stringify(responses)}`;
 
   const data = await callAi({
     feature: 'screening-summary',
@@ -148,7 +148,7 @@ export const analyzeScreening = async (testName: string, responses: any) => {
  * sent (services/deidentify.ts): no name, date of birth or contact details.
  */
 export const analyzeMedicalProfile = async (input: SummaryInput) => {
-  const prompt = `${PEDI_PULSE_PROMPTS.v1.isbarHandover}\n\nDE-IDENTIFIED SUMMARY: ${JSON.stringify(deidentifiedSummary(input))}`;
+  const prompt = `${APP_PROMPTS.v1.isbarHandover}\n\nDE-IDENTIFIED SUMMARY: ${JSON.stringify(deidentifiedSummary(input))}`;
 
   const data = await callAi({
     feature: 'handover',
@@ -159,7 +159,7 @@ export const analyzeMedicalProfile = async (input: SummaryInput) => {
 };
 
 export const generateCalmingStory = async (childName: string, theme: string) => {
-  const prompt = PEDI_PULSE_PROMPTS.v1.calmingStory
+  const prompt = APP_PROMPTS.v1.calmingStory
     .replace('{childName}', childName)
     .replace('{theme}', theme);
 

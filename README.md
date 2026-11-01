@@ -1,4 +1,4 @@
-# PediPulse
+# Paeds Pouch
 
 A web app for Australian parents and carers to keep their children's health
 records: growth (WHO percentiles), vaccines (National Immunisation Program),

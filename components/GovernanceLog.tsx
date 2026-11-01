@@ -10,7 +10,7 @@ export const GovernanceLog: React.FC = () => {
   const confirm = useConfirm();
 
   const copyEntry = (entry: any) => {
-    const text = `PEDIPULSE GOVERNANCE ENTRY\nType: ${entry.eventType}\nTimestamp: ${new Date(entry.timestamp).toLocaleString('en-AU')}\nInput: ${entry.inputSummary}\nOutput: ${entry.outputSummary}\nRed Flags: ${entry.redFlags?.join(', ') || 'None'}`;
+    const text = `PAEDS POUCH GOVERNANCE ENTRY\nType: ${entry.eventType}\nTimestamp: ${new Date(entry.timestamp).toLocaleString('en-AU')}\nInput: ${entry.inputSummary}\nOutput: ${entry.outputSummary}\nRed Flags: ${entry.redFlags?.join(', ') || 'None'}`;
     navigator.clipboard.writeText(text).then(
       () => showToast("Entry copied to the clipboard."),
       () => showToast("Couldn't copy to the clipboard.", 'error')
