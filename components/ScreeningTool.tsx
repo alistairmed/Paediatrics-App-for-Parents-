@@ -218,7 +218,7 @@ export const ScreeningTool: React.FC = () => {
         </div>
         <div className="flex flex-wrap gap-2 w-full md:w-auto">
             {viewState !== 'hub' && (
-                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xs min-h-[44px]">Return to Hub</button>
+                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xs min-h-[44px]">Back to Checklists</button>
             )}
             {viewState === 'hub' && (
                 <button onClick={handleStartFinder} className="w-full md:w-auto bg-teal-700 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl hover:bg-teal-800 active:scale-95 transition-all min-h-[44px]">Start Test Finder ✨</button>
@@ -292,7 +292,7 @@ export const ScreeningTool: React.FC = () => {
               <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-5 print:shadow-none print:border-0 print:p-0">
                 <div>
                   <h3 className="text-2xl font-black text-slate-800">{activeMod.name}: your answers</h3>
-                  <p className="text-sm font-bold text-slate-600">{new Date().toLocaleDateString()} · a conversation starter, not a test or a score</p>
+                  <p className="text-sm font-bold text-slate-600">{new Date().toLocaleDateString('en-AU')} · a conversation starter, not a test or a score</p>
                 </div>
                 <ul className="divide-y divide-slate-100">
                   {activeMod.questions.map(q => {
@@ -367,7 +367,7 @@ export const ScreeningTool: React.FC = () => {
                       disabled={loading || Object.keys(responses).length < activeMod.questions.length}
                       className="w-full py-7 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-slate-200 transition-all hover:bg-indigo-700 active:scale-95"
                   >
-                      {loading ? 'Synthesizing Patterns...' : 'Finalize & Prepare Handover ✨'}
+                      {loading ? 'Preparing…' : 'Finalize & Prepare Handover ✨'}
                   </button>
                 ) : (
                   <div className="space-y-3">
@@ -437,7 +437,7 @@ export const ScreeningTool: React.FC = () => {
 
                  <div className="pt-10 border-t border-slate-100 flex justify-between items-center opacity-40">
                     <p className="text-xs font-black uppercase tracking-widest">Standardized Tool: {activeMod.name}</p>
-                    <p className="text-xs font-black uppercase tracking-widest">Pattern Generated: {new Date().toLocaleDateString()}</p>
+                    <p className="text-xs font-black uppercase tracking-widest">Pattern Generated: {new Date().toLocaleDateString('en-AU')}</p>
                  </div>
               </div>
             </div>

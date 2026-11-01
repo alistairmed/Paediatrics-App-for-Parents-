@@ -140,7 +140,7 @@ export const BondingJournal: React.FC = () => {
             <div className="mt-8 flex items-center justify-between relative z-10 pt-4 border-t border-slate-50">
                <div className="flex items-center gap-2 text-rose-700">
                   <span className="text-xl">✨</span>
-                  <p className="text-xs font-black uppercase tracking-[0.2em]">Synchronized to Clinical Hub</p>
+                  <p className="text-xs font-black uppercase tracking-[0.2em]">Saved on this device</p>
                </div>
                <button 
                 onClick={() => handleUpdate('')}

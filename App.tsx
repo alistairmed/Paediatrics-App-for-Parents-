@@ -161,8 +161,8 @@ const AppContent: React.FC = () => {
     <Layout activeView={activeView} onNavigate={navigateTo}>
       <DisclaimerModal />
       <div className="print:hidden bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-xs space-y-1">
-        <p className="text-xs font-black text-rose-700 uppercase tracking-wider sm:tracking-[0.2em]">⚠️ Safety Notice: Decision Support Tool Only</p>
-        <p className="hidden sm:block text-xs text-rose-700 font-bold">{AI_ENABLED ? 'AI features send what you enter to an AI service' : 'Data remains on this device'} • Replaces no clinical judgment.</p>
+        <p className="text-xs font-black text-rose-700 uppercase tracking-wider sm:tracking-[0.2em]">General information only, not medical advice</p>
+        <p className="hidden sm:block text-xs text-rose-700 font-bold">{AI_ENABLED ? 'AI features send what you enter to an AI service' : 'Your records stay on this device'} • In an emergency, call 000.</p>
       </div>
       <Suspense fallback={<ViewLoading />}>
         {ViewComponent}

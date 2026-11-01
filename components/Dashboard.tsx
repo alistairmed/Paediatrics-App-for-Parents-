@@ -11,7 +11,7 @@ import {
 
 const formatLogTime = (isoString: string) => {
   try {
-    return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return new Date(isoString).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
   } catch {
     return isoString;
   }
@@ -65,10 +65,10 @@ export const Dashboard: React.FC = () => {
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 sm:gap-8">
            <div className="hidden sm:flex w-24 h-24 bg-white/20 rounded-[2.5rem] items-center justify-center text-4xl sm:text-5xl shadow-inner border border-white/10 rotate-[-4deg] shrink-0">🏠</div>
            <div className="text-center md:text-left">
-              <p className="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2">{hasSkippedSetup ? 'GUEST REGISTRY ACTIVE' : 'PEDI-PULSE REGISTRY ACTIVE'}</p>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tighter leading-none mb-3 sm:mb-4">Welcome Home, {childProfile?.name?.split(' ')[0] || 'Guest'}.</h2>
+              <p className="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2">{childProfile ? (childAge || 'Health records') : 'Guest mode'}</p>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tighter leading-none mb-3 sm:mb-4">{childProfile ? `${childProfile.name.split(' ')[0]}'s records` : 'Welcome to PediPulse'}</h2>
               <p className="hidden sm:block text-indigo-100 font-medium opacity-90 max-w-lg text-base">
-                Your clinical workstation is initialized. Use the quick actions below to track wellness, or explore the Medical Hub for deeper history.
+                Log how your child is going today with the buttons below, or open their records from the menu.
               </p>
               {hasSkippedSetup && (
                 <button onClick={() => navigateTo('setup')} className="mt-4 sm:mt-6 min-h-[44px] px-6 py-3 bg-amber-500 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-amber-400 transition-all flex items-center justify-center mx-auto md:mx-0">
@@ -109,7 +109,7 @@ export const Dashboard: React.FC = () => {
       )}
 
       <section className="space-y-3 sm:space-y-4">
-         <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest ml-2 sm:ml-4">Vital Management</h4>
+         <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest ml-2 sm:ml-4">Quick log</h4>
          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <button onClick={() => navigateTo('acutelogs')} className="p-4 sm:p-6 min-h-[90px] bg-white border border-slate-200 rounded-4xl sm:rounded-[2.5rem] shadow-xs flex flex-col items-center justify-center gap-2 hover:scale-105 transition-all group active:bg-slate-50">
                <span className="text-3xl sm:text-4xl group-hover:rotate-12 transition-transform">🌡️</span>
@@ -173,7 +173,7 @@ export const Dashboard: React.FC = () => {
           <div className="relative z-10 flex flex-col justify-between h-full space-y-12 sm:space-y-20">
             <div>
               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-6 sm:mb-8">📋</div>
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight">Longitudinal <br/> Medical Hub</h3>
+              <h3 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight">Your child's <br/> health records</h3>
               <p className="text-indigo-200 font-medium text-sm sm:text-lg mt-3 sm:mt-4 max-w-sm leading-relaxed opacity-80">Synthesis of the clinical story, MDT care team coordination, and specialist letters.</p>
             </div>
             <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-indigo-300 group-hover:text-white transition-colors">

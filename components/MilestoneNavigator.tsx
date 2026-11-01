@@ -164,7 +164,7 @@ export const MilestoneNavigator: React.FC = () => {
       addClinicalEvent({
         source: 'Milestones',
         description: `Noted to discuss with the GP (${item.ageRange}): ${item.description.split('. Example:')[0]}`,
-        date: new Date().toLocaleDateString(),
+        date: new Date().toLocaleDateString('en-AU'),
         severity: 'Low'
       });
     }
@@ -222,7 +222,7 @@ export const MilestoneNavigator: React.FC = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
              <div className="w-10 h-10 bg-teal-700 rounded-xl flex items-center justify-center text-xl shadow-lg -rotate-3">✨</div>
-             <h2 className="text-2xl font-black text-slate-800 tracking-tighter">Milestone <span className="text-teal-700">Sync</span></h2>
+             <h2 className="text-2xl font-black text-slate-800 tracking-tighter">Mile<span className="text-teal-700">stones</span></h2>
           </div>
           <button aria-label={showAddCustom ? 'Cancel adding a milestone' : 'Add a milestone'} 
             onClick={() => setShowAddCustom(!showAddCustom)}

@@ -7,7 +7,7 @@ import { medicineSummary, LOGGED_MEDICINES, LoggedMedicine } from '../clinical/m
 const timeFormat: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
 const formatTime = (d: Date) => {
   const sameDay = d.toDateString() === new Date().toDateString();
-  return sameDay ? d.toLocaleTimeString([], timeFormat) : d.toLocaleString([], { weekday: 'short', ...timeFormat });
+  return sameDay ? d.toLocaleTimeString('en-AU', timeFormat) : d.toLocaleString('en-AU', { weekday: 'short', ...timeFormat });
 };
 const localInputValue = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 

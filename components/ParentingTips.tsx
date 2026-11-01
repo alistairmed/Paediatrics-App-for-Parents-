@@ -495,7 +495,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 <div className="w-20 h-20 bg-amber-50 rounded-4xl flex items-center justify-center text-5xl animate-bounce shadow-inner">🌻</div>
                 <div className="space-y-2">
                   <p className="font-black text-slate-800 uppercase tracking-widest text-sm">Reviewing Clinical Frameworks...</p>
-                  <p className="text-slate-600 text-xs font-bold">Synthesizing evidence-based strategies for your child's age group.</p>
+                  <p className="text-slate-600 text-xs font-bold">Finding evidence-based strategies for your child's age group.</p>
                 </div>
               </div>
             ) : adviceError ? (
@@ -561,7 +561,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 
                 {advice.sources.length > 0 && (
                   <div className="pt-10 mt-16 border-t border-slate-100 space-y-4 relative z-10">
-                    <p className="text-xs font-black text-amber-700 uppercase tracking-widest">Guideline Registry</p>
+                    <p className="text-xs font-black text-amber-700 uppercase tracking-widest">Guidelines</p>
                     <div className="flex flex-wrap gap-3">
                       {advice.sources.map((s: any, i: number) => (
                         <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-slate-600 hover:text-amber-700 bg-white px-5 py-2.5 rounded-2xl border-2 border-slate-100 transition-all flex items-center gap-2 shadow-xs group">
@@ -595,7 +595,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
           <div className="bg-indigo-900 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-[80px]"></div>
-            <h3 className="text-3xl font-black tracking-tighter mb-4 relative z-10">Professional Support Registry</h3>
+            <h3 className="text-3xl font-black tracking-tighter mb-4 relative z-10">Professional support</h3>
             <p className="text-indigo-100 font-medium opacity-80 max-w-2xl relative z-10">
               Validated Australian resources for parenting, behavior, and family mental health.
             </p>

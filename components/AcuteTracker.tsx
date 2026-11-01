@@ -33,7 +33,7 @@ const VALID_RANGES: Record<string, { min: number; max: number; message: string }
 
 const formatLogTime = (isoString: string) => {
   try {
-    return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    return new Date(isoString).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: false });
   } catch {
     return isoString;
   }

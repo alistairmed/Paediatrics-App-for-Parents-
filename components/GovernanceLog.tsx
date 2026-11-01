@@ -10,7 +10,7 @@ export const GovernanceLog: React.FC = () => {
   const confirm = useConfirm();
 
   const copyEntry = (entry: any) => {
-    const text = `PEDIPULSE GOVERNANCE ENTRY\nType: ${entry.eventType}\nTimestamp: ${new Date(entry.timestamp).toLocaleString()}\nInput: ${entry.inputSummary}\nOutput: ${entry.outputSummary}\nRed Flags: ${entry.redFlags?.join(', ') || 'None'}`;
+    const text = `PEDIPULSE GOVERNANCE ENTRY\nType: ${entry.eventType}\nTimestamp: ${new Date(entry.timestamp).toLocaleString('en-AU')}\nInput: ${entry.inputSummary}\nOutput: ${entry.outputSummary}\nRed Flags: ${entry.redFlags?.join(', ') || 'None'}`;
     navigator.clipboard.writeText(text).then(
       () => showToast("Entry copied to the clipboard."),
       () => showToast("Couldn't copy to the clipboard.", 'error')
@@ -26,7 +26,7 @@ export const GovernanceLog: React.FC = () => {
         </div>
         <div className="flex flex-col items-end gap-2">
            <span className="text-xs font-black text-emerald-700 uppercase tracking-[0.2em] bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100">
-             🛡️ Active Integrity Check: {new Date().toLocaleDateString()}
+             🛡️ Active Integrity Check: {new Date().toLocaleDateString('en-AU')}
            </span>
            <button 
              onClick={async () => { if (await confirm({ title: 'Clear the activity log?', message: 'This removes every entry in the log on this device.', confirmLabel: 'Clear Log', danger: true })) clearLog(); }}
@@ -65,7 +65,7 @@ export const GovernanceLog: React.FC = () => {
                     <h4 className="font-black text-slate-800 uppercase text-xs tracking-widest">
                       {entry.eventType.replace('_', ' ')}
                     </h4>
-                    <p className="text-xs text-slate-600 font-bold">{new Date(entry.timestamp).toLocaleString()}</p>
+                    <p className="text-xs text-slate-600 font-bold">{new Date(entry.timestamp).toLocaleString('en-AU')}</p>
                   </div>
                 </div>
                 <div className="flex gap-2">
