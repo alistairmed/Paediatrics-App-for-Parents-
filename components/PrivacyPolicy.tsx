@@ -63,13 +63,29 @@ export const PrivacyPolicy: React.FC = () => (
       },
       {
         heading: 'AI features',
-        body: AI_ENABLED ? (
-          <p>
-            Features marked ✨ send the information needed for that request (for example a description or photo) to Google's Gemini service to produce
-            a response. Nothing is sent unless you choose to use one of these features and agree to it first. Google's handling of that data is covered by its own terms.
-          </p>
-        ) : (
-          <p>AI features are switched off in this version. Nothing you enter is sent to any AI service.</p>
+        body: (
+          <>
+            {!AI_ENABLED && <p>AI features are switched off in this version. Nothing you enter is sent to any AI service.</p>}
+            <p>
+              {AI_ENABLED ? 'When AI features are used, PediPulse' : 'If AI features are switched on in a later version, PediPulse'} uses two AI providers, through its own server:
+            </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>
+                <strong>Google (Gemini)</strong> for most AI features, such as vaccine information, short parenting tips and calming stories. The information
+                needed for that request is sent, for example what you typed or a photo of a letter you chose to upload.
+              </li>
+              <li>
+                <strong>Anthropic (Claude)</strong> for premium features, such as a handover or GP letter summary and in-depth parenting guidance. Only a
+                de-identified summary is sent: no name, date of birth, contact details, care-team or family names, photos or letters. Names already in your
+                records, email addresses and phone numbers are removed from free text, but please leave other names out of what you type.
+              </li>
+            </ul>
+            <p>
+              Nothing is sent unless you choose to use one of these features and agree first, and you can withdraw that permission at any time. Google and
+              Anthropic may process the information outside Australia, under their own terms. PediPulse's server does not store what is sent; it keeps a
+              count of premium requests per access code for monthly limits, and its logs may record that a request failed.
+            </p>
+          </>
         ),
       },
       {

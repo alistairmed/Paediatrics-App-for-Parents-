@@ -7,5 +7,5 @@ export const LEGAL = {
   appName: 'PediPulse',
   operator: '[Your name or organisation]',
   contactEmail: '[contact email address]',
-  lastUpdated: '31 October 2026',
+  lastUpdated: '1 November 2026',
 };
