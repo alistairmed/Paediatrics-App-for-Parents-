@@ -61,7 +61,7 @@ export const VaccineTracker: React.FC = () => {
     addClinicalEvent({
       source: 'Vaccines',
       description: `Immunisation Recorded: ${vaccine.name}. Batch: ${vaccine.lotNumber || 'N/A'}. Provider: ${vaccine.clinic || 'N/A'}.`,
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString('en-AU'),
       severity: 'Low'
     });
     setSyncedIds(prev => new Set(prev).add(vaccine.id));
@@ -196,7 +196,7 @@ export const VaccineTracker: React.FC = () => {
                       </div>
                       <p className="text-xs font-black text-slate-600 mt-2 uppercase tracking-widest flex items-center gap-2">
                         {vaccine.status === 'completed' 
-                          ? <span>📅 Administered: {vaccine.receivedDate ? new Date(vaccine.receivedDate).toLocaleDateString() : '--'}</span> 
+                          ? <span>📅 Administered: {vaccine.receivedDate ? new Date(vaccine.receivedDate).toLocaleDateString('en-AU') : '--'}</span> 
                           : <span>📅 {nip?.visit.schoolProgram ? 'From about' : 'Due'}: {nip ? formatNipDate(nip.dueDate) : new Date(vaccine.dueDate).toLocaleDateString('en-AU')}</span>
                         }
                       </p>

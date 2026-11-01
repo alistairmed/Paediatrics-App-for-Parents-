@@ -25,7 +25,7 @@ export const SickDayPlanView: React.FC = () => {
   const copyPlanToClipboard = () => {
     const p = history.sickDayPlan;
     const text = `PEDIPULSE SICK DAY ACTION PLAN
-Generated: ${new Date().toLocaleDateString()}
+Generated: ${new Date().toLocaleDateString('en-AU')}
 
 *** EMERGENCY: CALL 000 / AMBULANCE IF ***
 ${p.ambulanceTriggers || 'Not specified'}

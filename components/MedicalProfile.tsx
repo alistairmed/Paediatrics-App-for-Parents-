@@ -346,7 +346,7 @@ export const MedicalProfile: React.FC = () => {
         if (result) {
           const newReport: MedicalReport = {
             id: crypto.randomUUID(),
-            date: new Date().toLocaleDateString(),
+            date: new Date().toLocaleDateString('en-AU'),
             specialist: result.specialist?.name || 'Unknown Specialist',
             summary: result.summary || 'AI synthesis pending...',
             actionItems: result.actionItems || [],
@@ -355,7 +355,7 @@ export const MedicalProfile: React.FC = () => {
           updateHistory({
             medicalReports: [...(history.medicalReports || []), newReport],
             // Automatically integrate found conditions/meds if reliable
-            conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString() }))],
+            conditions: [...(history.conditions || []), ...(result.foundDiagnoses || []).map((d: string) => ({ id: crypto.randomUUID(), name: d, status: 'Active', dateDiagnosed: new Date().toLocaleDateString('en-AU') }))],
             currentMedications: [...(history.currentMedications || []), ...(result.foundMedications || []).map((m: any) => ({ ...m, id: crypto.randomUUID(), startDate: new Date().toISOString() }))]
           });
           showToast("Specialist letter added to the record.");

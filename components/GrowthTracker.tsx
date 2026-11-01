@@ -166,7 +166,7 @@ export const GrowthTracker: React.FC = () => {
 
           {latest && (
             <p className="text-base font-bold text-slate-800" aria-live="polite">
-              Latest: {latest.value} {measure.unit} on {new Date(latest.date).toLocaleDateString()}
+              Latest: {latest.value} {measure.unit} on {new Date(latest.date).toLocaleDateString('en-AU')}
               {latestPercentile !== null ? ` – around the ${describePercentile(latestPercentile)} percentile.` : '.'}
             </p>
           )}

@@ -11,7 +11,7 @@ import {
 
 const formatLogTime = (isoString: string) => {
   try {
-    return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return new Date(isoString).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
   } catch {
     return isoString;
   }

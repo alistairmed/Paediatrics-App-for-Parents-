@@ -164,7 +164,7 @@ export const MilestoneNavigator: React.FC = () => {
       addClinicalEvent({
         source: 'Milestones',
         description: `Noted to discuss with the GP (${item.ageRange}): ${item.description.split('. Example:')[0]}`,
-        date: new Date().toLocaleDateString(),
+        date: new Date().toLocaleDateString('en-AU'),
         severity: 'Low'
       });
     }

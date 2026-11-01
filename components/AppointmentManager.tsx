@@ -149,7 +149,7 @@ export const AppointmentManager: React.FC = () => {
                 <div className="flex flex-col md:flex-row justify-between gap-6">
                   <div className="flex gap-6">
                     <div className={`w-20 h-20 rounded-4xl flex flex-col items-center justify-center font-black shadow-inner shrink-0 ${apt.status === 'Completed' ? 'bg-slate-100 text-slate-600' : 'bg-indigo-50 text-indigo-600'}`}>
-                       <span className="text-xs uppercase">{new Date(apt.dateTime).toLocaleString('en-US', { month: 'short' })}</span>
+                       <span className="text-xs uppercase">{new Date(apt.dateTime).toLocaleString('en-AU', { month: 'short' })}</span>
                        <span className="text-3xl tracking-tighter">{new Date(apt.dateTime).getDate()}</span>
                     </div>
                     <div>
@@ -158,7 +158,7 @@ export const AppointmentManager: React.FC = () => {
                           {apt.status === 'Completed' && <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-sm">✓ Completed</span>}
                        </div>
                        <p className="text-indigo-600 font-bold">{apt.provider}</p>
-                       <p className="text-slate-600 text-xs font-medium flex items-center gap-2 mt-1">📍 {apt.location} • 🕒 {new Date(apt.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                       <p className="text-slate-600 text-xs font-medium flex items-center gap-2 mt-1">📍 {apt.location} • 🕒 {new Date(apt.dateTime).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 self-start justify-end">

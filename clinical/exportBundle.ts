@@ -6,7 +6,7 @@ import { GovernanceEntry } from "./governance";
  * Synthesizes a comprehensive clinical bundle for clinician review.
  */
 export function generateClinicalExportBundle(handover: HandoverData, logs: GovernanceEntry[]): string {
-  const timestamp = new Date().toLocaleString();
+  const timestamp = new Date().toLocaleString('en-AU');
   
   let output = `PEDIPULSE CLINICAL BUNDLE - Generated: ${timestamp}\n`;
   output += `====================================================\n\n`;
