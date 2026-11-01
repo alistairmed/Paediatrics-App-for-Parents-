@@ -29,13 +29,14 @@ const token = (over: Record<string, unknown> = {}) => mintEntitlementToken(
 
 const call = async (body: any, headers: Record<string, string> = {}, method = 'POST') => {
   let status = 0, json: any;
+  const sent: Record<string, string> = {};
   if (body && !('feature' in body)) body = { feature: 'parenting-tips', ...body };
   if (body && !('tier' in body) && body.feature in AI_FEATURES) body = { tier: (AI_FEATURES as any)[body.feature].tier, ...body };
   await handler({ method, body, headers: { 'x-forwarded-for': headers.ip || freshIp(), ...headers } }, {
-    setHeader: () => {},
+    setHeader: (name: string, value: string) => { sent[name.toLowerCase()] = value; },
     status: (code: number) => { status = code; return { json: (b: any) => { json = b; }, end: () => {} }; },
   });
-  return { status, json };
+  return { status, json, headers: sent };
 };
 
 const premium = (body: any = {}, headers: Record<string, string> = {}) =>
@@ -152,7 +153,8 @@ describe('/api/ai', () => {
 
     test('Network failures return a generic 500', async () => {
       upstream.mockRejectedValue(new Error('getaddrinfo ENOTFOUND generativelanguage.googleapis.com'));
-      expect(await call({ contents: 'x' })).toEqual({ status: 500, json: { error: 'The AI service is not available right now.', status: 500 } });
+      const { status, json } = await call({ contents: 'x' });
+      expect({ status, json }).toEqual({ status: 500, json: { error: 'The AI service is not available right now.', status: 500 } });
     });
   });
 
@@ -232,6 +234,52 @@ describe('/api/ai', () => {
       expect(statuses).toEqual([200, 200, 429]);
       expect(claudeCreate).toHaveBeenCalledTimes(2);
       expect((await premium()).status).toBe(200); // another token has its own count
+    });
+  });
+
+  describe('native apps (Capacitor)', () => {
+    const NATIVE = ['capacitor://localhost', 'https://localhost', 'http://localhost'];
+
+    test('The iOS and Android app origins can call the endpoint, with CORS headers', async () => {
+      for (const origin of NATIVE) {
+        const r = await call({ contents: 'x' }, { origin, 'sec-fetch-site': 'cross-site' });
+        expect(r.status).toBe(200);
+        expect(r.headers['access-control-allow-origin']).toBe(origin);
+      }
+    });
+
+    test('Preflight is answered for the app origins only', async () => {
+      const ok = await call(undefined, { origin: 'capacitor://localhost' }, 'OPTIONS');
+      expect(ok.status).toBe(204);
+      expect(ok.headers['access-control-allow-headers']).toContain('Authorization');
+      const other = await call(undefined, { origin: 'https://evil.example' }, 'OPTIONS');
+      expect(other.status).toBe(403);
+      expect(other.headers['access-control-allow-origin']).toBeUndefined();
+    });
+
+    test('Other websites stay blocked, with or without Sec-Fetch-Site', async () => {
+      for (const origin of ['https://evil.example', 'capacitor://evil', 'https://localhost.evil.example', 'http://localhost:3000']) {
+        const r = await call({ contents: 'x' }, { origin, 'sec-fetch-site': 'cross-site' });
+        expect(r.status).toBe(403);
+        expect(r.headers['access-control-allow-origin']).toBeUndefined();
+      }
+      expect((await call({ contents: 'x' }, { origin: 'https://evil.example', host: 'paedspouch.com.au' })).status).toBe(403);
+      expect(upstream).not.toHaveBeenCalled();
+    });
+
+    test('The website itself still works same-origin, without CORS headers', async () => {
+      const r = await call({ contents: 'x' }, { origin: 'https://paedspouch.com.au', host: 'paedspouch.com.au', 'sec-fetch-site': 'same-origin' });
+      expect(r.status).toBe(200);
+      expect(r.headers['access-control-allow-origin']).toBeUndefined();
+    });
+
+    test('Every other control still applies to the app origins', async () => {
+      delete process.env.ENABLE_AI;
+      expect((await call({ contents: 'x' }, { origin: 'capacitor://localhost' })).status).toBe(503);
+      process.env.ENABLE_AI = 'true';
+      process.env.PREMIUM_ENABLED = 'false';
+      expect((await premium({}, { origin: 'capacitor://localhost' })).status).toBe(503);
+      expect((await call({ feature: 'medical-term', contents: 'x', config: { tools: [{ googleSearch: {} }] } }, { origin: 'https://localhost' })).status).toBe(400);
     });
   });
 });

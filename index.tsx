@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { isNativeApp } from './config/platform';
 // Self-hosted font (no request to Google Fonts; works offline).
 import '@fontsource/quicksand/300.css';
 import '@fontsource/quicksand/400.css';
@@ -21,7 +22,8 @@ window.addEventListener('vite:preloadError', (event) => {
 });
 
 // Save the app on the device so it opens without a connection (production only).
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
+// Offline support for the website only: the native apps already ship their files on the device.
+if ('serviceWorker' in navigator && import.meta.env.PROD && !isNativeApp()) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   });

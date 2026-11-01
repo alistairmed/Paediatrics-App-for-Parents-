@@ -2,6 +2,7 @@ import { APP_PROMPTS, withSafetyInstruction } from './prompts';
 
 export { withSafetyInstruction };
 import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
+import { apiUrl } from '../config/platform';
 import { AI_FEATURES, AiFeature } from '../config/aiFeatures';
 import { ensureAiConsent, takeAiQuota, AI_DAILY_LIMIT, getPremiumCode } from './aiGuard';
 import { deidentifiedSummary, SummaryInput } from './deidentify';
@@ -56,7 +57,7 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     const code = tier === 'premium' ? getPremiumCode() : null;
     if (code) headers.Authorization = `Bearer ${code}`;
-    const res = await fetch('/api/ai', {
+    const res = await fetch(apiUrl('/api/ai'), {
       method: 'POST',
       headers,
       body: JSON.stringify(withSafetyInstruction({ ...payload, tier })),

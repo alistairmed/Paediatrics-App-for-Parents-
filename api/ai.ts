@@ -41,14 +41,48 @@ const header = (req: VercelRequest, name: string): string | undefined => {
 
 const UNAVAILABLE = 'The AI service is not available right now.';
 
+/** True when an Origin header names this deployment's own host. */
+const sameHost = (req: VercelRequest, origin: string): boolean => {
+  try {
+    return new URL(origin).host === header(req, 'host');
+  } catch {
+    return false;
+  }
+};
+
 /**
  * The single AI endpoint. Free features go to Gemini 2.5 Flash; premium
  * features go to Claude and need an entitlement token. Which tier a feature
  * needs comes from config/aiFeatures.ts, never from the caller.
  */
+/**
+ * Origins of the iOS and Android apps (Capacitor). They load the app from the
+ * device, so their calls are cross-origin; only these get CORS headers.
+ * Every other website stays blocked.
+ */
+export const NATIVE_APP_ORIGINS = ['capacitor://localhost', 'https://localhost', 'http://localhost'] as const;
+const isNativeAppOrigin = (origin: string | undefined) => !!origin && (NATIVE_APP_ORIGINS as readonly string[]).includes(origin);
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // No CORS headers: the app calls this from the same origin, and browsers on
-  // other sites are blocked from reading the response.
+  // The website calls this from the same origin and gets no CORS headers, so
+  // browsers on other sites can't read the response. The native apps' origins
+  // are allowed explicitly.
+  const origin = header(req, 'origin');
+  const nativeApp = isNativeAppOrigin(origin);
+  if (nativeApp) {
+    res.setHeader('Access-Control-Allow-Origin', origin!);
+    res.setHeader('Vary', 'Origin');
+  }
+
+  if (req.method === 'OPTIONS') {
+    // CORS preflight: only for the native apps.
+    if (!nativeApp) return res.status(403).json({ error: 'Cross-site requests are not allowed.' });
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Max-Age', '600');
+    return res.status(204).end();
+  }
+
   // AI features are off unless explicitly enabled (see config/features.ts),
   // so the keys can't be spent by scripts calling this endpoint directly.
   if (process.env.ENABLE_AI !== 'true') {
@@ -59,9 +93,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method Not Allowed. Only POST requests are accepted.' });
   }
 
-  // Browsers mark requests made by other websites; the app's own calls are same-origin.
+  // Browsers mark requests made by other websites; the app's own calls are
+  // same-origin, and the native apps' calls carry their own origin.
   const fetchSite = header(req, 'sec-fetch-site');
-  if (fetchSite && fetchSite !== 'same-origin' && fetchSite !== 'none') {
+  const crossSite = (fetchSite && fetchSite !== 'same-origin' && fetchSite !== 'none') || (!!origin && !nativeApp && !sameHost(req, origin));
+  if (crossSite && !nativeApp) {
     return res.status(403).json({ error: 'Cross-site requests are not allowed.' });
   }
 
