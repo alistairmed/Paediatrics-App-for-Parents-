@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { GrowthRecord } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
@@ -179,7 +179,6 @@ export const GrowthTracker: React.FC = () => {
                 <XAxis dataKey="age" type="number" domain={[0, 'dataMax']} tick={{ fill: '#475569', fontSize: 12 }} label={{ value: 'Age (months)', position: 'insideBottom', offset: -8, fill: '#475569', fontSize: 12 }} />
                 <YAxis domain={['auto', 'auto']} tick={{ fill: '#475569', fontSize: 12 }} unit={` ${measure.unit}`} width={64} />
                 <Tooltip formatter={(v: number) => `${v} ${measure.unit}`} labelFormatter={(a: number) => `${Math.round(a * 10) / 10} months`} />
-                <Legend verticalAlign="top" height={32} />
                 {PERCENTILE_LINES.map(line => (
                   <Line key={line.label} type="monotone" dataKey={line.label} name={line.label} dot={false} connectNulls isAnimationActive={false}
                     stroke={line.z === 0 ? '#64748b' : '#cbd5e1'} strokeWidth={line.z === 0 ? 2 : 1.5} strokeDasharray={line.z === 0 ? undefined : '6 4'} />
@@ -188,6 +187,11 @@ export const GrowthTracker: React.FC = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold text-slate-700" aria-label="Chart key">
+            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-[3px] border-indigo-600" />{childProfile?.name || 'Your child'}</li>
+            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-2 border-slate-500" />50th percentile</li>
+            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-2 border-dashed border-slate-400" />3rd, 15th, 85th and 97th percentiles</li>
+          </ul>
           <p className="text-base font-bold text-slate-800">
             Percentiles are for information. Discuss growth concerns with your GP or child health nurse.
           </p>
