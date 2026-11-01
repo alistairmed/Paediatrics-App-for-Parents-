@@ -1,6 +1,6 @@
 # Paeds Pouch
 
-A web app for Australian parents and carers to keep their children's health
+A web app (and iPhone and Android app) for Australian parents and carers to keep their children's health
 records: growth (WHO percentiles), vaccines (National Immunisation Program),
 medicines given, appointments, a printable summary for the doctor, and links to
 trusted general information (RCH Kids Health Info, healthdirect).
@@ -50,6 +50,24 @@ To switch AI on, and for every safeguard (rate limits, caps, the Vercel
 Firewall checklist, entitlement tokens and `npm run mint-token` for test
 tokens), see [docs/AI_SAFEGUARDS.md](docs/AI_SAFEGUARDS.md). Settings are
 listed in [.env.example](.env.example).
+
+## iPhone and Android apps
+
+The same app is wrapped for iOS and Android with Capacitor 8 (`android/`,
+`ios/`, `capacitor.config.ts`). The apps add an optional Face ID or
+fingerprint unlock, keep the passcode lock settings in the iOS Keychain or
+Android Keystore, and offer opt-in vaccine reminders as notifications on the
+phone. Records stay on the phone and are excluded from cloud backups.
+
+```sh
+npm run cap:sync        # build the web app and copy it into both projects
+npm run android         # open Android Studio
+npm run ios             # open Xcode
+npm run android:bundle  # signed AAB (needs the PAEDS_POUCH_* signing variables)
+```
+
+Building, signing, store checklists and launch steps are in
+[docs/STORE_RELEASE.md](docs/STORE_RELEASE.md).
 
 ## Other docs
 
