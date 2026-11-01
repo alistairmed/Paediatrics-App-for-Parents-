@@ -49,7 +49,7 @@ export const EthicsSafety: React.FC = () => {
           <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Privacy & Data Sovereignty</h3>
           {AI_ENABLED ? (
             <p className="text-slate-500 text-sm font-medium leading-relaxed">
-              <strong>Records are stored on your device.</strong> When you use an AI feature (marked ✨), the information needed for that request, such as symptom descriptions, photos or medical history, is sent to Google's Gemini service to generate the response. Nothing is sent unless you use an AI feature.
+              <strong>Records are stored on your device.</strong> When you use an AI feature (marked ✨), the information needed for that request, such as symptom descriptions, photos or medical history, is sent to Google's Gemini service, or for premium features a de-identified summary is sent to Anthropic's Claude, to generate the response. Nothing is sent unless you use an AI feature and agree first.
             </p>
           ) : (
             <p className="text-slate-500 text-sm font-medium leading-relaxed">

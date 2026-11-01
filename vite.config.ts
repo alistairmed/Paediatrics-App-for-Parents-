@@ -3,18 +3,19 @@ import path from 'path';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 
-/**
- * Serves api/gemini.ts during `npm run dev`, mirroring the Vercel function,
- * so the Gemini key stays on the server locally too (read from .env.local,
- * along with ENABLE_AI).
- */
-const geminiDevProxy = (apiKey?: string, enableAi?: string): Plugin => ({
-  name: 'gemini-dev-proxy',
-  configureServer(server) {
-    if (apiKey && !process.env.GEMINI_API_KEY) process.env.GEMINI_API_KEY = apiKey;
-    if (enableAi && !process.env.ENABLE_AI) process.env.ENABLE_AI = enableAi;
+// Server-only settings api/ai.ts reads. Never VITE_-prefixed, so never in the browser bundle.
+const SERVER_ENV = ['GEMINI_API_KEY', 'API_KEY', 'ENABLE_AI', 'ANTHROPIC_API_KEY', 'PREMIUM_ENABLED', 'ENTITLEMENT_SECRET'];
 
-    server.middlewares.use('/api/gemini', async (req, res) => {
+/**
+ * Serves api/ai.ts during `npm run dev`, mirroring the Vercel function, so
+ * API keys stay on the server locally too (read from .env.local).
+ */
+const aiDevProxy = (env: Record<string, string>): Plugin => ({
+  name: 'ai-dev-proxy',
+  configureServer(server) {
+    for (const key of SERVER_ENV) if (env[key] && !process.env[key]) process.env[key] = env[key];
+
+    server.middlewares.use('/api/ai', async (req, res) => {
       const send = (code: number, body?: unknown) => {
         res.statusCode = code;
         if (body === undefined) return res.end();
@@ -31,7 +32,7 @@ const geminiDevProxy = (apiKey?: string, enableAi?: string): Plugin => ({
         return send(400, { error: 'Invalid JSON body.' });
       }
 
-      const { default: handler } = await server.ssrLoadModule('/api/gemini.ts');
+      const { default: handler } = await server.ssrLoadModule('/api/ai.ts');
       await handler(
         { method: req.method, body, headers: req.headers },
         {
@@ -72,7 +73,7 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react(), geminiDevProxy(env.GEMINI_API_KEY || env.API_KEY, env.ENABLE_AI), serviceWorker()],
+      plugins: [react(), aiDevProxy(env), serviceWorker()],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
