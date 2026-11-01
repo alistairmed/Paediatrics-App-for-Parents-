@@ -14,7 +14,7 @@
     "android": "npm run cap:sync && cap open android",
     "ios": "npm run cap:sync && cap open ios",
     "android:bundle": "npm run cap:sync && cd android && ./gradlew bundleRelease",
-    "assets": "capacitor-assets generate --assetPath assets --iconBackgroundColor \"#fff3e3\" --splashBackgroundColor \"#fff3e3\""
+    "assets": "capacitor-assets generate --assetPath assets --iconBackgroundColor \"#fff3e3\" --iconBackgroundColorDark \"#3b1d0c\" --splashBackgroundColor \"#fff3e3\" --splashBackgroundColorDark \"#3b1d0c\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

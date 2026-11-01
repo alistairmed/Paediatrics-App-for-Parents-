@@ -28,7 +28,7 @@ if (existsSync(iconDir)) {
 } else {
   console.warn(`Missing ${iconDir}/`);
 }
-copies.push(['brand/svg/logo-parent.svg', 'public/brand/logo.svg'], ['brand/svg/icon-parent.svg', 'assets/icon.svg']);
+copies.push(['brand/svg/logo-parent.svg', 'public/brand/logo.svg'], ['brand/svg/icon-parent.svg', 'assets/logo.svg']);
 
 let copied = 0;
 for (const [from, to] of copies) {
@@ -38,4 +38,4 @@ for (const [from, to] of copies) {
   console.log(`${from} -> ${to}`);
   copied++;
 }
-console.log(`${copied} file(s) copied. Rebuild the app, then run npx @capacitor/assets generate for the native icons.`);
+console.log(`${copied} file(s) copied. Then run: npm run build && npm run assets && npx cap sync`);
