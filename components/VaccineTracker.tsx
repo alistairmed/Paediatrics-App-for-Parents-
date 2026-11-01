@@ -6,6 +6,8 @@ import { useChildProfile } from '../context/ChildProfileContext';
 import { useToast } from '../context/ToastContext';
 import { AI_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
+import { planVaccineReminders } from '../clinical/vaccineReminders';
+import { remindersSupported, remindersEnabled, enableVaccineReminders, disableVaccineReminders, syncVaccineReminders } from '../services/vaccineNotifications';
 import { syncNipRecords, nipStatuses, NIP_STATUS_LABEL, NIP_FOOTNOTE, NIP_EXTRAS_NOTE, formatNipDate, NipStatus } from '../clinical/vaccineSchedule';
 
 const BADGE: Record<NipStatus, string> = {
@@ -17,7 +19,8 @@ const BADGE: Record<NipStatus, string> = {
 
 export const VaccineTracker: React.FC = () => {
   const { history, updateHistory, addClinicalEvent } = useMedicalHistory();
-  const { childProfile } = useChildProfile();
+  const { childProfile, activeChildId } = useChildProfile();
+  const [remindersOn, setRemindersOn] = useState(remindersEnabled);
   const { showToast } = useToast();
   
   const [info, setInfo] = useState<{ name: string; text: string; sources: any[] } | null>(null);
@@ -40,6 +43,26 @@ export const VaccineTracker: React.FC = () => {
     () => new Map(childProfile?.dob ? nipStatuses(childProfile.dob, schedule).map(st => [st.visit.id, st]) : []),
     [childProfile?.dob, schedule]
   );
+
+  // Keep this child's phone reminders in line with the schedule and the doses recorded.
+  useEffect(() => {
+    if (!remindersOn || !childProfile?.dob) return;
+    const plan = planVaccineReminders(activeChildId, nipStatuses(childProfile.dob, schedule));
+    syncVaccineReminders(activeChildId, plan).catch(() => showToast("Couldn't update vaccine reminders on this phone.", 'error'));
+  }, [remindersOn, activeChildId, childProfile?.dob, schedule]);
+
+  const toggleReminders = async () => {
+    if (remindersOn) {
+      await disableVaccineReminders();
+      setRemindersOn(false);
+      showToast('Vaccine reminders turned off.');
+    } else if (await enableVaccineReminders()) {
+      setRemindersOn(true);
+      showToast("Vaccine reminders on. They're scheduled on this phone only.");
+    } else {
+      showToast('Notifications are off for Paeds Pouch. You can allow them in your phone settings.', 'error');
+    }
+  };
 
   const toggleStatus = (id: string) => {
     const next = schedule.map(v => 
@@ -116,6 +139,15 @@ export const VaccineTracker: React.FC = () => {
           <h2 className="text-4xl font-black text-ink-800 tracking-tight">Immunisation <span className="text-terracotta-600">Record</span></h2>
           <p className="text-ink-600 font-medium">Australian National Immunisation Program (NIP) schedule, from birth to the Year 10 school program.</p>
           <p className="text-sm font-bold text-ink-700 mt-2">{NIP_FOOTNOTE}</p>
+          {remindersSupported() && (
+            <label className="mt-4 flex items-start gap-3 max-w-xl cursor-pointer">
+              <input type="checkbox" checked={remindersOn} onChange={toggleReminders} className="mt-1 w-6 h-6 accent-[var(--color-brand-dark)]" />
+              <span className="text-base font-bold text-ink-800">
+                Remind me on this phone when vaccines are due
+                <span className="block text-sm font-medium text-ink-600">Reminders are set on this phone and nothing is sent anywhere. They don't show your child's name.</span>
+              </span>
+            </label>
+          )}
         </div>
         <button 
           onClick={() => setShowAddCustom(!showAddCustom)}

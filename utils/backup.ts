@@ -1,6 +1,7 @@
 import { deriveKey, encryptString, decryptString, randomSalt, PBKDF2_ITERATIONS } from './crypto';
 import { readItem, writeItem, LOCK_META_KEY } from './vault';
 import { AI_CONSENT_KEY, AI_USAGE_KEY, PREMIUM_CODE_KEY } from '../services/aiGuard';
+import { VACCINE_REMINDERS_KEY } from '../services/vaccineNotifications';
 
 /**
  * Password-protected backup of every Paeds Pouch record on this device.
@@ -15,11 +16,12 @@ export const MIN_BACKUP_PASSWORD = 8;
 const RECORD_PREFIX = 'pedipulse_';
 /**
  * Settings that belong to this device and this person's choices: the
- * passcode lock, AI consent and usage, and the premium access code. They are
+ * passcode lock, AI consent and usage, the premium access code and phone
+ * reminders. They are
  * never backed up, and never restored, so a backup file can't lock a parent
  * out or switch on AI sharing.
  */
-const DEVICE_ONLY = [LOCK_META_KEY, AI_CONSENT_KEY, AI_USAGE_KEY, PREMIUM_CODE_KEY];
+const DEVICE_ONLY = [LOCK_META_KEY, AI_CONSENT_KEY, AI_USAGE_KEY, PREMIUM_CODE_KEY, VACCINE_REMINDERS_KEY];
 /** Largest backup file accepted (a year of busy records is well under 1 MB). */
 export const MAX_BACKUP_BYTES = 25 * 1024 * 1024;
 /** Key-derivation rounds accepted from a file: enough headroom, but a crafted file can't freeze the browser. */
