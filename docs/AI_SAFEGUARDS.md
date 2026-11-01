@@ -10,7 +10,9 @@ enters leaves the device and `/api/gemini` answers `503`.
 | Explicit consent before the first request; nothing is sent if the parent declines. Re-asked when `AI_CONSENT_VERSION` changes. Can be withdrawn in **Privacy, Backup & Lock**. | `services/aiGuard.ts`, `components/AiConsent.tsx` |
 | Daily cap of 20 requests per device (`AI_DAILY_LIMIT`). | `services/aiGuard.ts` |
 | API key only on the server; browser calls the same-origin proxy. | `api/gemini.ts` |
-| Same-origin check; model and tool allowlist. | `api/gemini.ts` |
+| Same-origin check; model and tool allowlist; every request names its feature, checked against an allow-list. | `api/gemini.ts` |
+| Google Search grounding only for parenting tips and vaccine information. | `api/gemini.ts` |
+| Google's error text is logged on the server only; the browser gets a generic message and status code. | `api/gemini.ts` |
 | Best-effort per-IP limit: 20 requests per 10 minutes per server instance. | `api/gemini.ts` |
 | Safety system instruction on every request (no medical advice, no doses, 000 for emergencies). | `services/prompts.ts` |
 
@@ -18,23 +20,29 @@ The device cap can be cleared by clearing site data, and the per-IP limit is
 per server instance, so neither is a hard limit on cost. Add the firewall
 rule below before switching AI on.
 
-## Vercel Firewall rate limit (do this in the Vercel dashboard)
+## Vercel Firewall rate limit checklist
 
-1. Open the project → **Firewall** → **Configure** → **New Rule**.
-2. Name: `Limit AI proxy`.
-3. If: **Request Path** *equals* `/api/gemini`.
-4. Then: **Rate Limit** — Fixed window, **60 seconds**, **10 requests**, keyed by **IP Address**; action **Too Many Requests (429)**.
-5. Save, then **Review Changes** → **Publish**.
+Do this in the Vercel dashboard before switching AI on.
 
-Optionally add a second rule with a longer window (for example 100 requests
-per 24 hours per IP). The app already shows a friendly message on `429`.
+- [ ] Project → **Firewall** → **Configure** → **New Rule**, named `Limit AI proxy`
+- [ ] Condition: **Request Path** *equals* `/api/gemini`
+- [ ] Action: **Rate Limit**, fixed window **60 s**, **10 requests**, keyed by **IP Address**, respond **429**
+- [ ] Optional second rule: same path, **24 h** window, **100 requests** per IP
+- [ ] **Save** → **Review Changes** → **Publish**
+- [ ] Check: send 11 requests in a minute from one IP and confirm the 11th gets `429`
+- [ ] Set a budget alert or quota on the Google project that owns the API key
 
-Also set a **budget alert** or quota on the Google AI Studio / Cloud project
-that owns the API key.
+## Content-Security-Policy
+
+`vercel.json` uses `style-src 'self'` with no `'unsafe-inline'`. React and
+Recharts set styles through the DOM `style` property, which CSP allows;
+inline `style="…"` attributes in HTML and `<style>` blocks are blocked.
+`e2e/csp.e2e.ts` serves pages with the production policy and fails on any
+violation, so a change that needs inline styles is caught in CI.
 
 ## Switching AI on
 
-1. Add the firewall rule above.
+1. Complete the firewall checklist above.
 2. In Vercel → Settings → Environment Variables, set:
    - `GEMINI_API_KEY` — the server-side key (never a `VITE_` variable)
    - `ENABLE_AI=true` — lets the proxy answer
