@@ -1,105 +1,106 @@
 import { PEDI_PULSE_PROMPTS, withSafetyInstruction } from './prompts';
 
 export { withSafetyInstruction };
-import { AI_ENABLED } from '../config/features';
-import { ensureAiConsent, takeAiQuota, AI_DAILY_LIMIT } from './aiGuard';
-import { MedicalHistory, Appointment } from '../types';
+import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
+import { AI_FEATURES, AiFeature } from '../config/aiFeatures';
+import { ensureAiConsent, takeAiQuota, AI_DAILY_LIMIT, getPremiumCode } from './aiGuard';
+import { deidentifiedSummary, SummaryInput } from './deidentify';
+import { Appointment, MedicalHistory } from '../types';
 
-export type GeminiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'CONSENT' | 'UNKNOWN';
+export type AiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'CONSENT' | 'PREMIUM' | 'UNKNOWN';
 
-export class GeminiError extends Error {
-  type: GeminiErrorType;
+export class AiError extends Error {
+  type: AiErrorType;
   status?: number;
 
-  constructor(message: string, type: GeminiErrorType = 'UNKNOWN', status?: number) {
+  constructor(message: string, type: AiErrorType = 'UNKNOWN', status?: number) {
     super(message);
-    this.name = 'GeminiError';
+    this.name = 'AiError';
     this.type = type;
     this.status = status;
-    Object.setPrototypeOf(this, GeminiError.prototype);
+    Object.setPrototypeOf(this, AiError.prototype);
   }
 }
 
+/** What /api/ai returns, whichever provider answered. */
+export interface AiResponse {
+  text: string;
+  sources: { web: { uri: string; title?: string } }[];
+  audio?: string;
+}
+
 /**
- * Proxy caller for Gemini API with 30s timeout, error classification, and sanitized logging.
- * All AI calls go through /api/gemini so the API key stays on the server.
+ * Calls the single AI endpoint (/api/ai) with a 30s timeout. The tier comes
+ * from config/aiFeatures.ts, and the server checks it again; premium
+ * requests carry the parent's premium access code. Keys stay on the server.
  */
-export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<any> {
+export async function callAi(payload: { feature: AiFeature; [key: string]: any }, timeoutMs = 30000): Promise<AiResponse> {
   if (!AI_ENABLED) {
-    throw new GeminiError('AI features are switched off in this version.', 'DISABLED');
+    throw new AiError('AI features are switched off in this version.', 'DISABLED');
+  }
+  const tier = AI_FEATURES[payload.feature].tier;
+  if (tier === 'premium' && !PREMIUM_ENABLED) {
+    throw new AiError('Premium features are coming soon.', 'PREMIUM', 503);
   }
   if (!(await ensureAiConsent())) {
-    throw new GeminiError('Nothing was sent. AI features need your permission first.', 'CONSENT');
+    throw new AiError('Nothing was sent. AI features need your permission first.', 'CONSENT');
   }
   if (!takeAiQuota()) {
-    throw new GeminiError(`You've used today's ${AI_DAILY_LIMIT} AI requests on this device. Please try again tomorrow.`, 'RATE_LIMIT', 429);
+    throw new AiError(`You've used today's ${AI_DAILY_LIMIT} AI requests on this device. Please try again tomorrow.`, 'RATE_LIMIT', 429);
   }
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const res = await fetch('/api/gemini', {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const code = tier === 'premium' ? getPremiumCode() : null;
+    if (code) headers.Authorization = `Bearer ${code}`;
+    const res = await fetch('/api/ai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(withSafetyInstruction(payload)),
+      headers,
+      body: JSON.stringify(withSafetyInstruction({ ...payload, tier })),
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
 
     if (!res.ok) {
+      // The server returns a generic message and the status code only.
       const status = res.status;
-      const errorJson = await res.json().catch(() => ({}));
-      const errorMsg = errorJson.error || errorJson.details || errorJson.message || '';
-
-      if (
-        status === 429 ||
-        errorMsg.includes('429') ||
-        errorMsg.includes('RESOURCE_EXHAUSTED') ||
-        errorMsg.toLowerCase().includes('quota') ||
-        errorMsg.toLowerCase().includes('rate limit')
-      ) {
-        throw new GeminiError(
-          'You have reached the daily AI limit. Please try again tomorrow.',
+      if (status === 429) {
+        throw new AiError(
+          tier === 'premium'
+            ? "You've used this month's premium requests, or too many requests were sent. Please try again later."
+            : 'You have reached the AI limit for now. Please try again later.',
           'RATE_LIMIT',
           429
         );
       }
-
-      if (
-        status === 401 ||
-        status === 403 ||
-        errorMsg.toLowerCase().includes('api_key') ||
-        errorMsg.toLowerCase().includes('auth')
-      ) {
-        throw new GeminiError(
-          'Gemini API authentication failed. Please check your API key configuration.',
-          'AUTH',
+      if (tier === 'premium' && (status === 401 || status === 503)) {
+        throw new AiError(
+          status === 401 ? "Your premium access code isn't valid or has expired." : "Premium features aren't available right now.",
+          'PREMIUM',
           status
         );
       }
-
-      throw new GeminiError(
-        errorMsg || `Gemini API request failed with status ${status}`,
-        'UNKNOWN',
-        status
-      );
+      if (status === 401 || status === 403) {
+        throw new AiError("The AI service couldn't be used right now.", 'AUTH', status);
+      }
+      throw new AiError("The AI service couldn't answer. Please try again later.", 'UNKNOWN', status);
     }
 
     return await res.json();
   } catch (err: any) {
     clearTimeout(timeoutId);
 
-    if (err instanceof GeminiError) {
+    if (err instanceof AiError) {
       console.error('[PediPulse AI Error]', { type: err.type, status: err.status, message: err.message });
       throw err;
     }
 
     if (err.name === 'AbortError') {
-      const timeoutError = new GeminiError(
+      const timeoutError = new AiError(
         'Request timed out. The AI service took too long to respond (30s limit).',
         'TIMEOUT',
         408
@@ -108,7 +109,7 @@ export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<
       throw timeoutError;
     }
 
-    const netError = new GeminiError(
+    const netError = new AiError(
       'Unable to connect to AI services. Please check your network connection and try again.',
       'NETWORK'
     );
@@ -118,12 +119,10 @@ export async function callGeminiProxy(payload: any, timeoutMs = 30000): Promise<
 }
 
 export const analyzeScreening = async (testName: string, responses: any) => {
-  const model = 'gemini-2.5-flash';
   const prompt = `${PEDI_PULSE_PROMPTS.v1.screeningAnalysis.replace('{testName}', testName)}\n\nRESPONSES: ${JSON.stringify(responses)}`;
 
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'screening-summary',
-    model,
     contents: prompt,
     config: {
       responseMimeType: 'application/json',
@@ -140,32 +139,23 @@ export const analyzeScreening = async (testName: string, responses: any) => {
     },
   });
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  const text = data.text || '{}';
   return JSON.parse(text);
 };
 
-export const analyzeMedicalProfile = async (profileData: any) => {
-  const model = 'gemini-2.5-flash';
-  const compactHistory = {
-    ...profileData,
-    history: {
-      ...profileData.history,
-      acuteLogs: profileData.history?.acuteLogs?.slice(0, 10) || [],
-    },
-  };
+/**
+ * Premium: a handover / GP letter summary. Only a de-identified summary is
+ * sent (services/deidentify.ts): no name, date of birth or contact details.
+ */
+export const analyzeMedicalProfile = async (input: SummaryInput) => {
+  const prompt = `${PEDI_PULSE_PROMPTS.v1.isbarHandover}\n\nDE-IDENTIFIED SUMMARY: ${JSON.stringify(deidentifiedSummary(input))}`;
 
-  const prompt = `${PEDI_PULSE_PROMPTS.v1.isbarHandover}\n\nDATA: ${JSON.stringify(compactHistory)}`;
-
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'handover',
-    model,
     contents: prompt,
   });
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const sources = data.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-
-  return { text, sources };
+  return { text: data.text || '', sources: data.sources || [] };
 };
 
 export const generateCalmingStory = async (childName: string, theme: string) => {
@@ -173,9 +163,8 @@ export const generateCalmingStory = async (childName: string, theme: string) => 
     .replace('{childName}', childName)
     .replace('{theme}', theme);
 
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'calm-story',
-    model: 'gemini-2.5-flash',
     contents: [{ parts: [{ text: prompt }] }],
     config: {
       responseModalities: ['AUDIO'],
@@ -183,45 +172,54 @@ export const generateCalmingStory = async (childName: string, theme: string) => 
     },
   });
 
-  return data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+  return data.audio;
 };
 
 export const getVaccineAdvice = async (vaccineName: string) => {
-  const model = 'gemini-2.5-flash';
   const prompt = `Provide a general explanation of the ${vaccineName} vaccine in the context of the Australian National Immunisation Program. Include what it protects against, common side effects, and why it is important. Base it on the Australian Immunisation Handbook. Do not advise delaying, skipping or changing any vaccine; for questions about this child's vaccines, refer the parent to their GP or immunisation provider. Spell out "degree Celsius" for any temperature mentions.`;
 
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'vaccine-information',
-    model,
     contents: prompt,
     config: { tools: [{ googleSearch: {} }] },
   });
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const sources = data.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+  const text = data.text || '';
+  const sources = data.sources || [];
 
   return { text, sources };
 };
 
 export const getParentingAdvice = async (ageGroup: string, challenge: string) => {
-  const model = 'gemini-2.5-flash';
   const prompt = `Provide evidence-based parenting strategies for a child in the ${ageGroup} age group facing the following challenge: "${challenge}". Reference reliable Australian resources like the Raising Children Network or RCH Melbourne.`;
 
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'parenting-tips',
-    model,
     contents: prompt,
     config: { tools: [{ googleSearch: {} }] },
   });
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const sources = data.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+  const text = data.text || '';
+  const sources = data.sources || [];
 
   return { text, sources };
 };
 
+/** Premium: longer, structured parenting guidance. No child details are sent. */
+export const getParentingGuidance = async (ageGroup: string, challenge: string) => {
+  const prompt = `Write in-depth, evidence-based parenting guidance for a child in the ${ageGroup} age group, about this challenge: "${challenge}".
+  Structure it as: what is typical at this age; why it may be happening; practical strategies to try over the next few weeks; how to look after yourself as a parent; and questions to ask your GP or child health nurse.
+  Refer to reliable Australian resources such as the Raising Children Network and RCH Melbourne. Do not diagnose, and do not give medicine or dose advice.`;
+
+  const data = await callAi({
+    feature: 'parenting-guidance',
+    contents: prompt,
+  });
+
+  return { text: data.text || '', sources: [] };
+};
+
 export const explainMedicalTerm = async (term: string, ageGroup: string = 'infant') => {
-  const model = 'gemini-2.5-flash';
   const prompt = `Explain the medical term or condition "${term}" for a parent with a child in the "${ageGroup}" group.
   Use simple, supportive language.
   Format your response clearly with:
@@ -231,14 +229,13 @@ export const explainMedicalTerm = async (term: string, ageGroup: string = 'infan
   Do not give advice about treatment, doses or when to seek care.
   Reference reliable Australian sources (RCH Melbourne, Raising Children Network).`;
 
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'medical-term',
-    model,
     contents: prompt,
   });
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const sources = data.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+  const text = data.text || '';
+  const sources = data.sources || [];
 
   return { text, sources };
 };
@@ -248,7 +245,6 @@ export const prepareAppointmentQuestions = async (
   appointment: Appointment,
   recentRedFlags: string[] = []
 ) => {
-  const model = 'gemini-2.5-flash';
 
   const context = {
     pastMedicalHistory: history.pastMedicalHistory,
@@ -270,21 +266,18 @@ export const prepareAppointmentQuestions = async (
   
   FORMAT: Provide a bulleted list of questions.`;
 
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'appointment-questions',
-    model,
     contents: prompt,
   });
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const text = data.text || '';
   return text || 'No questions generated.';
 };
 
 export const analyzeMedicalReport = async (imageBase64: string) => {
-  const model = 'gemini-2.5-flash';
-  const data = await callGeminiProxy({
+  const data = await callAi({
     feature: 'report-reading',
-    model,
     contents: [
       {
         parts: [
@@ -315,6 +308,6 @@ export const analyzeMedicalReport = async (imageBase64: string) => {
     },
   });
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  const text = data.text || '{}';
   return JSON.parse(text);
 };

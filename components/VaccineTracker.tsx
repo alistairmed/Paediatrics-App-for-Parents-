@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Vaccination } from '../types';
-import { getVaccineAdvice, GeminiError } from '../services/gemini';
+import { getVaccineAdvice, AiError } from '../services/ai';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { useToast } from '../context/ToastContext';
@@ -87,7 +87,7 @@ export const VaccineTracker: React.FC = () => {
       setInfo({ name, text: advice.text, sources: advice.sources });
     } catch (e: any) {
       console.error(e);
-      if (e instanceof GeminiError) {
+      if (e instanceof AiError) {
         setInfoError({ name, message: e.message });
       } else {
         setInfoError({ name, message: e?.message || "Failed to load AI advice for this vaccine." });

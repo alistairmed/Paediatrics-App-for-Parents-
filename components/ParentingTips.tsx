@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getParentingAdvice, explainMedicalTerm, GeminiError } from '../services/gemini';
+import { getParentingAdvice, explainMedicalTerm, AiError } from '../services/ai';
 import { AI_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
 
@@ -219,7 +219,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
       setAdvice(res);
     } catch (error: any) {
       console.error(error);
-      if (error instanceof GeminiError) {
+      if (error instanceof AiError) {
         setAdviceError(error.message);
       } else {
         setAdviceError(error?.message || "Error generating advice. Please try again.");
@@ -239,7 +239,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
       setAiTermExplanation(res);
     } catch (e: any) {
       console.error(e);
-      if (e instanceof GeminiError) {
+      if (e instanceof AiError) {
         setTermError(e.message);
       } else {
         setTermError(e?.message || "Error explaining term.");

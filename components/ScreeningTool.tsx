@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { analyzeScreening } from '../services/gemini';
+import { analyzeScreening } from '../services/ai';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigation } from '../context/NavigationContext';

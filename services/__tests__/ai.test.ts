@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { withSafetyInstruction } from '../gemini';
+import { withSafetyInstruction } from '../ai';
 import { SAFETY_SYSTEM_INSTRUCTION } from '../prompts';
 
 describe('AI safety instruction', () => {

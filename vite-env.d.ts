@@ -3,4 +3,5 @@
 interface ImportMetaEnv {
   /** "true" turns the AI features on (see config/features.ts). */
   readonly VITE_ENABLE_AI?: string;
+  readonly VITE_PREMIUM_ENABLED?: string;
 }

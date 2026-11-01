@@ -1,9 +1,10 @@
 
 import React, { useState, useRef, useMemo } from 'react';
 import { Medication, SpecialistContact, MedicalDevice, MedicalReport, Condition, Investigation, PreviousMedication, GenogramMember } from '../types';
-import { analyzeMedicalProfile, analyzeMedicalReport } from '../services/gemini';
+import { analyzeMedicalProfile, analyzeMedicalReport } from '../services/ai';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useNavigation } from '../context/NavigationContext';
+import { useChildProfile } from '../context/ChildProfileContext';
 import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
 import { useConfirm } from '../context/ConfirmContext';
@@ -128,6 +129,7 @@ const GenogramViz: React.FC<{ members: GenogramMember[] }> = ({ members }) => {
 
 export const MedicalProfile: React.FC = () => {
   const { history, updateHistory, pendingEvents } = useMedicalHistory();
+  const { childProfile, childAge } = useChildProfile();
   const { activeView } = useNavigation();
   const { showToast } = useToast();
   const confirm = useConfirm();
@@ -368,7 +370,7 @@ export const MedicalProfile: React.FC = () => {
   const handleGenerateHandover = async () => {
     setLoading(true);
     try {
-      const result = await analyzeMedicalProfile({ history, linkedEvents: pendingEvents });
+      const result = await analyzeMedicalProfile({ history, linkedEvents: pendingEvents, childName: childProfile?.name, age: childAge, sex: childProfile?.sex });
       setAiAnalysis(result);
     } catch (e) {
       showToast("Couldn't generate the handover. Please try again.", 'error');

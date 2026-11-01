@@ -1,14 +1,14 @@
 /**
  * Client-side safeguards that run before anything is sent to the AI service:
  * the parent's explicit consent, and a daily request cap per device.
- * The server keeps its own per-IP limit (api/gemini.ts); a hard limit needs a
+ * The server keeps its own per-IP limit (api/ai.ts); a hard limit needs a
  * Vercel Firewall rule (see docs/AI_SAFEGUARDS.md).
  */
 
 export const AI_CONSENT_KEY = 'pedipulse_ai_consent';
 export const AI_USAGE_KEY = 'pedipulse_ai_usage';
 /** Bump when what is sent, or to whom, changes, so parents are asked again. */
-export const AI_CONSENT_VERSION = '1';
+export const AI_CONSENT_VERSION = '2'; // 2: added Anthropic Claude for premium features
 export const AI_DAILY_LIMIT = 20;
 
 type ConsentPrompt = () => Promise<boolean>;
@@ -47,3 +47,14 @@ export function takeAiQuota(now = new Date()): boolean {
   write(AI_USAGE_KEY, JSON.stringify({ date: usage.date, count: usage.count + 1 }));
   return true;
 }
+
+export const PREMIUM_CODE_KEY = 'pedipulse_premium_code';
+
+/** The premium access code the parent entered (sent only with premium requests). */
+export const getPremiumCode = () => read(PREMIUM_CODE_KEY);
+export const setPremiumCode = (code: string | null) => {
+  try {
+    if (code) localStorage.setItem(PREMIUM_CODE_KEY, code.trim());
+    else localStorage.removeItem(PREMIUM_CODE_KEY);
+  } catch { /* storage unavailable */ }
+};

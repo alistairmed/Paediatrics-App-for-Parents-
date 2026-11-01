@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { generateHandoverData } from '../clinical/handover';
-import { analyzeMedicalProfile, GeminiError } from '../services/gemini';
+import { analyzeMedicalProfile, AiError } from '../services/ai';
 import { useToast } from '../context/ToastContext';
 import { AI_ENABLED } from '../config/features';
 import { AiOffNotice } from './AiOffNotice';
@@ -47,11 +47,11 @@ export const HandoverSummary: React.FC = () => {
     setAiLoading(true);
     setAiError(null);
     try {
-      const res = await analyzeMedicalProfile({ childProfile, history, childAge, latestWeight });
+      const res = await analyzeMedicalProfile({ history, childName: childProfile?.name, age: childAge, sex: childProfile?.sex });
       setAiSummary(res);
     } catch (err: any) {
       console.error(err);
-      if (err instanceof GeminiError) {
+      if (err instanceof AiError) {
         setAiError(err.message);
       } else {
         setAiError(err?.message || "Failed to generate AI ISBAR synthesis.");
