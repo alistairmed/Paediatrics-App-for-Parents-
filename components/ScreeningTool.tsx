@@ -218,7 +218,7 @@ export const ScreeningTool: React.FC = () => {
         </div>
         <div className="flex flex-wrap gap-2 w-full md:w-auto">
             {viewState !== 'hub' && (
-                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xs min-h-[44px]">Return to Hub</button>
+                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xs min-h-[44px]">Back to Checklists</button>
             )}
             {viewState === 'hub' && (
                 <button onClick={handleStartFinder} className="w-full md:w-auto bg-teal-700 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl hover:bg-teal-800 active:scale-95 transition-all min-h-[44px]">Start Test Finder ✨</button>
@@ -367,7 +367,7 @@ export const ScreeningTool: React.FC = () => {
                       disabled={loading || Object.keys(responses).length < activeMod.questions.length}
                       className="w-full py-7 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-slate-200 transition-all hover:bg-indigo-700 active:scale-95"
                   >
-                      {loading ? 'Synthesizing Patterns...' : 'Finalize & Prepare Handover ✨'}
+                      {loading ? 'Preparing…' : 'Finalize & Prepare Handover ✨'}
                   </button>
                 ) : (
                   <div className="space-y-3">

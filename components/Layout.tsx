@@ -96,7 +96,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
     careteam: 'Care Team',
     ...Object.fromEntries(groups.flatMap(g => g.items.map(i => [i.id, i.label]))),
   };
-  const currentTitle = screenTitles[activeView] || 'PediPulse AI';
+  const currentTitle = screenTitles[activeView] || 'PediPulse';
   const isOnBottomTab = bottomNavItems.some(item => item.id === activeView);
 
   const handleNav = (view: ViewType) => {
@@ -132,8 +132,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
         >
           <span aria-hidden="true" className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform border-4 border-white">👶</span>
           <span>
-            <span className="block text-xl font-black text-slate-800 tracking-tighter leading-none">PediPulse <span className="text-indigo-600">AI</span></span>
-            <span className="block text-xs font-black text-slate-600 uppercase tracking-widest mt-1">Parent Assistant</span>
+            <span className="block text-xl font-black text-slate-800 tracking-tighter leading-none">PediPulse</span>
+            <span className="block text-xs font-black text-slate-600 uppercase tracking-widest mt-1">Child health records</span>
           </span>
         </button>
 
@@ -182,7 +182,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
         <button onClick={() => handleNav('dashboard')} aria-label="PediPulse home" className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 shrink-0 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-xl shadow-md">👶</span>
           <span className="min-w-0 text-left">
-            <span className="block text-xs font-black text-indigo-600 uppercase tracking-widest leading-none truncate">{childProfile ? `PediPulse · ${childProfile.name}` : 'PediPulse AI'}</span>
+            <span className="block text-xs font-black text-indigo-600 uppercase tracking-widest leading-none truncate">{childProfile ? `PediPulse · ${childProfile.name}` : 'PediPulse'}</span>
             <span className="block text-lg font-black text-slate-800 tracking-tight truncate">{currentTitle}</span>
           </span>
         </button>

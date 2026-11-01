@@ -113,7 +113,7 @@ export const VaccineTracker: React.FC = () => {
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tight">Immunisation <span className="text-indigo-600">Sync</span></h2>
+          <h2 className="text-4xl font-black text-slate-800 tracking-tight">Immunisation <span className="text-indigo-600">Record</span></h2>
           <p className="text-slate-600 font-medium">Australian National Immunisation Program (NIP) schedule, from birth to the Year 10 school program.</p>
           <p className="text-sm font-bold text-slate-700 mt-2">{NIP_FOOTNOTE}</p>
         </div>
@@ -215,7 +215,7 @@ export const VaccineTracker: React.FC = () => {
                           onClick={() => handleFetchInfo(vaccine.name)}
                           className="text-xs text-indigo-600 font-black uppercase tracking-widest hover:underline flex items-center gap-1"
                         >
-                          <span>🧠</span> Deep Dive (AI)
+                          <span>🧠</span> Learn More (AI)
                         </button>
                       ) : (
                         null
@@ -224,14 +224,14 @@ export const VaccineTracker: React.FC = () => {
                         onClick={() => setEditingId(isEditing ? null : vaccine.id)}
                         className={`text-xs font-black uppercase tracking-widest transition-all ${isEditing ? 'text-rose-700' : 'text-slate-600 hover:text-indigo-600'}`}
                       >
-                        {isEditing ? 'Close Logistics' : 'Input Details 📝'}
+                        {isEditing ? 'Close Details' : 'Add Details 📝'}
                       </button>
                       {vaccine.status === 'completed' && !isSynced && (
                          <button 
                           onClick={() => handleSyncToHistory(vaccine)}
-                          className="text-xs text-emerald-700 font-black hover:underline uppercase tracking-widest animate-bounce"
+                          className="text-xs text-emerald-700 font-black hover:underline uppercase tracking-widest"
                         >
-                          Sync to Hub
+                          Add to Timeline
                         </button>
                       )}
                     </div>
@@ -302,7 +302,7 @@ export const VaccineTracker: React.FC = () => {
           {loadingInfo ? (
             <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-xs sticky top-8 animate-pulse text-center space-y-6">
               <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-4xl">🔬</div>
-              <p className="text-slate-600 font-black uppercase tracking-widest text-xs">Analyzing National Guidelines...</p>
+              <p className="text-slate-600 font-black uppercase tracking-widest text-xs">Loading information…</p>
             </div>
           ) : infoError ? (
             <div className="bg-white p-8 rounded-[3rem] border border-rose-200 shadow-xl sticky top-8 space-y-4">
@@ -344,7 +344,7 @@ export const VaccineTracker: React.FC = () => {
               {/* Display mandatory grounding sources when Google Search is used */}
               {info.sources.length > 0 && (
                 <div className="mt-8 pt-6 border-t border-slate-50 space-y-4 relative z-10">
-                  <p className="text-xs font-black text-indigo-600 uppercase tracking-widest">Grounding Sources</p>
+                  <p className="text-xs font-black text-indigo-600 uppercase tracking-widest">Sources</p>
                   <div className="flex flex-wrap gap-2">
                     {info.sources.map((s: any, i: number) => (
                       <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-slate-600 hover:text-indigo-600 bg-slate-50 px-3 py-1 rounded-full border border-slate-100 transition-all">

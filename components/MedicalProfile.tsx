@@ -385,23 +385,23 @@ export const MedicalProfile: React.FC = () => {
       <header className="flex flex-col lg:flex-row justify-between items-start gap-4 px-2">
         <div>
           <h2 className="text-4xl font-black text-slate-800 tracking-tighter">
-            {currentSection === 'overview' ? 'Clinical Overview' : 
-             currentSection === 'history' ? 'History & Issues' :
+            {currentSection === 'overview' ? 'Health Overview' : 
+             currentSection === 'history' ? 'Medical History' :
              currentSection === 'dev' ? 'Developmental Journey' :
              currentSection === 'meds' ? 'Medications' :
-             currentSection === 'mdt' ? 'Care Team (MDT)' :
-             currentSection === 'diagnostics' ? 'Labs & Imaging' :
+             currentSection === 'mdt' ? 'Care Team' :
+             currentSection === 'diagnostics' ? 'Test Results' :
              currentSection === 'reports' ? 'Letters' :
-             currentSection === 'gear' ? 'Medical Gear' : 'Family History'}
+             currentSection === 'gear' ? 'Medical Equipment' : 'Family History'}
           </h2>
-          <p className="text-slate-500 font-medium">Standard clinical record systems.</p>
+          <p className="text-slate-600 font-medium">Your child's health records, kept on this device.</p>
         </div>
         {currentSection === 'overview' && !PREMIUM_ENABLED && (
           <div className="max-w-xs"><PremiumComingSoon feature="Handover summary" compact /></div>
         )}
         {currentSection === 'overview' && PREMIUM_ENABLED && (
           <button onClick={handleGenerateHandover} disabled={loading} className="bg-indigo-600 text-white px-8 py-5 rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition-all active:scale-95">
-            {loading ? 'Synthesizing...' : 'Generate ISBAR ✨'}
+            {loading ? 'Preparing…' : 'Generate ISBAR ✨'}
           </button>
         )}
       </header>
@@ -431,7 +431,7 @@ export const MedicalProfile: React.FC = () => {
                    <div className="bg-indigo-50/50 p-10 rounded-[3rem] border border-indigo-100 flex items-center gap-8">
                       <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center text-5xl shadow-xl border-2 border-indigo-100 shrink-0">🏥</div>
                       <div className="space-y-2">
-                         <h3 className="text-3xl font-black text-slate-900 leading-tight">Registry Overview</h3>
+                         <h3 className="text-3xl font-black text-slate-900 leading-tight">Overview</h3>
                          <p className="text-slate-600 font-bold text-base leading-relaxed">
                             A consolidated view of the pediatric record. Use navigation to update developmental, family, or medication datasets.
                          </p>
@@ -650,8 +650,7 @@ export const MedicalProfile: React.FC = () => {
             
             <section className="space-y-6">
               <div className="flex justify-between items-center px-4">
-                <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">Problem Registry</h3>
-                <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-widest border border-indigo-100">Live Registry</span>
+                <h3 className="text-xs font-black text-slate-600 uppercase tracking-[0.3em]">Conditions</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {filteredConditions.map(issue => (
@@ -726,7 +725,7 @@ export const MedicalProfile: React.FC = () => {
           <div className="space-y-16 animate-in slide-in-from-bottom-4">
             <section className="space-y-10">
               <div className="flex justify-between items-center px-4">
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Professional MDT Hub</h3>
+                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Care Team</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {filteredSpecialists.map(s => (
