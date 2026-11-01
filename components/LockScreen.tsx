@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { unlock, eraseAllData } from '../utils/vault';
+import { biometricUnlockEnabled, unlockWithBiometrics } from '../services/biometricUnlock';
 
 /** Shown before the app loads when the passcode lock is on. */
 export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => {
@@ -8,6 +9,25 @@ export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
   const [error, setError] = useState<string | null>(null);
   const [showErase, setShowErase] = useState(false);
   const [eraseText, setEraseText] = useState('');
+  const [bioEnabled, setBioEnabled] = useState(false);
+
+  useEffect(() => {
+    biometricUnlockEnabled().then(setBioEnabled).catch(() => setBioEnabled(false));
+  }, []);
+
+  const handleBiometric = async () => {
+    setChecking(true);
+    setError(null);
+    try {
+      if (await unlockWithBiometrics()) onUnlock();
+      else {
+        setBioEnabled(await biometricUnlockEnabled().catch(() => false));
+        setError('Face ID or fingerprint unlock didn\'t work. Use your passcode instead.');
+      }
+    } finally {
+      setChecking(false);
+    }
+  };
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +52,17 @@ export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
           <h1 className="text-2xl font-black text-ink-800 tracking-tight">Paeds Pouch is locked</h1>
           <p className="text-sm font-bold text-ink-600">Enter your passcode to open your child's records.</p>
         </div>
+
+        {bioEnabled && (
+          <button
+            type="button"
+            onClick={handleBiometric}
+            disabled={checking}
+            className="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm bg-white border-2 border-terracotta-600 text-terracotta-700 disabled:opacity-60"
+          >
+            Unlock with Face ID or Fingerprint
+          </button>
+        )}
 
         <form onSubmit={handleUnlock} className="space-y-4">
           <label className="block">

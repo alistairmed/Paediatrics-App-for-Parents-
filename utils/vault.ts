@@ -1,4 +1,4 @@
-import { deriveKey, encryptString, decryptString, isEncrypted, randomSalt, PBKDF2_ITERATIONS } from './crypto';
+import { deriveKey, deriveRawKey, encryptString, decryptString, isEncrypted, randomSalt, PBKDF2_ITERATIONS } from './crypto';
 
 /**
  * Optional passcode lock for health records in browser storage.
@@ -133,17 +133,41 @@ async function checkPasscode(passcode: string, meta: LockMeta): Promise<CryptoKe
   }
 }
 
-export async function unlock(passcode: string): Promise<boolean> {
-  const meta = readMeta();
-  if (!meta) return true;
-  const candidate = await checkPasscode(passcode, meta);
-  if (!candidate) return false;
+const openWith = async (candidate: CryptoKey) => {
   for (const k of storedSensitiveKeys()) {
     const raw = localStorage.getItem(k);
     cache.set(k, raw === null ? null : isEncrypted(raw) ? await decryptString(candidate, raw) : raw);
   }
   key = candidate;
+};
+
+export async function unlock(passcode: string): Promise<boolean> {
+  const meta = readMeta();
+  if (!meta) return true;
+  const candidate = await checkPasscode(passcode, meta);
+  if (!candidate) return false;
+  await openWith(candidate);
   return true;
+}
+
+/** Unlocks with a key from biometric unlock. False if it no longer matches (the passcode changed). */
+export async function unlockWithKey(candidate: CryptoKey): Promise<boolean> {
+  const meta = readMeta();
+  if (!meta) return true;
+  try {
+    if ((await decryptString(candidate, meta.check)) !== CHECK_TEXT) return false;
+  } catch {
+    return false;
+  }
+  await openWith(candidate);
+  return true;
+}
+
+/** The encryption key, exported for biometric unlock, after checking the passcode. Null if it's wrong. */
+export async function exportKeyForBiometrics(passcode: string): Promise<string | null> {
+  const meta = readMeta();
+  if (!meta || !(await checkPasscode(passcode, meta))) return null;
+  return deriveRawKey(passcode, meta.salt, meta.iterations);
 }
 
 export async function verifyPasscode(passcode: string): Promise<boolean> {

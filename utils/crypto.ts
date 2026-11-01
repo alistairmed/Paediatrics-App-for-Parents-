@@ -29,6 +29,26 @@ export async function deriveKey(passcode: string, saltB64: string, iterations = 
   );
 }
 
+/**
+ * The same key as deriveKey, exported as base64 so the apps can keep it in
+ * the Keychain/Keystore for biometric unlock (an opt-in). Never used on the web.
+ */
+export async function deriveRawKey(passcode: string, saltB64: string, iterations = PBKDF2_ITERATIONS): Promise<string> {
+  const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(passcode), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: fromBase64(saltB64), iterations, hash: 'SHA-256' },
+    material,
+    { name: 'AES-GCM', length: 256 },
+    true,
+    ['encrypt', 'decrypt']
+  );
+  return toBase64(new Uint8Array(await crypto.subtle.exportKey('raw', key)));
+}
+
+/** Turns a key from deriveRawKey back into a (non-extractable) CryptoKey. */
+export const importRawKey = (rawB64: string): Promise<CryptoKey> =>
+  crypto.subtle.importKey('raw', fromBase64(rawB64), { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+
 export const isEncrypted = (value: string): boolean => value.startsWith(ENCRYPTED_PREFIX);
 
 export async function encryptString(key: CryptoKey, plaintext: string): Promise<string> {

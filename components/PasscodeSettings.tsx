@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { isLockEnabled, enableLock, disableLock, lockNow } from '../utils/vault';
 import { useToast } from '../context/ToastContext';
+import { biometricsAvailable, biometricUnlockEnabled, enableBiometricUnlock, disableBiometricUnlock } from '../services/biometricUnlock';
 
 const MIN_LENGTH = 6;
 
@@ -14,7 +15,41 @@ export const PasscodeSettings: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [bioAvailable, setBioAvailable] = useState(false);
+  const [bioEnabled, setBioEnabled] = useState(false);
+  const [bioPasscode, setBioPasscode] = useState('');
+  const [bioError, setBioError] = useState<string | null>(null);
+
+  useEffect(() => {
+    biometricsAvailable().then(setBioAvailable);
+    biometricUnlockEnabled().then(setBioEnabled).catch(() => setBioEnabled(false));
+  }, []);
+
   const reset = () => { setPasscode(''); setConfirmation(''); setUnderstood(false); setError(null); };
+
+  const handleBioOn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setBioError(null);
+    try {
+      const result = await enableBiometricUnlock(bioPasscode);
+      if (result === 'enabled') {
+        setBioEnabled(true);
+        setBioPasscode('');
+        showToast('Face ID or fingerprint unlock is on for this phone.');
+      } else {
+        setBioError(result === 'wrong-passcode' ? "That passcode isn't right." : 'Face ID or fingerprint check was cancelled.');
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleBioOff = async () => {
+    await disableBiometricUnlock();
+    setBioEnabled(false);
+    showToast('Face ID or fingerprint unlock is off.', 'info');
+  };
 
   const handleEnable = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +59,8 @@ export const PasscodeSettings: React.FC = () => {
     setBusy(true);
     try {
       await enableLock(passcode);
+      await disableBiometricUnlock(); // a key from an earlier passcode no longer applies
+      setBioEnabled(false);
       setEnabled(true);
       reset();
       showToast('Passcode lock is on. Your records are now encrypted on this device.');
@@ -39,6 +76,8 @@ export const PasscodeSettings: React.FC = () => {
     setBusy(true);
     try {
       if (await disableLock(passcode)) {
+        await disableBiometricUnlock();
+        setBioEnabled(false);
         setEnabled(false);
         reset();
         showToast('Passcode lock is off. Your records are no longer encrypted.', 'info');
@@ -75,7 +114,35 @@ export const PasscodeSettings: React.FC = () => {
             {busy ? 'Checking…' : 'Turn Lock Off'}
           </button>
         </form>
-      ) : (
+      ) : null}
+
+      {enabled && bioAvailable && (
+        <div className="pt-4 border-t border-ink-100 space-y-3">
+          <h4 className="text-base font-black text-ink-800">Face ID or fingerprint unlock</h4>
+          <p className="text-sm font-medium text-ink-600 leading-relaxed">
+            Optional. Your records' key is kept in this phone's secure storage and is only released after your face or fingerprint is recognised.
+            Anyone whose face or fingerprint is set up on this phone could open them. Your passcode always works too.
+          </p>
+          {bioEnabled ? (
+            <button type="button" onClick={handleBioOff} className="px-5 py-3 rounded-xl bg-white border-2 border-ink-300 text-ink-800 font-black text-xs uppercase tracking-widest">
+              Turn Off Face ID or Fingerprint
+            </button>
+          ) : (
+            <form onSubmit={handleBioOn} className="space-y-3">
+              <label className="block">
+                <span className="block text-xs font-bold text-ink-700 mb-1">Enter your passcode to turn it on</span>
+                <input type="password" autoComplete="current-password" value={bioPasscode} onChange={e => setBioPasscode(e.target.value)} className={inputClass} />
+              </label>
+              {bioError && <p role="alert" className="text-sm font-bold text-terracotta-700">{bioError}</p>}
+              <button type="submit" disabled={busy || !bioPasscode} className="px-5 py-3 rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
+                Turn On Face ID or Fingerprint
+              </button>
+            </form>
+          )}
+        </div>
+      )}
+
+      {!enabled && (
         <form onSubmit={handleEnable} className="space-y-4">
           <p className="text-sm font-medium text-ink-600 leading-relaxed">
             Encrypt your child's records on this device with a passcode, so someone using this phone or browser can't read them without it.

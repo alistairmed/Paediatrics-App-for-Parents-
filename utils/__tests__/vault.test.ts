@@ -162,3 +162,35 @@ describe('Vault with the iOS Keychain / Android Keystore', () => {
     delete (globalThis as any).window;
   });
 });
+
+describe('Biometric unlock key', () => {
+  beforeEach(() => { (globalThis as any).localStorage = new MemoryStorage(); });
+  const freshVault = async () => { vi.resetModules(); return import('../vault'); };
+
+  test('The exported key unlocks the records; a wrong passcode exports nothing', async () => {
+    localStorage.setItem('pedipulse_history', '{"allergies":["egg"]}');
+    const v = await freshVault();
+    await v.enableLock('123456', 1000);
+    expect(await v.exportKeyForBiometrics('000000')).toBeNull();
+    const raw = await v.exportKeyForBiometrics('123456');
+    expect(raw).toMatch(/^[A-Za-z0-9+/]+=*$/);
+
+    const { importRawKey } = await import('../crypto');
+    const later = await freshVault(); // app restarted, locked
+    expect(later.isUnlocked()).toBe(false);
+    expect(await later.unlockWithKey(await importRawKey(raw!))).toBe(true);
+    expect(later.readItem('pedipulse_history')).toBe('{"allergies":["egg"]}');
+  });
+
+  test('A key from an old passcode no longer unlocks after the passcode changes', async () => {
+    const v = await freshVault();
+    await v.enableLock('123456', 1000);
+    const old = await v.exportKeyForBiometrics('123456');
+    expect(await v.disableLock('123456')).toBe(true);
+    await v.enableLock('654321', 1000);
+    const { importRawKey } = await import('../crypto');
+    const later = await freshVault();
+    expect(await later.unlockWithKey(await importRawKey(old!))).toBe(false);
+    expect(later.isUnlocked()).toBe(false);
+  });
+});
