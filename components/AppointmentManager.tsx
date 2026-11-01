@@ -74,14 +74,14 @@ export const AppointmentManager: React.FC = () => {
 
   const renderQuestionList = (notes: string) => {
     const lines = notes.split('\n').filter(l => l.trim().startsWith('•') || l.trim().startsWith('-'));
-    if (lines.length === 0) return <p className="text-slate-600 font-bold leading-relaxed">{notes}</p>;
+    if (lines.length === 0) return <p className="text-ink-600 font-bold leading-relaxed">{notes}</p>;
     
     return (
       <div className="space-y-3">
         {lines.map((line, i) => (
           <label key={i} className="flex items-start gap-3 cursor-pointer group p-2 hover:bg-white/50 rounded-xl transition-all">
-            <input type="checkbox" className="mt-1 w-4 h-4 rounded-sm text-indigo-600 border-slate-300 focus:ring-indigo-500" />
-            <span className="text-sm font-black text-slate-900 group-hover:text-indigo-700 transition-colors">
+            <input type="checkbox" className="mt-1 w-4 h-4 rounded-sm text-terracotta-600 border-ink-300 focus:ring-terracotta-500" />
+            <span className="text-sm font-black text-ink-900 group-hover:text-terracotta-700 transition-colors">
               {line.replace(/^[•-]\s*/, '')}
             </span>
           </label>
@@ -93,72 +93,72 @@ export const AppointmentManager: React.FC = () => {
   return (
     <div className="space-y-8 sm:space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-500 pb-28">
       <header>
-        <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">Appointment <span className="text-indigo-600">Navigator</span></h2>
-        <p className="text-slate-500 font-medium text-xs sm:text-sm">Clinical visit preparation, scheduling coordination, and AI prep.</p>
+        <h2 className="text-3xl sm:text-4xl font-black text-ink-800 tracking-tight">Appointment <span className="text-terracotta-600">Navigator</span></h2>
+        <p className="text-ink-500 font-medium text-xs sm:text-sm">Clinical visit preparation, scheduling coordination, and AI prep.</p>
       </header>
 
-      <section className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3rem] border border-slate-100 shadow-xl space-y-6 sm:space-y-8">
+      <section className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3rem] border border-ink-100 shadow-xl space-y-6 sm:space-y-8">
         <div className="flex items-center gap-3">
-           <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-xl shrink-0">🗓️</div>
-           <h4 className="font-black text-slate-800 uppercase tracking-widest text-xs">Schedule Specialist Visit</h4>
+           <div className="w-10 h-10 bg-terracotta-50 rounded-xl flex items-center justify-center text-xl shrink-0">🗓️</div>
+           <h4 className="font-black text-ink-800 uppercase tracking-widest text-xs">Schedule Specialist Visit</h4>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="space-y-1">
-             <label htmlFor="appoin-provider-name" className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Provider Name</label>
-             <input id="appoin-provider-name" value={newAppointment.provider} onChange={e => setNewAppointment({...newAppointment, provider: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50 shadow-inner text-sm font-black text-slate-900 outline-hidden focus:ring-2 focus:ring-indigo-500 min-h-[44px]" />
+             <label htmlFor="appoin-provider-name" className="text-xs font-black text-ink-500 uppercase tracking-widest ml-1">Provider Name</label>
+             <input id="appoin-provider-name" value={newAppointment.provider} onChange={e => setNewAppointment({...newAppointment, provider: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-ink-100 bg-ink-50 shadow-inner text-sm font-black text-ink-900 outline-hidden focus:ring-2 focus:ring-terracotta-500 min-h-[44px]" />
           </div>
           <div className="space-y-1">
-             <label htmlFor="appoin-specialty" className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Specialty</label>
-             <input id="appoin-specialty" value={newAppointment.specialty} onChange={e => setNewAppointment({...newAppointment, specialty: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50 shadow-inner text-sm font-black text-slate-900 outline-hidden focus:ring-2 focus:ring-indigo-500 min-h-[44px]" />
+             <label htmlFor="appoin-specialty" className="text-xs font-black text-ink-500 uppercase tracking-widest ml-1">Specialty</label>
+             <input id="appoin-specialty" value={newAppointment.specialty} onChange={e => setNewAppointment({...newAppointment, specialty: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-ink-100 bg-ink-50 shadow-inner text-sm font-black text-ink-900 outline-hidden focus:ring-2 focus:ring-terracotta-500 min-h-[44px]" />
           </div>
           <div className="space-y-1">
-             <label htmlFor="appoin-date-time" className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Date & Time</label>
-             <input id="appoin-date-time" type="datetime-local" value={newAppointment.dateTime} onChange={e => setNewAppointment({...newAppointment, dateTime: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50 shadow-inner text-sm font-black text-slate-900 outline-hidden focus:ring-2 focus:ring-indigo-500 uppercase min-h-[44px]" />
+             <label htmlFor="appoin-date-time" className="text-xs font-black text-ink-500 uppercase tracking-widest ml-1">Date & Time</label>
+             <input id="appoin-date-time" type="datetime-local" value={newAppointment.dateTime} onChange={e => setNewAppointment({...newAppointment, dateTime: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-ink-100 bg-ink-50 shadow-inner text-sm font-black text-ink-900 outline-hidden focus:ring-2 focus:ring-terracotta-500 uppercase min-h-[44px]" />
           </div>
           <div className="space-y-1">
-             <label htmlFor="appoin-location" className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Location</label>
-             <input id="appoin-location" value={newAppointment.location} onChange={e => setNewAppointment({...newAppointment, location: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50 shadow-inner text-sm font-black text-slate-900 outline-hidden focus:ring-2 focus:ring-indigo-500 min-h-[44px]" />
+             <label htmlFor="appoin-location" className="text-xs font-black text-ink-500 uppercase tracking-widest ml-1">Location</label>
+             <input id="appoin-location" value={newAppointment.location} onChange={e => setNewAppointment({...newAppointment, location: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-ink-100 bg-ink-50 shadow-inner text-sm font-black text-ink-900 outline-hidden focus:ring-2 focus:ring-terracotta-500 min-h-[44px]" />
           </div>
           <div className="space-y-1 sm:col-span-2">
-             <label htmlFor="appoin-clinical-purpose" className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Clinical Purpose</label>
-             <input id="appoin-clinical-purpose" value={newAppointment.purpose} onChange={e => setNewAppointment({...newAppointment, purpose: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50 shadow-inner text-sm font-black text-slate-900 outline-hidden focus:ring-2 focus:ring-indigo-500 min-h-[44px]" />
+             <label htmlFor="appoin-clinical-purpose" className="text-xs font-black text-ink-500 uppercase tracking-widest ml-1">Clinical Purpose</label>
+             <input id="appoin-clinical-purpose" value={newAppointment.purpose} onChange={e => setNewAppointment({...newAppointment, purpose: e.target.value})} className="w-full p-3.5 sm:p-4 rounded-2xl border border-ink-100 bg-ink-50 shadow-inner text-sm font-black text-ink-900 outline-hidden focus:ring-2 focus:ring-terracotta-500 min-h-[44px]" />
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 pt-4 border-t border-slate-100">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 pt-4 border-t border-ink-100">
           <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
-             <input type="checkbox" checked={linkSpecialist} onChange={e => setLinkSpecialist(e.target.checked)} className="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 shrink-0" />
-             <span className="text-xs font-black text-slate-600 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Link provider to Care Team</span>
+             <input type="checkbox" checked={linkSpecialist} onChange={e => setLinkSpecialist(e.target.checked)} className="w-5 h-5 rounded-lg text-terracotta-600 focus:ring-terracotta-500 shrink-0" />
+             <span className="text-xs font-black text-ink-600 uppercase tracking-widest group-hover:text-terracotta-600 transition-colors">Link provider to Care Team</span>
           </label>
-          <button onClick={handleAdd} className="w-full sm:w-auto px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-indigo-700 transition-all min-h-[44px]">Confirm Booking</button>
+          <button onClick={handleAdd} className="w-full sm:w-auto px-8 py-4 bg-terracotta-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-terracotta-700 transition-all min-h-[44px]">Confirm Booking</button>
         </div>
       </section>
 
       <div className="space-y-6">
-        <h3 className="text-2xl font-black text-slate-800">Timeline of Care</h3>
+        <h3 className="text-2xl font-black text-ink-800">Timeline of Care</h3>
         <div className="grid grid-cols-1 gap-6">
           {history.appointments.length === 0 ? (
-            <div className="bg-slate-50 border-4 border-dashed border-slate-200 rounded-[3rem] p-20 text-center space-y-4">
+            <div className="bg-ink-50 border-4 border-dashed border-ink-200 rounded-[3rem] p-20 text-center space-y-4">
                <span className="text-6xl block">🗓️</span>
-               <p className="text-slate-600 font-black uppercase text-sm tracking-widest">No appointments scheduled</p>
+               <p className="text-ink-600 font-black uppercase text-sm tracking-widest">No appointments scheduled</p>
             </div>
           ) : (
             history.appointments.sort((a,b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()).map(apt => (
-              <div key={apt.id} className={`bg-white p-8 rounded-[3rem] border shadow-xs space-y-6 group hover:shadow-xl transition-all ${apt.status === 'Completed' ? 'opacity-70 border-slate-100' : 'border-indigo-50'}`}>
+              <div key={apt.id} className={`bg-white p-8 rounded-[3rem] border shadow-xs space-y-6 group hover:shadow-xl transition-all ${apt.status === 'Completed' ? 'opacity-70 border-ink-100' : 'border-terracotta-50'}`}>
                 <div className="flex flex-col md:flex-row justify-between gap-6">
                   <div className="flex gap-6">
-                    <div className={`w-20 h-20 rounded-4xl flex flex-col items-center justify-center font-black shadow-inner shrink-0 ${apt.status === 'Completed' ? 'bg-slate-100 text-slate-600' : 'bg-indigo-50 text-indigo-600'}`}>
+                    <div className={`w-20 h-20 rounded-4xl flex flex-col items-center justify-center font-black shadow-inner shrink-0 ${apt.status === 'Completed' ? 'bg-ink-100 text-ink-600' : 'bg-terracotta-50 text-terracotta-600'}`}>
                        <span className="text-xs uppercase">{new Date(apt.dateTime).toLocaleString('en-AU', { month: 'short' })}</span>
                        <span className="text-3xl tracking-tighter">{new Date(apt.dateTime).getDate()}</span>
                     </div>
                     <div>
                        <div className="flex items-center gap-3">
-                          <h5 className="text-2xl font-black text-slate-800 tracking-tight">{apt.specialty}</h5>
+                          <h5 className="text-2xl font-black text-ink-800 tracking-tight">{apt.specialty}</h5>
                           {apt.status === 'Completed' && <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-sm">✓ Completed</span>}
                        </div>
-                       <p className="text-indigo-600 font-bold">{apt.provider}</p>
-                       <p className="text-slate-600 text-xs font-medium flex items-center gap-2 mt-1">📍 {apt.location} • 🕒 {new Date(apt.dateTime).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}</p>
+                       <p className="text-terracotta-600 font-bold">{apt.provider}</p>
+                       <p className="text-ink-600 text-xs font-medium flex items-center gap-2 mt-1">📍 {apt.location} • 🕒 {new Date(apt.dateTime).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 self-start justify-end">
@@ -166,7 +166,7 @@ export const AppointmentManager: React.FC = () => {
                       <button 
                         onClick={() => handleAIPrep(apt)} 
                         disabled={prepLoading === apt.id} 
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg"
+                        className="px-6 py-3 bg-terracotta-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-terracotta-700 transition-all flex items-center gap-2 shadow-lg"
                       >
                         {prepLoading === apt.id ? (
                           <>
@@ -180,18 +180,18 @@ export const AppointmentManager: React.FC = () => {
                 </div>
 
                 {prepErrors[apt.id] && (
-                  <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
-                    <p className="font-black text-rose-800 text-sm">⚠️ {prepErrors[apt.id]}</p>
+                  <div className="bg-terracotta-50 border-2 border-terracotta-200 rounded-2xl p-6 space-y-3">
+                    <p className="font-black text-terracotta-800 text-sm">⚠️ {prepErrors[apt.id]}</p>
                     <div className="flex gap-3">
                       <button 
                         onClick={() => handleAIPrep(apt)} 
-                        className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all"
+                        className="px-5 py-2 bg-terracotta-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-700 transition-all"
                       >
                         Try Again
                       </button>
                       <button 
                         onClick={() => setManualPrepId(manualPrepId === apt.id ? null : apt.id)} 
-                        className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest"
+                        className="px-5 py-2 bg-white border border-terracotta-200 text-terracotta-800 rounded-xl font-black text-xs uppercase tracking-widest"
                       >
                         Type Questions Manually
                       </button>
@@ -203,7 +203,7 @@ export const AppointmentManager: React.FC = () => {
                   <div className="pt-2">
                     <button 
                       onClick={() => setManualPrepId(manualPrepId === apt.id ? null : apt.id)}
-                      className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline"
+                      className="text-xs font-black text-terracotta-600 uppercase tracking-widest hover:underline"
                     >
                       ✏️ {manualPrepId === apt.id ? 'Hide Manual Notes' : 'Add Custom Questions Manually'}
                     </button>
@@ -213,7 +213,7 @@ export const AppointmentManager: React.FC = () => {
                           value={apt.preVisitNotes || ''}
                           onChange={e => handleUpdateNotes(apt.id, e.target.value)}
                           placeholder="• Enter questions to ask your doctor...&#10;• What are potential side effects?&#10;• When is our follow-up?"
-                          className="w-full h-32 p-4 rounded-2xl border border-slate-200 bg-slate-50 font-bold text-sm text-slate-800 outline-hidden focus:ring-2 focus:ring-indigo-500"
+                          className="w-full h-32 p-4 rounded-2xl border border-ink-200 bg-ink-50 font-bold text-sm text-ink-800 outline-hidden focus:ring-2 focus:ring-terracotta-500"
                         />
                       </div>
                     )}
@@ -221,9 +221,9 @@ export const AppointmentManager: React.FC = () => {
                 )}
 
                 {apt.preVisitNotes && (
-                  <div className="bg-indigo-50/30 p-8 rounded-4xl border border-indigo-100 animate-in slide-in-from-top-4">
-                     <p className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">Recommended Clinical Questions</p>
-                     <div className="border-l-4 border-indigo-200 pl-6">
+                  <div className="bg-terracotta-50/30 p-8 rounded-4xl border border-terracotta-100 animate-in slide-in-from-top-4">
+                     <p className="text-xs font-black text-terracotta-600 uppercase tracking-[0.2em] mb-4">Recommended Clinical Questions</p>
+                     <div className="border-l-4 border-terracotta-200 pl-6">
                         {renderQuestionList(apt.preVisitNotes)}
                      </div>
                   </div>
@@ -231,11 +231,11 @@ export const AppointmentManager: React.FC = () => {
 
                 <div className="space-y-4">
                    <div className="relative">
-                      <label htmlFor="appoin-visit-summary" className="text-xs font-black text-slate-600 uppercase tracking-widest ml-4 absolute -top-2 left-4 bg-white px-2">Visit Summary</label>
+                      <label htmlFor="appoin-visit-summary" className="text-xs font-black text-ink-600 uppercase tracking-widest ml-4 absolute -top-2 left-4 bg-white px-2">Visit Summary</label>
                       <textarea id="appoin-visit-summary" 
                         value={apt.postVisitSummary}
                         onChange={e => handleUpdateSummary(apt.id, e.target.value)}
-                        className="w-full h-32 p-8 rounded-[2.5rem] border border-slate-100 bg-slate-50/30 outline-hidden text-sm font-black shadow-inner focus:ring-2 focus:ring-indigo-100 transition-all text-slate-900"
+                        className="w-full h-32 p-8 rounded-[2.5rem] border border-ink-100 bg-ink-50/30 outline-hidden text-sm font-black shadow-inner focus:ring-2 focus:ring-terracotta-100 transition-all text-ink-900"
                         placeholder="Log changes to plan, medication adjustments, or follow-up instructions..."
                       />
                    </div>

@@ -9,10 +9,10 @@ import { AiOffNotice } from './AiOffNotice';
 import { syncNipRecords, nipStatuses, NIP_STATUS_LABEL, NIP_FOOTNOTE, NIP_EXTRAS_NOTE, formatNipDate, NipStatus } from '../clinical/vaccineSchedule';
 
 const BADGE: Record<NipStatus, string> = {
-  given: 'bg-emerald-100 text-emerald-900',
+  given: 'bg-sky-soft text-ink',
   due: 'bg-amber-100 text-amber-900',
-  upcoming: 'bg-slate-100 text-slate-700',
-  overdue: 'bg-rose-700 text-white',
+  upcoming: 'bg-ink-100 text-ink-700',
+  overdue: 'bg-terracotta-700 text-white',
 };
 
 export const VaccineTracker: React.FC = () => {
@@ -113,36 +113,36 @@ export const VaccineTracker: React.FC = () => {
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tight">Immunisation <span className="text-indigo-600">Record</span></h2>
-          <p className="text-slate-600 font-medium">Australian National Immunisation Program (NIP) schedule, from birth to the Year 10 school program.</p>
-          <p className="text-sm font-bold text-slate-700 mt-2">{NIP_FOOTNOTE}</p>
+          <h2 className="text-4xl font-black text-ink-800 tracking-tight">Immunisation <span className="text-terracotta-600">Record</span></h2>
+          <p className="text-ink-600 font-medium">Australian National Immunisation Program (NIP) schedule, from birth to the Year 10 school program.</p>
+          <p className="text-sm font-bold text-ink-700 mt-2">{NIP_FOOTNOTE}</p>
         </div>
         <button 
           onClick={() => setShowAddCustom(!showAddCustom)}
-          className="bg-white border-2 border-indigo-100 text-indigo-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-xs"
+          className="bg-white border-2 border-terracotta-100 text-terracotta-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-50 transition-all shadow-xs"
         >
           {showAddCustom ? 'Cancel' : '+ Record Other Vaccine'}
         </button>
       </header>
 
       {showAddCustom && (
-        <div className="bg-indigo-50 p-8 rounded-[3rem] border border-indigo-100 animate-in zoom-in-95 space-y-6">
-           <h3 className="text-lg font-black text-indigo-900">Add Custom / Annual Vaccine</h3>
+        <div className="bg-terracotta-50 p-8 rounded-[3rem] border border-terracotta-100 animate-in zoom-in-95 space-y-6">
+           <h3 className="text-lg font-black text-terracotta-900">Add Custom / Annual Vaccine</h3>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input 
                 placeholder="Vaccine Name (e.g. Flu, Meningococcal B)" 
                 value={customVax.name}
                 onChange={e => setCustomVax({...customVax, name: e.target.value})}
-                className="p-4 rounded-2xl bg-white border border-indigo-200 font-black text-slate-900 outline-hidden"
+                className="p-4 rounded-2xl bg-white border border-terracotta-200 font-black text-ink-900 outline-hidden"
               />
               <input 
                 type="date"
                 value={customVax.dueDate ? new Date(customVax.dueDate).toISOString().split('T')[0] : ''}
                 onChange={e => setCustomVax({...customVax, dueDate: new Date(e.target.value)})}
-                className="p-4 rounded-2xl bg-white border border-indigo-200 font-black text-slate-900 outline-hidden uppercase"
+                className="p-4 rounded-2xl bg-white border border-terracotta-200 font-black text-ink-900 outline-hidden uppercase"
               />
            </div>
-           <button onClick={handleAddCustom} className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Add to Record</button>
+           <button onClick={handleAddCustom} className="w-full py-4 bg-terracotta-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Add to Record</button>
         </div>
       )}
 
@@ -160,10 +160,10 @@ export const VaccineTracker: React.FC = () => {
                 key={vaccine.id}
                 className={`group rounded-[3rem] border-2 transition-all overflow-hidden ${
                   vaccine.status === 'completed' 
-                    ? 'bg-emerald-50/50 border-emerald-100 shadow-xs' 
+                    ? 'bg-sky-50/50 border-sky-100 shadow-xs' 
                     : overdue 
-                      ? 'bg-rose-50 border-rose-200 shadow-lg scale-[1.02]'
-                      : 'bg-white border-slate-100 hover:border-indigo-100 shadow-xs'
+                      ? 'bg-terracotta-50 border-terracotta-200 shadow-lg scale-[1.02]'
+                      : 'bg-white border-ink-100 hover:border-terracotta-100 shadow-xs'
                 }`}
               >
                 <div className="p-8 flex items-start gap-6">
@@ -174,27 +174,27 @@ export const VaccineTracker: React.FC = () => {
                       aria-label={`${vaccine.name}: mark as received`}
                       checked={vaccine.status === 'completed'}
                       onChange={() => toggleStatus(vaccine.id)}
-                      className="w-14 h-14 rounded-3xl border-4 border-slate-100 text-emerald-700 focus:ring-emerald-500 cursor-pointer appearance-none checked:bg-emerald-700 checked:border-emerald-600 transition-all shadow-md active:scale-90"
+                      className="w-14 h-14 rounded-3xl border-4 border-ink-100 text-sky-700 focus:ring-sky-500 cursor-pointer appearance-none checked:bg-sky-700 checked:border-sky-600 transition-all shadow-md active:scale-90"
                     />
                     {vaccine.status === 'completed' && (
                       <span className="absolute inset-0 flex items-center justify-center text-white pointer-events-none text-3xl font-black">✓</span>
                     )}
                     {vaccine.status !== 'completed' && overdue && (
-                      <span className="absolute -top-2 -right-2 w-6 h-6 bg-rose-600 rounded-full animate-pulse border-4 border-white shadow-lg"></span>
+                      <span className="absolute -top-2 -right-2 w-6 h-6 bg-terracotta-600 rounded-full animate-pulse border-4 border-white shadow-lg"></span>
                     )}
                   </div>
                   
                   <div className="flex-1 space-y-4">
                     <div>
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                        <h4 className={`text-2xl font-black tracking-tight leading-none ${vaccine.status === 'completed' ? 'text-emerald-900' : 'text-slate-800'}`}>
+                        <h4 className={`text-2xl font-black tracking-tight leading-none ${vaccine.status === 'completed' ? 'text-sky-900' : 'text-ink-800'}`}>
                           {vaccine.name}
                         </h4>
-                        <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full ${status ? BADGE[status] : 'bg-slate-100 text-slate-700'}`}>
+                        <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full ${status ? BADGE[status] : 'bg-ink-100 text-ink-700'}`}>
                           {status ? NIP_STATUS_LABEL[status] : 'Not yet given'}
                         </span>
                       </div>
-                      <p className="text-xs font-black text-slate-600 mt-2 uppercase tracking-widest flex items-center gap-2">
+                      <p className="text-xs font-black text-ink-600 mt-2 uppercase tracking-widest flex items-center gap-2">
                         {vaccine.status === 'completed' 
                           ? <span>📅 Administered: {vaccine.receivedDate ? new Date(vaccine.receivedDate).toLocaleDateString('en-AU') : '--'}</span> 
                           : <span>📅 {nip?.visit.schoolProgram ? 'From about' : 'Due'}: {nip ? formatNipDate(nip.dueDate) : new Date(vaccine.dueDate).toLocaleDateString('en-AU')}</span>
@@ -202,18 +202,18 @@ export const VaccineTracker: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                       <p className="text-sm font-bold text-slate-800 leading-relaxed">
+                    <div className="p-4 bg-ink-50/50 rounded-2xl border border-ink-100">
+                       <p className="text-sm font-bold text-ink-800 leading-relaxed">
                           {vaccine.description}
                        </p>
-                       {nip?.visit.note && <p className="text-xs font-medium text-slate-700 mt-2">{nip.visit.note}</p>}
+                       {nip?.visit.note && <p className="text-xs font-medium text-ink-700 mt-2">{nip.visit.note}</p>}
                     </div>
 
                     <div className="flex flex-wrap gap-4 pt-2">
                       {AI_ENABLED ? (
                           <button 
                           onClick={() => handleFetchInfo(vaccine.name)}
-                          className="text-xs text-indigo-600 font-black uppercase tracking-widest hover:underline flex items-center gap-1"
+                          className="text-xs text-terracotta-600 font-black uppercase tracking-widest hover:underline flex items-center gap-1"
                         >
                           <span>🧠</span> Learn More (AI)
                         </button>
@@ -222,14 +222,14 @@ export const VaccineTracker: React.FC = () => {
                       )}
                       <button 
                         onClick={() => setEditingId(isEditing ? null : vaccine.id)}
-                        className={`text-xs font-black uppercase tracking-widest transition-all ${isEditing ? 'text-rose-700' : 'text-slate-600 hover:text-indigo-600'}`}
+                        className={`text-xs font-black uppercase tracking-widest transition-all ${isEditing ? 'text-terracotta-700' : 'text-ink-600 hover:text-terracotta-600'}`}
                       >
                         {isEditing ? 'Close Details' : 'Add Details 📝'}
                       </button>
                       {vaccine.status === 'completed' && !isSynced && (
                          <button 
                           onClick={() => handleSyncToHistory(vaccine)}
-                          className="text-xs text-emerald-700 font-black hover:underline uppercase tracking-widest"
+                          className="text-xs text-sky-700 font-black hover:underline uppercase tracking-widest"
                         >
                           Add to Timeline
                         </button>
@@ -239,55 +239,55 @@ export const VaccineTracker: React.FC = () => {
                 </div>
 
                 {isEditing && (
-                  <div className="px-10 pb-10 pt-4 bg-white/60 border-t border-slate-100 animate-in slide-in-from-top-4 space-y-8">
+                  <div className="px-10 pb-10 pt-4 bg-white/60 border-t border-ink-100 animate-in slide-in-from-top-4 space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-2">
-                        <label htmlFor={`vaccin-date-administered-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Date Administered</label>
+                        <label htmlFor={`vaccin-date-administered-${vaccine.id}`} className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-3">Date Administered</label>
                         <input id={`vaccin-date-administered-${vaccine.id}`} 
                           type="date" 
                           value={vaccine.receivedDate ? new Date(vaccine.receivedDate).toISOString().split('T')[0] : ''}
                           onChange={(e) => updateDetails(vaccine.id, 'receivedDate', new Date(e.target.value))}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner uppercase text-lg"
+                          className="w-full p-5 rounded-2xl border-2 border-ink-50 bg-white font-black text-ink-900 outline-hidden focus:ring-4 focus:ring-terracotta-50 shadow-inner uppercase text-lg"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`vaccin-clinic-pharmacy-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Clinic / Pharmacy</label>
+                        <label htmlFor={`vaccin-clinic-pharmacy-${vaccine.id}`} className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-3">Clinic / Pharmacy</label>
                         <input id={`vaccin-clinic-pharmacy-${vaccine.id}`} 
                           type="text" 
                           placeholder="e.g. Melbourne Children's GP"
                           value={vaccine.clinic || ''}
                           onChange={(e) => updateDetails(vaccine.id, 'clinic', e.target.value)}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner"
+                          className="w-full p-5 rounded-2xl border-2 border-ink-50 bg-white font-black text-ink-900 outline-hidden focus:ring-4 focus:ring-terracotta-50 shadow-inner"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`vaccin-manufacturer-brand-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Manufacturer / Brand</label>
+                        <label htmlFor={`vaccin-manufacturer-brand-${vaccine.id}`} className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-3">Manufacturer / Brand</label>
                         <input id={`vaccin-manufacturer-brand-${vaccine.id}`} 
                           type="text" 
                           placeholder="e.g. GSK (Infanrix Hexa)"
                           value={vaccine.manufacturer || ''}
                           onChange={(e) => updateDetails(vaccine.id, 'manufacturer', e.target.value)}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner"
+                          className="w-full p-5 rounded-2xl border-2 border-ink-50 bg-white font-black text-ink-900 outline-hidden focus:ring-4 focus:ring-terracotta-50 shadow-inner"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`vaccin-batch-lot-number-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Batch / Lot Number</label>
+                        <label htmlFor={`vaccin-batch-lot-number-${vaccine.id}`} className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-3">Batch / Lot Number</label>
                         <input id={`vaccin-batch-lot-number-${vaccine.id}`} 
                           type="text" 
                           placeholder="e.g. Lot #99X21"
                           value={vaccine.lotNumber || ''}
                           onChange={(e) => updateDetails(vaccine.id, 'lotNumber', e.target.value)}
-                          className="w-full p-5 rounded-2xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner"
+                          className="w-full p-5 rounded-2xl border-2 border-ink-50 bg-white font-black text-ink-900 outline-hidden focus:ring-4 focus:ring-terracotta-50 shadow-inner"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                       <label htmlFor={`vaccin-reactions-or-side-effects-${vaccine.id}`} className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-3">Reactions or Side Effects</label>
+                       <label htmlFor={`vaccin-reactions-or-side-effects-${vaccine.id}`} className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-3">Reactions or Side Effects</label>
                        <textarea id={`vaccin-reactions-or-side-effects-${vaccine.id}`} 
                         placeholder="Fever, localized redness, irritability..."
                         value={vaccine.sideEffects || ''}
                         onChange={(e) => updateDetails(vaccine.id, 'sideEffects', e.target.value)}
-                        className="w-full h-32 p-6 rounded-3xl border-2 border-slate-50 bg-white font-black text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 shadow-inner resize-none text-base"
+                        className="w-full h-32 p-6 rounded-3xl border-2 border-ink-50 bg-white font-black text-ink-900 outline-hidden focus:ring-4 focus:ring-terracotta-50 shadow-inner resize-none text-base"
                        />
                     </div>
                   </div>
@@ -295,23 +295,23 @@ export const VaccineTracker: React.FC = () => {
               </div>
             );
           })}
-          <p role="note" className="bg-teal-50 border-2 border-teal-200 rounded-3xl p-5 text-sm font-bold text-teal-950">{NIP_EXTRAS_NOTE}</p>
+          <p role="note" className="bg-sky-50 border-2 border-sky-200 rounded-3xl p-5 text-sm font-bold text-sky-950">{NIP_EXTRAS_NOTE}</p>
         </div>
 
         <div className="lg:col-span-1">
           {loadingInfo ? (
-            <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-xs sticky top-8 animate-pulse text-center space-y-6">
-              <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-4xl">🔬</div>
-              <p className="text-slate-600 font-black uppercase tracking-widest text-xs">Loading information…</p>
+            <div className="bg-white p-12 rounded-[4rem] border border-ink-100 shadow-xs sticky top-8 animate-pulse text-center space-y-6">
+              <div className="w-20 h-20 bg-terracotta-50 rounded-full flex items-center justify-center mx-auto text-4xl">🔬</div>
+              <p className="text-ink-600 font-black uppercase tracking-widest text-xs">Loading information…</p>
             </div>
           ) : infoError ? (
-            <div className="bg-white p-8 rounded-[3rem] border border-rose-200 shadow-xl sticky top-8 space-y-4">
-              <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
-                <p className="font-black text-rose-800 text-sm">⚠️ {infoError.message}</p>
+            <div className="bg-white p-8 rounded-[3rem] border border-terracotta-200 shadow-xl sticky top-8 space-y-4">
+              <div className="bg-terracotta-50 border-2 border-terracotta-200 rounded-2xl p-6 space-y-3">
+                <p className="font-black text-terracotta-800 text-sm">⚠️ {infoError.message}</p>
                 <div className="flex gap-3">
                   <button 
                     onClick={() => handleFetchInfo(infoError.name)} 
-                    className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all"
+                    className="px-5 py-2 bg-terracotta-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-700 transition-all"
                   >
                     Try Again
                   </button>
@@ -325,7 +325,7 @@ export const VaccineTracker: React.FC = () => {
                       });
                       setInfoError(null);
                     }} 
-                    className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest"
+                    className="px-5 py-2 bg-white border border-terracotta-200 text-terracotta-800 rounded-xl font-black text-xs uppercase tracking-widest"
                   >
                     View Standard Summary
                   </button>
@@ -333,21 +333,21 @@ export const VaccineTracker: React.FC = () => {
               </div>
             </div>
           ) : info ? (
-            <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-2xl sticky top-8 animate-in slide-in-from-right-4 max-h-[85vh] overflow-y-auto border-l-20 border-l-indigo-600 relative overflow-hidden">
-              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-500 rounded-full opacity-5 blur-[100px]"></div>
-              <button aria-label="Close" onClick={() => setInfo(null)} className="absolute top-8 right-8 text-slate-500 font-black text-2xl hover:text-rose-700 transition-colors">×</button>
-              <h3 className="text-3xl font-black text-slate-800 mb-8 leading-tight">{info.name}</h3>
-              <div className="prose prose-slate prose-sm leading-relaxed whitespace-pre-wrap font-bold text-slate-600 border-l-4 border-slate-50 pl-8 mb-8">
+            <div className="bg-white p-12 rounded-[4rem] border border-ink-100 shadow-2xl sticky top-8 animate-in slide-in-from-right-4 max-h-[85vh] overflow-y-auto border-l-20 border-l-terracotta-600 relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-terracotta-500 rounded-full opacity-5 blur-[100px]"></div>
+              <button aria-label="Close" onClick={() => setInfo(null)} className="absolute top-8 right-8 text-ink-500 font-black text-2xl hover:text-terracotta-700 transition-colors">×</button>
+              <h3 className="text-3xl font-black text-ink-800 mb-8 leading-tight">{info.name}</h3>
+              <div className="prose prose-slate prose-sm leading-relaxed whitespace-pre-wrap font-bold text-ink-600 border-l-4 border-ink-50 pl-8 mb-8">
                 {info.text}
               </div>
               
               {/* Display mandatory grounding sources when Google Search is used */}
               {info.sources.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-slate-50 space-y-4 relative z-10">
-                  <p className="text-xs font-black text-indigo-600 uppercase tracking-widest">Sources</p>
+                <div className="mt-8 pt-6 border-t border-ink-50 space-y-4 relative z-10">
+                  <p className="text-xs font-black text-terracotta-600 uppercase tracking-widest">Sources</p>
                   <div className="flex flex-wrap gap-2">
                     {info.sources.map((s: any, i: number) => (
-                      <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-slate-600 hover:text-indigo-600 bg-slate-50 px-3 py-1 rounded-full border border-slate-100 transition-all">
+                      <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-ink-600 hover:text-terracotta-600 bg-ink-50 px-3 py-1 rounded-full border border-ink-100 transition-all">
                         {s.web?.title || 'Health Resource'} ↗
                       </a>
                     ))}
@@ -356,12 +356,12 @@ export const VaccineTracker: React.FC = () => {
               )}
             </div>
           ) : (
-            <div className="bg-indigo-900 p-12 rounded-[4rem] shadow-2xl sticky top-8 text-white relative overflow-hidden group">
+            <div className="bg-terracotta-900 p-12 rounded-[4rem] shadow-2xl sticky top-8 text-white relative overflow-hidden group">
               <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/10 rounded-full blur-[80px] group-hover:scale-110 transition-transform duration-1000"></div>
               <div className="relative z-10">
                 <span className="text-6xl mb-8 block">🛡️</span>
                 <h4 className="text-2xl font-black mb-6">Why Batch Tracking?</h4>
-                <p className="text-indigo-100 font-bold text-lg leading-relaxed">
+                <p className="text-terracotta-100 font-bold text-lg leading-relaxed">
                   Digital record keeping of lot numbers and clinic providers is critical. It enables rapid clinical action if a vaccine batch is recalled or if your child experiences an adverse reaction.
                 </p>
                 <div className="mt-12 pt-10 border-t border-white/10">

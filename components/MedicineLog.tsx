@@ -48,10 +48,10 @@ export const MedicineLog: React.FC = () => {
   };
 
   return (
-    <section className="bg-white border-2 border-slate-200 rounded-4xl p-6 sm:p-8 space-y-6" aria-labelledby="medicine-log-title">
+    <section className="bg-white border-2 border-ink-200 rounded-4xl p-6 sm:p-8 space-y-6" aria-labelledby="medicine-log-title">
       <div className="space-y-1">
-        <h3 id="medicine-log-title" className="text-xl font-black text-slate-800">Medicine log{childProfile ? ` for ${childProfile.name}` : ''}</h3>
-        <p className="text-sm font-medium text-slate-600">
+        <h3 id="medicine-log-title" className="text-xl font-black text-ink-800">Medicine log{childProfile ? ` for ${childProfile.name}` : ''}</h3>
+        <p className="text-sm font-medium text-ink-600">
           Record doses as you give them, so you and anyone else caring for your child can see what has been given. Check the product label for how often it can be given.
         </p>
       </div>
@@ -60,12 +60,12 @@ export const MedicineLog: React.FC = () => {
         {LOGGED_MEDICINES.map(name => {
           const summary = medicineSummary(doses.filter(d => d.medicationName === name).map(d => new Date(d.timestamp)), now);
           return (
-            <div key={name} className="rounded-2xl p-5 border-2 bg-slate-50 border-slate-200">
-              <h4 className="font-black text-slate-800">{name}</h4>
-              <p className="text-base font-bold text-slate-800 mt-1">
+            <div key={name} className="rounded-2xl p-5 border-2 bg-ink-50 border-ink-200">
+              <h4 className="font-black text-ink-800">{name}</h4>
+              <p className="text-base font-bold text-ink-800 mt-1">
                 {summary.lastGiven ? `Last recorded at ${formatTime(summary.lastGiven)}` : 'No doses recorded'}
               </p>
-              <p className="text-sm font-medium text-slate-700 mt-1">
+              <p className="text-sm font-medium text-ink-700 mt-1">
                 {summary.dosesInLast24Hours} {summary.dosesInLast24Hours === 1 ? 'dose' : 'doses'} recorded in the last 24 hours
               </p>
             </div>
@@ -75,18 +75,18 @@ export const MedicineLog: React.FC = () => {
 
       <form onSubmit={handleRecord} className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
         <label className="block">
-          <span className="block text-sm font-bold text-slate-700 mb-1">Medicine</span>
-          <select value={medicine} onChange={e => setMedicine(e.target.value as LoggedMedicine)} className="w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-slate-900 bg-white">
+          <span className="block text-sm font-bold text-ink-700 mb-1">Medicine</span>
+          <select value={medicine} onChange={e => setMedicine(e.target.value as LoggedMedicine)} className="w-full p-3 rounded-xl border-2 border-ink-300 font-bold text-ink-900 bg-white">
             {LOGGED_MEDICINES.map(m => <option key={m}>{m}</option>)}
           </select>
         </label>
         <label className="block">
-          <span className="block text-sm font-bold text-slate-700 mb-1">Amount given (optional)</span>
-          <input value={amount} onChange={e => setAmount(e.target.value)} placeholder="e.g. 7.5 mL" className="w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-slate-900" />
+          <span className="block text-sm font-bold text-ink-700 mb-1">Amount given (optional)</span>
+          <input value={amount} onChange={e => setAmount(e.target.value)} placeholder="e.g. 7.5 mL" className="w-full p-3 rounded-xl border-2 border-ink-300 font-bold text-ink-900" />
         </label>
         <label className="block">
-          <span className="block text-sm font-bold text-slate-700 mb-1">Time given</span>
-          <input type="datetime-local" value={givenAt} max={localInputValue(now)} onChange={e => setGivenAt(e.target.value)} className="w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-slate-900" />
+          <span className="block text-sm font-bold text-ink-700 mb-1">Time given</span>
+          <input type="datetime-local" value={givenAt} max={localInputValue(now)} onChange={e => setGivenAt(e.target.value)} className="w-full p-3 rounded-xl border-2 border-ink-300 font-bold text-ink-900" />
         </label>
         <button type="submit" className="min-h-[48px] px-5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black uppercase tracking-widest text-xs">Record Dose</button>
       </form>

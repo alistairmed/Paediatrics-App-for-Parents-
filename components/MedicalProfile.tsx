@@ -22,14 +22,14 @@ const GenogramIcon: React.FC<{ member: GenogramMember }> = ({ member }) => {
 
   // Shapes based on OSCB Detail
   const Shape = () => {
-    const baseClass = `relative w-12 h-12 flex items-center justify-center transition-all group-hover:scale-110 shadow-xs border-2 ${member.condition ? 'bg-rose-500 border-rose-600' : 'bg-white border-slate-400'}`;
+    const baseClass = `relative w-12 h-12 flex items-center justify-center transition-all group-hover:scale-110 shadow-xs border-2 ${member.condition ? 'bg-terracotta-500 border-terracotta-600' : 'bg-white border-ink-400'}`;
     
-    if (isMale) return <div className={`${baseClass} rounded-none ${member.isIndex ? 'outline-solid outline-4 outline-offset-2 outline-indigo-600' : ''}`} />;
-    if (isFemale) return <div className={`${baseClass} rounded-full ${member.isIndex ? 'outline-solid outline-4 outline-offset-2 outline-indigo-600' : ''}`} />;
-    if (isOther) return <div className={`${baseClass} rounded-lg rotate-45 ${member.isIndex ? 'outline-solid outline-4 outline-offset-2 outline-indigo-600' : ''}`} />;
+    if (isMale) return <div className={`${baseClass} rounded-none ${member.isIndex ? 'outline-solid outline-4 outline-offset-2 outline-terracotta-600' : ''}`} />;
+    if (isFemale) return <div className={`${baseClass} rounded-full ${member.isIndex ? 'outline-solid outline-4 outline-offset-2 outline-terracotta-600' : ''}`} />;
+    if (isOther) return <div className={`${baseClass} rounded-lg rotate-45 ${member.isIndex ? 'outline-solid outline-4 outline-offset-2 outline-terracotta-600' : ''}`} />;
     if (isPregnancy) return (
         <div className="relative w-12 h-12 flex items-center justify-center">
-            <div className="w-0 h-0 border-l-24 border-l-transparent border-r-24 border-r-transparent border-b-40 border-b-slate-400" />
+            <div className="w-0 h-0 border-l-24 border-l-transparent border-r-24 border-r-transparent border-b-40 border-b-ink-400" />
             <div className="absolute top-[6px] w-0 h-0 border-l-20 border-l-transparent border-r-20 border-r-transparent border-b-34 border-b-white" />
         </div>
     );
@@ -42,17 +42,17 @@ const GenogramIcon: React.FC<{ member: GenogramMember }> = ({ member }) => {
         <Shape />
         {isDeceased && (
           <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
-            <div className="w-[140%] h-[2px] bg-slate-900 rotate-45"></div>
-            <div className="w-[140%] h-[2px] bg-slate-900 -rotate-45"></div>
+            <div className="w-[140%] h-[2px] bg-ink-900 rotate-45"></div>
+            <div className="w-[140%] h-[2px] bg-ink-900 -rotate-45"></div>
           </div>
         )}
       </div>
-      <span className="text-xs font-black text-slate-800 uppercase tracking-tighter text-center leading-none mt-1 max-w-[60px]">
+      <span className="text-xs font-black text-ink-800 uppercase tracking-tighter text-center leading-none mt-1 max-w-[60px]">
         {member.relation}
       </span>
       {member.condition && (
-        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-bold p-2.5 rounded-xl sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity shadow-2xl whitespace-nowrap z-20 pointer-events-none border border-white/10">
-          <span className="text-rose-700 mr-1">●</span> {member.condition}
+        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-ink-900 text-white text-xs font-bold p-2.5 rounded-xl sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity shadow-2xl whitespace-nowrap z-20 pointer-events-none border border-white/10">
+          <span className="text-terracotta-700 mr-1">●</span> {member.condition}
         </div>
       )}
     </div>
@@ -86,19 +86,19 @@ const GenogramViz: React.FC<{ members: GenogramMember[] }> = ({ members }) => {
 
   return (
     <div className="overflow-x-auto max-w-full pb-4" tabIndex={0} role="region" aria-label="Family tree">
-      <div className="relative p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] bg-indigo-950/20 backdrop-blur-xl border border-white/5 shadow-inner min-w-[480px] space-y-12">
+      <div className="relative p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] bg-terracotta-950/20 backdrop-blur-xl border border-white/5 shadow-inner min-w-[480px] space-y-12">
         <div className="flex justify-between w-full px-4">
           <div className="flex flex-col items-center gap-4">
             <div className="flex gap-4">
                {g1Paternal.length > 0 ? g1Paternal.map(m => <GenogramIcon key={m.id} member={m} />) : <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />}
             </div>
-            <p className="text-xs font-black text-indigo-700 uppercase">Paternal Line</p>
+            <p className="text-xs font-black text-terracotta-700 uppercase">Paternal Line</p>
           </div>
           <div className="flex flex-col items-center gap-4">
             <div className="flex gap-4">
                {g1Maternal.length > 0 ? g1Maternal.map(m => <GenogramIcon key={m.id} member={m} />) : <div className="w-12 h-12 rounded-full border border-dashed border-white/10" />}
             </div>
-            <p className="text-xs font-black text-rose-700 uppercase">Maternal Line</p>
+            <p className="text-xs font-black text-terracotta-700 uppercase">Maternal Line</p>
           </div>
         </div>
 
@@ -142,8 +142,8 @@ export const MedicalProfile: React.FC = () => {
   const reportInputRef = useRef<HTMLInputElement>(null);
 
   // Shared reusable styles to fix the "white on white" issue
-  const inputClass = "w-full p-4 rounded-2xl bg-white border border-slate-300 font-bold text-slate-900 outline-hidden focus:ring-4 focus:ring-indigo-50 transition-all placeholder:text-slate-600 shadow-xs";
-  const textAreaClass = "w-full p-6 rounded-[2.5rem] bg-white border border-slate-300 outline-hidden font-bold  text-slate-900 focus:ring-4 focus:ring-indigo-50 shadow-inner resize-none transition-all placeholder:text-slate-600";
+  const inputClass = "w-full p-4 rounded-2xl bg-white border border-ink-300 font-bold text-ink-900 outline-hidden focus:ring-4 focus:ring-terracotta-50 transition-all placeholder:text-ink-600 shadow-xs";
+  const textAreaClass = "w-full p-6 rounded-[2.5rem] bg-white border border-ink-300 outline-hidden font-bold  text-ink-900 focus:ring-4 focus:ring-terracotta-50 shadow-inner resize-none transition-all placeholder:text-ink-600";
 
   // Search & Date Range Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -384,7 +384,7 @@ export const MedicalProfile: React.FC = () => {
     <div className="space-y-8 pb-24 animate-in fade-in duration-700">
       <header className="flex flex-col lg:flex-row justify-between items-start gap-4 px-2">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tighter">
+          <h2 className="text-4xl font-black text-ink-800 tracking-tighter">
             {currentSection === 'overview' ? 'Health Overview' : 
              currentSection === 'history' ? 'Medical History' :
              currentSection === 'dev' ? 'Developmental Journey' :
@@ -394,19 +394,19 @@ export const MedicalProfile: React.FC = () => {
              currentSection === 'reports' ? 'Letters' :
              currentSection === 'gear' ? 'Medical Equipment' : 'Family History'}
           </h2>
-          <p className="text-slate-600 font-medium">Your child's health records, kept on this device.</p>
+          <p className="text-ink-600 font-medium">Your child's health records, kept on this device.</p>
         </div>
         {currentSection === 'overview' && !PREMIUM_ENABLED && (
           <div className="max-w-xs"><PremiumComingSoon feature="Handover summary" compact /></div>
         )}
         {currentSection === 'overview' && PREMIUM_ENABLED && (
-          <button onClick={handleGenerateHandover} disabled={loading} className="bg-indigo-600 text-white px-8 py-5 rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition-all active:scale-95">
+          <button onClick={handleGenerateHandover} disabled={loading} className="bg-terracotta-600 text-white px-8 py-5 rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-terracotta-700 transition-all active:scale-95">
             {loading ? 'Preparing…' : 'Generate ISBAR ✨'}
           </button>
         )}
       </header>
 
-      <div className="bg-white rounded-[4rem] border border-slate-100 shadow-2xl min-h-[600px] p-6 md:p-12 relative overflow-hidden">
+      <div className="bg-white rounded-[4rem] border border-ink-100 shadow-2xl min-h-[600px] p-6 md:p-12 relative overflow-hidden">
         
         {currentSectionFilterData && (
           <div className="mb-8">
@@ -428,42 +428,42 @@ export const MedicalProfile: React.FC = () => {
           <div className="space-y-12 animate-in zoom-in-95">
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 space-y-8">
-                   <div className="bg-indigo-50/50 p-10 rounded-[3rem] border border-indigo-100 flex items-center gap-8">
-                      <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center text-5xl shadow-xl border-2 border-indigo-100 shrink-0">🏥</div>
+                   <div className="bg-terracotta-50/50 p-10 rounded-[3rem] border border-terracotta-100 flex items-center gap-8">
+                      <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center text-5xl shadow-xl border-2 border-terracotta-100 shrink-0">🏥</div>
                       <div className="space-y-2">
-                         <h3 className="text-3xl font-black text-slate-900 leading-tight">Overview</h3>
-                         <p className="text-slate-600 font-bold text-base leading-relaxed">
+                         <h3 className="text-3xl font-black text-ink-900 leading-tight">Overview</h3>
+                         <p className="text-ink-600 font-bold text-base leading-relaxed">
                             A consolidated view of the pediatric record. Use navigation to update developmental, family, or medication datasets.
                          </p>
                       </div>
                    </div>
                    
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs flex items-center gap-4">
+                      <div className="bg-white p-8 rounded-3xl border border-ink-200 shadow-xs flex items-center gap-4">
                          <span className="text-4xl">💊</span>
                          <div>
-                            <p className="text-xs font-black uppercase text-slate-500 tracking-widest">Meds Charted</p>
-                            <p className="text-2xl font-black text-slate-900">{history.currentMedications.length}</p>
+                            <p className="text-xs font-black uppercase text-ink-500 tracking-widest">Meds Charted</p>
+                            <p className="text-2xl font-black text-ink-900">{history.currentMedications.length}</p>
                          </div>
                       </div>
-                      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs flex items-center gap-4">
+                      <div className="bg-white p-8 rounded-3xl border border-ink-200 shadow-xs flex items-center gap-4">
                          <span className="text-4xl">🫂</span>
                          <div>
-                            <p className="text-xs font-black uppercase text-slate-500 tracking-widest">MDT Care Team</p>
-                            <p className="text-2xl font-black text-slate-900">{history.specialists.length}</p>
+                            <p className="text-xs font-black uppercase text-ink-500 tracking-widest">MDT Care Team</p>
+                            <p className="text-2xl font-black text-ink-900">{history.specialists.length}</p>
                          </div>
                       </div>
                    </div>
                 </div>
 
-                <div className="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden border-b-12 border-slate-950">
-                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-indigo-500 rounded-full blur-3xl opacity-20"></div>
-                   <h4 className="text-xs font-black uppercase tracking-[0.3em] text-indigo-300 mb-6">Expert Context</h4>
-                   <p className="text-indigo-100 font-medium text-base leading-relaxed mb-10 opacity-80">
+                <div className="bg-ink-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden border-b-12 border-ink-950">
+                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-terracotta-500 rounded-full blur-3xl opacity-20"></div>
+                   <h4 className="text-xs font-black uppercase tracking-[0.3em] text-terracotta-300 mb-6">Expert Context</h4>
+                   <p className="text-terracotta-100 font-medium text-base leading-relaxed mb-10 opacity-80">
                      "This registry translates fragmented clinical data into professional documentation. Verify all findings with local clinical protocols."
                    </p>
                    <div className="pt-6 border-t border-white/10">
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-300">Persistence Status</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-ink-300">Persistence Status</p>
                       <p className="text-xs font-bold text-emerald-300 mt-1">✓ Local Vault Active</p>
                    </div>
                 </div>
@@ -474,31 +474,31 @@ export const MedicalProfile: React.FC = () => {
         {currentSection === 'dev' && (
           <div className="space-y-12 animate-in slide-in-from-bottom-4">
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-blue-50/30 p-10 rounded-[3.5rem] border border-blue-100 space-y-8 shadow-xs">
+                <div className="bg-sky-50/30 p-10 rounded-[3.5rem] border border-sky-100 space-y-8 shadow-xs">
                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-blue-100">🥚</div>
-                      <h3 className="text-xl font-black text-blue-900 tracking-tight uppercase">Prenatal</h3>
+                      <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-sky-100">🥚</div>
+                      <h3 className="text-xl font-black text-sky-900 tracking-tight uppercase">Prenatal</h3>
                    </div>
                    <div className="space-y-6">
-                      <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-blue-100 shadow-xs">
-                         <span className="text-xs font-black text-blue-600 uppercase tracking-widest">Normal Scans?</span>
-                         <input type="checkbox" aria-label="Normal scans" checked={history.developmentalHistory.prenatal.scansNormal} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, scansNormal: e.target.checked } } })} className="w-6 h-6 rounded-lg text-blue-600 border-blue-200" />
+                      <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-sky-100 shadow-xs">
+                         <span className="text-xs font-black text-sky-600 uppercase tracking-widest">Normal Scans?</span>
+                         <input type="checkbox" aria-label="Normal scans" checked={history.developmentalHistory.prenatal.scansNormal} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, scansNormal: e.target.checked } } })} className="w-6 h-6 rounded-lg text-sky-600 border-sky-200" />
                       </div>
                       <div className="space-y-2">
-                         <label htmlFor="medica-pregnancy-complications" className="text-xs font-black text-blue-700 uppercase tracking-widest ml-3">Pregnancy Complications</label>
-                         <textarea id="medica-pregnancy-complications" value={history.developmentalHistory.prenatal.complications} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, complications: e.target.value } } })} placeholder="e.g. PET, GDM..." className={textAreaClass + " h-28 text-sm placeholder:text-blue-200 border-blue-100"} />
+                         <label htmlFor="medica-pregnancy-complications" className="text-xs font-black text-sky-700 uppercase tracking-widest ml-3">Pregnancy Complications</label>
+                         <textarea id="medica-pregnancy-complications" value={history.developmentalHistory.prenatal.complications} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, complications: e.target.value } } })} placeholder="e.g. PET, GDM..." className={textAreaClass + " h-28 text-sm placeholder:text-sky-200 border-sky-100"} />
                       </div>
                       <div className="space-y-2">
-                         <label htmlFor="medica-maternal-medications" className="text-xs font-black text-blue-700 uppercase tracking-widest ml-3">Maternal Medications</label>
-                         <textarea id="medica-maternal-medications" value={history.developmentalHistory.prenatal.medications} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, medications: e.target.value } } })} placeholder="e.g. Antibiotics, preventers..." className={textAreaClass + " h-28 text-sm placeholder:text-blue-200 border-blue-100"} />
+                         <label htmlFor="medica-maternal-medications" className="text-xs font-black text-sky-700 uppercase tracking-widest ml-3">Maternal Medications</label>
+                         <textarea id="medica-maternal-medications" value={history.developmentalHistory.prenatal.medications} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, medications: e.target.value } } })} placeholder="e.g. Antibiotics, preventers..." className={textAreaClass + " h-28 text-sm placeholder:text-sky-200 border-sky-100"} />
                       </div>
                    </div>
                 </div>
 
-                <div className="bg-indigo-50/30 p-10 rounded-[3.5rem] border border-indigo-100 space-y-8 shadow-xs">
+                <div className="bg-terracotta-50/30 p-10 rounded-[3.5rem] border border-terracotta-100 space-y-8 shadow-xs">
                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-indigo-100">👣</div>
-                      <h3 className="text-xl font-black text-indigo-900 tracking-tight uppercase">Birth</h3>
+                      <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-terracotta-100">👣</div>
+                      <h3 className="text-xl font-black text-terracotta-900 tracking-tight uppercase">Birth</h3>
                    </div>
                    <div className="space-y-5">
                       {[
@@ -508,8 +508,8 @@ export const MedicalProfile: React.FC = () => {
                         { label: 'Apgar Scores', field: 'apgars', placeholder: 'e.g. 9 and 10' }
                       ].map(item => (
                         <div key={item.field} className="space-y-1">
-                           <label className="text-xs font-black text-indigo-700 uppercase ml-3">{item.label}</label>
-                           <input placeholder={item.placeholder} value={(history.developmentalHistory.perinatal as any)[item.field]} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, perinatal: { ...history.developmentalHistory.perinatal, [item.field]: e.target.value } } })} className={inputClass + " border-indigo-100 text-indigo-950"} />
+                           <label className="text-xs font-black text-terracotta-700 uppercase ml-3">{item.label}</label>
+                           <input placeholder={item.placeholder} value={(history.developmentalHistory.perinatal as any)[item.field]} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, perinatal: { ...history.developmentalHistory.perinatal, [item.field]: e.target.value } } })} className={inputClass + " border-terracotta-100 text-terracotta-950"} />
                         </div>
                       ))}
                    </div>
@@ -547,32 +547,32 @@ export const MedicalProfile: React.FC = () => {
 
         {currentSection === 'family' && (
           <div className="space-y-12 animate-in slide-in-from-bottom-4">
-            <div className="bg-indigo-950 p-10 rounded-[4rem] text-white shadow-2xl relative overflow-hidden border-b-16 border-indigo-900">
+            <div className="bg-terracotta-950 p-10 rounded-[4rem] text-white shadow-2xl relative overflow-hidden border-b-16 border-terracotta-900">
                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-white/10 rounded-full blur-[100px] opacity-20"></div>
                <div className="relative z-10 flex flex-col items-center gap-12">
                   <div className="space-y-6 text-center">
                      <h3 className="text-4xl font-black tracking-tighter leading-none uppercase">Lineage & Pedigree</h3>
                      <div className="flex flex-wrap gap-4 justify-center pt-4 border-t border-white/10">
-                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="w-3 h-3 bg-white border border-slate-500"></span> Male</div>
-                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="w-3 h-3 bg-white border border-slate-500 rounded-full"></span> Female</div>
+                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="w-3 h-3 bg-white border border-ink-500"></span> Male</div>
+                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="w-3 h-3 bg-white border border-ink-500 rounded-full"></span> Female</div>
                         <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-10 border-b-white"></span> Pregnancy</div>
-                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="text-rose-700">●</span> Condition</div>
-                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="w-3 h-3 border border-slate-500 relative flex items-center justify-center"><div className="w-[120%] h-px bg-slate-900 rotate-45 absolute"></div></span> Deceased</div>
+                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="text-terracotta-700">●</span> Condition</div>
+                        <div className="flex items-center gap-2 text-xs font-black uppercase"><span className="w-3 h-3 border border-ink-500 relative flex items-center justify-center"><div className="w-[120%] h-px bg-ink-900 rotate-45 absolute"></div></span> Deceased</div>
                      </div>
                   </div>
                   <GenogramViz members={history.familyHistory.members || []} />
                </div>
             </div>
 
-            <section className="bg-slate-50 p-10 rounded-[4rem] border border-slate-200 space-y-10 shadow-inner">
+            <section className="bg-ink-50 p-10 rounded-[4rem] border border-ink-200 space-y-10 shadow-inner">
                <div className="flex items-center gap-4 ml-4">
-                  <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-200">🧬</div>
-                  <h4 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em]">Register Relative</h4>
+                  <div className="w-10 h-10 bg-terracotta-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg shadow-terracotta-200">🧬</div>
+                  <h4 className="text-xs font-black text-ink-500 uppercase tracking-[0.4em]">Register Relative</h4>
                </div>
                
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="medica-relationship" className="text-xs font-black text-slate-500 uppercase ml-4">Relationship</label>
+                    <label htmlFor="medica-relationship" className="text-xs font-black text-ink-500 uppercase ml-4">Relationship</label>
                     <select id="medica-relationship" value={newRelative.relation} onChange={e => setNewRelative({...newRelative, relation: e.target.value})} className={inputClass}>
                       <option>Father</option><option>Mother</option><option>Sibling</option>
                       <option>Paternal Grandma</option><option>Paternal Grandpa</option>
@@ -581,7 +581,7 @@ export const MedicalProfile: React.FC = () => {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="medica-biological-sex-symbol" className="text-xs font-black text-slate-500 uppercase ml-4">Biological Sex / Symbol</label>
+                    <label htmlFor="medica-biological-sex-symbol" className="text-xs font-black text-ink-500 uppercase ml-4">Biological Sex / Symbol</label>
                     <select id="medica-biological-sex-symbol" value={newRelative.sex} onChange={e => setNewRelative({...newRelative, sex: e.target.value as any})} className={inputClass}>
                       <option value="Male">Male (Square)</option>
                       <option value="Female">Female (Circle)</option>
@@ -590,33 +590,33 @@ export const MedicalProfile: React.FC = () => {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="medica-clinical-context" className="text-xs font-black text-slate-500 uppercase ml-4">Clinical Context</label>
+                    <label htmlFor="medica-clinical-context" className="text-xs font-black text-ink-500 uppercase ml-4">Clinical Context</label>
                     <input id="medica-clinical-context" placeholder="e.g. T1DM, Cancer..." value={newRelative.condition} onChange={e => setNewRelative({...newRelative, condition: e.target.value})} className={inputClass} />
                   </div>
                   <div className="flex items-end gap-3">
-                    <label className="flex items-center gap-3 p-4 bg-white border border-slate-300 rounded-2xl cursor-pointer flex-1 justify-center">
-                       <input type="checkbox" checked={newRelative.isAlive} onChange={e => setNewRelative({...newRelative, isAlive: e.target.checked})} className="w-6 h-6 rounded-sm text-indigo-600" />
-                       <span className="text-xs font-black uppercase text-slate-800 tracking-widest">Alive</span>
+                    <label className="flex items-center gap-3 p-4 bg-white border border-ink-300 rounded-2xl cursor-pointer flex-1 justify-center">
+                       <input type="checkbox" checked={newRelative.isAlive} onChange={e => setNewRelative({...newRelative, isAlive: e.target.checked})} className="w-6 h-6 rounded-sm text-terracotta-600" />
+                       <span className="text-xs font-black uppercase text-ink-800 tracking-widest">Alive</span>
                     </label>
-                    <button onClick={addRelative} className="bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest px-8 py-4 shadow-xl hover:bg-indigo-700 active:scale-95 transition-all">Add</button>
+                    <button onClick={addRelative} className="bg-terracotta-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest px-8 py-4 shadow-xl hover:bg-terracotta-700 active:scale-95 transition-all">Add</button>
                   </div>
                </div>
                
                {(history.familyHistory.members?.length || 0) > 0 && (
-                 <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 border-t border-slate-200">
+                 <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 border-t border-ink-200">
                    {filteredFamilyMembers.map(member => (
-                     <div key={member.id} className="bg-white p-6 rounded-3xl border border-slate-200 flex items-center justify-between group hover:shadow-lg transition-all shadow-xs">
+                     <div key={member.id} className="bg-white p-6 rounded-3xl border border-ink-200 flex items-center justify-between group hover:shadow-lg transition-all shadow-xs">
                         <div className="flex items-center gap-5">
-                           <div className={`w-10 h-10 ${member.sex === 'Male' ? 'rounded-none' : 'rounded-full'} ${member.condition ? 'bg-rose-500' : 'bg-slate-200'} shrink-0 shadow-inner border border-slate-400 flex items-center justify-center relative`}>
-                              {!member.isAlive && member.sex !== 'Pregnancy' && <div className="absolute inset-0 flex items-center justify-center"><div className="w-[140%] h-px bg-slate-900 rotate-45"></div><div className="w-[140%] h-px bg-slate-900 -rotate-45"></div></div>}
-                              {member.sex === 'Pregnancy' && <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-10 border-b-slate-400" />}
+                           <div className={`w-10 h-10 ${member.sex === 'Male' ? 'rounded-none' : 'rounded-full'} ${member.condition ? 'bg-terracotta-500' : 'bg-ink-200'} shrink-0 shadow-inner border border-ink-400 flex items-center justify-center relative`}>
+                              {!member.isAlive && member.sex !== 'Pregnancy' && <div className="absolute inset-0 flex items-center justify-center"><div className="w-[140%] h-px bg-ink-900 rotate-45"></div><div className="w-[140%] h-px bg-ink-900 -rotate-45"></div></div>}
+                              {member.sex === 'Pregnancy' && <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-10 border-b-ink-400" />}
                            </div>
                            <div>
-                              <p className="font-black text-slate-900 text-base leading-none">{member.relation} {!member.isAlive && '(Deceased)'}</p>
-                              {member.condition && <p className="text-xs font-bold text-rose-700 mt-1">{member.condition}</p>}
+                              <p className="font-black text-ink-900 text-base leading-none">{member.relation} {!member.isAlive && '(Deceased)'}</p>
+                              {member.condition && <p className="text-xs font-bold text-terracotta-700 mt-1">{member.condition}</p>}
                            </div>
                         </div>
-                        <button aria-label={`Remove ${member.relation || 'family member'}`} onClick={() => updateHistory({ familyHistory: { ...history.familyHistory, members: history.familyHistory.members.filter(x => x.id !== member.id) } })} className="text-slate-500 hover:text-rose-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-all p-2 font-black">✕</button>
+                        <button aria-label={`Remove ${member.relation || 'family member'}`} onClick={() => updateHistory({ familyHistory: { ...history.familyHistory, members: history.familyHistory.members.filter(x => x.id !== member.id) } })} className="text-ink-500 hover:text-terracotta-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-all p-2 font-black">✕</button>
                      </div>
                    ))}
                  </div>
@@ -629,7 +629,7 @@ export const MedicalProfile: React.FC = () => {
           <div className="space-y-16 animate-in slide-in-from-bottom-4">
             <section className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="space-y-4">
-                <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.3em] flex items-center gap-2 px-2"><span>📜</span> Past Medical History (PMHx)</h3>
+                <h3 className="text-xs font-black text-terracotta-600 uppercase tracking-[0.3em] flex items-center gap-2 px-2"><span>📜</span> Past Medical History (PMHx)</h3>
                 <textarea 
                   value={history.pastMedicalHistory} 
                   onChange={e => updateHistory({ pastMedicalHistory: e.target.value })} 
@@ -638,7 +638,7 @@ export const MedicalProfile: React.FC = () => {
                 />
               </div>
               <div className="space-y-4">
-                <h3 className="text-xs font-black text-rose-700 uppercase tracking-[0.3em] flex items-center gap-2 px-2"><span>✂️</span> Surgical History (PSHx)</h3>
+                <h3 className="text-xs font-black text-terracotta-700 uppercase tracking-[0.3em] flex items-center gap-2 px-2"><span>✂️</span> Surgical History (PSHx)</h3>
                 <textarea 
                   value={history.surgicalHistory} 
                   onChange={e => updateHistory({ surgicalHistory: e.target.value })} 
@@ -650,26 +650,26 @@ export const MedicalProfile: React.FC = () => {
             
             <section className="space-y-6">
               <div className="flex justify-between items-center px-4">
-                <h3 className="text-xs font-black text-slate-600 uppercase tracking-[0.3em]">Conditions</h3>
+                <h3 className="text-xs font-black text-ink-600 uppercase tracking-[0.3em]">Conditions</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {filteredConditions.map(issue => (
-                  <div key={issue.id} className="bg-slate-50 p-8 rounded-[3rem] border border-slate-200 relative group shadow-xs hover:shadow-md transition-all">
-                    <button aria-label={`Remove ${issue.name}`} onClick={() => updateHistory({ conditions: history.conditions?.filter(x => x.id !== issue.id) })} className="absolute top-6 right-6 text-slate-600 hover:text-rose-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity p-2 font-black">✕</button>
-                    <p className="font-black text-2xl text-slate-900 tracking-tighter mb-3 leading-none">{issue.name}</p>
+                  <div key={issue.id} className="bg-ink-50 p-8 rounded-[3rem] border border-ink-200 relative group shadow-xs hover:shadow-md transition-all">
+                    <button aria-label={`Remove ${issue.name}`} onClick={() => updateHistory({ conditions: history.conditions?.filter(x => x.id !== issue.id) })} className="absolute top-6 right-6 text-ink-600 hover:text-terracotta-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity p-2 font-black">✕</button>
+                    <p className="font-black text-2xl text-ink-900 tracking-tighter mb-3 leading-none">{issue.name}</p>
                     <div className="flex items-center gap-2 mt-4">
-                       <span className="px-4 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-black uppercase text-slate-500 tracking-widest">{issue.status}</span>
+                       <span className="px-4 py-1.5 bg-white border border-ink-300 rounded-xl text-xs font-black uppercase text-ink-500 tracking-widest">{issue.status}</span>
                     </div>
                   </div>
                 ))}
-                <div className="bg-indigo-50/20 border-4 border-dashed border-indigo-200 p-10 rounded-[3.5rem] flex flex-col justify-center gap-6 group hover:border-indigo-400 transition-colors">
+                <div className="bg-terracotta-50/20 border-4 border-dashed border-terracotta-200 p-10 rounded-[3.5rem] flex flex-col justify-center gap-6 group hover:border-terracotta-400 transition-colors">
                    <input 
                       value={newIssue.name} 
                       onChange={e => setNewIssue({ ...newIssue, name: e.target.value })} 
                       placeholder="Add Diagnosis..." 
-                      className="bg-transparent font-black text-2xl outline-hidden placeholder-indigo-300 text-slate-900 tracking-tight" 
+                      className="bg-transparent font-black text-2xl outline-hidden placeholder-terracotta-300 text-ink-900 tracking-tight" 
                    />
-                   <button onClick={() => { if(newIssue.name) { updateHistory({ conditions: [...(history.conditions || []), { ...newIssue, id: crypto.randomUUID(), status: 'Active' } as Condition] }); setNewIssue({ name: '' }); } }} className="w-fit px-8 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-indigo-700 active:scale-95 transition-all">Assign Label +</button>
+                   <button onClick={() => { if(newIssue.name) { updateHistory({ conditions: [...(history.conditions || []), { ...newIssue, id: crypto.randomUUID(), status: 'Active' } as Condition] }); setNewIssue({ name: '' }); } }} className="w-fit px-8 py-3 bg-terracotta-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-terracotta-700 active:scale-95 transition-all">Assign Label +</button>
                 </div>
               </div>
             </section>
@@ -680,8 +680,8 @@ export const MedicalProfile: React.FC = () => {
           <div className="space-y-12 animate-in slide-in-from-bottom-4">
             <section className="space-y-10">
               <div className="flex justify-between items-end px-6">
-                 <h3 className="text-3xl font-black text-slate-900 tracking-tight">Active Medication Chart</h3>
-                 <button onClick={() => setShowCeasedMeds(!showCeasedMeds)} className="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-indigo-600 underline transition-all">
+                 <h3 className="text-3xl font-black text-ink-900 tracking-tight">Active Medication Chart</h3>
+                 <button onClick={() => setShowCeasedMeds(!showCeasedMeds)} className="text-xs font-black uppercase tracking-widest text-ink-500 hover:text-terracotta-600 underline transition-all">
                    {showCeasedMeds ? 'Hide Archives' : 'View Medication Archive'}
                  </button>
               </div>
@@ -697,20 +697,20 @@ export const MedicalProfile: React.FC = () => {
                          <p className="text-sm font-bold text-emerald-800/70 mt-4 leading-relaxed border-t border-emerald-50 pt-4">{m.instructions || 'Follow specific specialist guidelines.'}</p>
                       </div>
                       <div className="space-y-1 ml-4">
-                         <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Clinical Indication</p>
+                         <p className="text-xs font-black text-ink-500 uppercase tracking-widest">Clinical Indication</p>
                          <p className="text-base font-black text-emerald-900/60">{m.indication || 'Prophylactic/Routine'}</p>
                       </div>
                     </div>
                   </div>
                 ))}
-                <div className="bg-slate-50 border-4 border-dashed border-slate-200 p-10 rounded-[3.5rem] space-y-6 flex flex-col justify-center min-h-[350px] group hover:border-emerald-300 transition-all">
+                <div className="bg-ink-50 border-4 border-dashed border-ink-200 p-10 rounded-[3.5rem] space-y-6 flex flex-col justify-center min-h-[350px] group hover:border-emerald-300 transition-all">
                    <div className="space-y-6">
                       <div className="space-y-1">
-                        <label htmlFor="medica-medication-name" className="text-xs font-black text-slate-500 uppercase ml-4">Medication Name</label>
+                        <label htmlFor="medica-medication-name" className="text-xs font-black text-ink-500 uppercase ml-4">Medication Name</label>
                         <input id="medica-medication-name" value={newMed.name} onChange={e => setNewMed({ ...newMed, name: e.target.value })} placeholder="e.g. Salbutamol" className={inputClass} />
                       </div>
                       <div className="space-y-1">
-                        <label htmlFor="medica-regime-dose-freq" className="text-xs font-black text-slate-500 uppercase ml-4">Regime (Dose/Freq)</label>
+                        <label htmlFor="medica-regime-dose-freq" className="text-xs font-black text-ink-500 uppercase ml-4">Regime (Dose/Freq)</label>
                         <input id="medica-regime-dose-freq" value={newMed.dose} onChange={e => setNewMed({ ...newMed, dose: e.target.value })} placeholder="e.g. 5ml BD (twice daily)" className={inputClass} />
                       </div>
                       <button onClick={addMedication} className="w-full py-5 bg-emerald-700 text-white rounded-4xl font-black uppercase text-xs tracking-widest shadow-xl hover:bg-emerald-800 active:scale-95 transition-all">Authorize Script +</button>
@@ -725,31 +725,31 @@ export const MedicalProfile: React.FC = () => {
           <div className="space-y-16 animate-in slide-in-from-bottom-4">
             <section className="space-y-10">
               <div className="flex justify-between items-center px-4">
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Care Team</h3>
+                <h3 className="text-3xl font-black text-ink-900 tracking-tight">Care Team</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {filteredSpecialists.map(s => (
-                    <div key={s.id} className="p-10 rounded-[3.5rem] border-2 bg-white border-slate-100 text-slate-900 shadow-xs transition-all hover:shadow-lg">
+                    <div key={s.id} className="p-10 rounded-[3.5rem] border-2 bg-white border-ink-100 text-ink-900 shadow-xs transition-all hover:shadow-lg">
                       <div className="space-y-8">
                          <div>
-                            <p className="text-4xl font-black tracking-tighter leading-none mb-3 text-slate-900">{s.specialty}</p>
-                            <p className="text-xl font-bold text-indigo-600">{s.name}</p>
+                            <p className="text-4xl font-black tracking-tighter leading-none mb-3 text-ink-900">{s.specialty}</p>
+                            <p className="text-xl font-bold text-terracotta-600">{s.name}</p>
                          </div>
-                         <div className="flex flex-wrap gap-4 pt-6 border-t border-slate-100">
+                         <div className="flex flex-wrap gap-4 pt-6 border-t border-ink-100">
                             <div className="space-y-1">
-                               <p className="text-xs font-black uppercase tracking-widest text-slate-500">Service / Hospital</p>
+                               <p className="text-xs font-black uppercase tracking-widest text-ink-500">Service / Hospital</p>
                                <p className="text-base font-bold leading-none">{s.hospital || 'Private Clinic'}</p>
                             </div>
                          </div>
                       </div>
                     </div>
                 ))}
-                <div className="bg-slate-50 border-4 border-dashed border-slate-200 p-12 rounded-[4rem] space-y-8 flex flex-col justify-center group hover:border-indigo-300 transition-all">
-                   <h4 className="font-black text-slate-500 uppercase text-xs tracking-widest text-center">Add Specialist</h4>
+                <div className="bg-ink-50 border-4 border-dashed border-ink-200 p-12 rounded-[4rem] space-y-8 flex flex-col justify-center group hover:border-terracotta-300 transition-all">
+                   <h4 className="font-black text-ink-500 uppercase text-xs tracking-widest text-center">Add Specialist</h4>
                    <div className="space-y-5">
                       <input value={newSpecialist.specialty} onChange={e => setNewSpecialist({ ...newSpecialist, specialty: e.target.value })} placeholder="e.g. Neurology" className={inputClass} />
                       <input value={newSpecialist.name} onChange={e => setNewSpecialist({ ...newSpecialist, name: e.target.value })} placeholder="Full Professional Name" className={inputClass} />
-                      <button onClick={() => { if(newSpecialist.name) { updateHistory({ specialists: [...history.specialists, { ...newSpecialist, id: crypto.randomUUID(), category: 'Medical' } as SpecialistContact] }); setNewSpecialist({ name: '', specialty: '' }); } }} className="w-full py-5 bg-indigo-600 text-white rounded-4xl font-black uppercase text-xs tracking-widest shadow-2xl hover:bg-indigo-700 active:scale-95 transition-all">Add to Care Team +</button>
+                      <button onClick={() => { if(newSpecialist.name) { updateHistory({ specialists: [...history.specialists, { ...newSpecialist, id: crypto.randomUUID(), category: 'Medical' } as SpecialistContact] }); setNewSpecialist({ name: '', specialty: '' }); } }} className="w-full py-5 bg-terracotta-600 text-white rounded-4xl font-black uppercase text-xs tracking-widest shadow-2xl hover:bg-terracotta-700 active:scale-95 transition-all">Add to Care Team +</button>
                    </div>
                 </div>
               </div>
@@ -761,29 +761,29 @@ export const MedicalProfile: React.FC = () => {
           <div className="space-y-12 animate-in slide-in-from-bottom-4">
             <section className="space-y-10">
               <div className="flex justify-between items-center px-4">
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Investigation Results</h3>
+                <h3 className="text-3xl font-black text-ink-900 tracking-tight">Investigation Results</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
                 {filteredInvestigations.map(inv => (
-                  <div key={inv.id} className="bg-blue-50/50 p-10 rounded-[3.5rem] border border-blue-100 relative group shadow-xs hover:shadow-2xl transition-all">
-                    <button aria-label={`Remove ${inv.name || 'result'}`} onClick={() => updateHistory({ investigations: history.investigations?.filter(x => x.id !== inv.id) })} className="absolute top-10 right-10 text-slate-500 hover:text-rose-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity p-2">✕</button>
+                  <div key={inv.id} className="bg-sky-50/50 p-10 rounded-[3.5rem] border border-sky-100 relative group shadow-xs hover:shadow-2xl transition-all">
+                    <button aria-label={`Remove ${inv.name || 'result'}`} onClick={() => updateHistory({ investigations: history.investigations?.filter(x => x.id !== inv.id) })} className="absolute top-10 right-10 text-ink-500 hover:text-terracotta-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity p-2">✕</button>
                     <div className="space-y-6">
                       <div className="flex justify-between items-start">
                         <span className="text-4xl">🧪</span>
-                        <span className="text-xs font-black text-slate-600 uppercase tracking-widest">{inv.date}</span>
+                        <span className="text-xs font-black text-ink-600 uppercase tracking-widest">{inv.date}</span>
                       </div>
-                      <p className="text-2xl font-black text-blue-900 leading-none">{inv.name}</p>
-                      <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-inner">
-                        <p className="text-sm font-bold text-slate-700 leading-relaxed">"{inv.result}"</p>
+                      <p className="text-2xl font-black text-sky-900 leading-none">{inv.name}</p>
+                      <div className="bg-white p-6 rounded-2xl border border-sky-100 shadow-inner">
+                        <p className="text-sm font-bold text-ink-700 leading-relaxed">"{inv.result}"</p>
                       </div>
                     </div>
                   </div>
                 ))}
-                <div className="bg-slate-50 border-4 border-dashed border-slate-200 p-10 rounded-[3.5rem] space-y-4">
-                   <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest ml-4">Add Lab / Imaging Result</h4>
+                <div className="bg-ink-50 border-4 border-dashed border-ink-200 p-10 rounded-[3.5rem] space-y-4">
+                   <h4 className="text-xs font-black text-ink-600 uppercase tracking-widest ml-4">Add Lab / Imaging Result</h4>
                    <input value={newInvestigation.name} onChange={e => setNewInvestigation({...newInvestigation, name: e.target.value})} placeholder="Test Name (e.g. FBC, CXR)" className={inputClass} />
                    <input value={newInvestigation.result} onChange={e => setNewInvestigation({...newInvestigation, result: e.target.value})} placeholder="Key Findings" className={inputClass} />
-                   <button onClick={addInvestigation} className="w-full py-5 bg-blue-600 text-white rounded-4xl font-black uppercase text-xs tracking-widest shadow-xl">Record Result +</button>
+                   <button onClick={addInvestigation} className="w-full py-5 bg-sky-600 text-white rounded-4xl font-black uppercase text-xs tracking-widest shadow-xl">Record Result +</button>
                 </div>
               </div>
             </section>
@@ -794,9 +794,9 @@ export const MedicalProfile: React.FC = () => {
           <div className="space-y-12 animate-in slide-in-from-bottom-4">
             <section className="space-y-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4">
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Specialist Letters</h3>
+                <h3 className="text-3xl font-black text-ink-900 tracking-tight">Specialist Letters</h3>
                 {AI_ENABLED ? (
-                    <button onClick={() => reportInputRef.current?.click()} disabled={reportLoading} className="px-8 py-4 bg-indigo-600 text-white rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition-all active:scale-95">
+                    <button onClick={() => reportInputRef.current?.click()} disabled={reportLoading} className="px-8 py-4 bg-terracotta-600 text-white rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-terracotta-700 transition-all active:scale-95">
                     {reportLoading ? 'Analyzing Syntax...' : '+ Upload Specialist Letter'}
                   </button>
                 ) : (
@@ -806,21 +806,21 @@ export const MedicalProfile: React.FC = () => {
               </div>
               <div className="space-y-6">
                 {filteredReports.map(rep => (
-                  <div key={rep.id} className="bg-slate-50 p-10 rounded-[3.5rem] border border-slate-100 flex flex-col md:flex-row gap-10 hover:shadow-md transition-all">
-                    <div className="w-full md:w-32 h-44 bg-white rounded-4xl border border-slate-200 flex flex-col items-center justify-center p-4 shadow-inner shrink-0 group relative overflow-hidden">
+                  <div key={rep.id} className="bg-ink-50 p-10 rounded-[3.5rem] border border-ink-100 flex flex-col md:flex-row gap-10 hover:shadow-md transition-all">
+                    <div className="w-full md:w-32 h-44 bg-white rounded-4xl border border-ink-200 flex flex-col items-center justify-center p-4 shadow-inner shrink-0 group relative overflow-hidden">
                        <span className="text-5xl mb-2">✉️</span>
-                       <p className="text-xs font-black text-slate-600 uppercase tracking-widest">{rep.date}</p>
+                       <p className="text-xs font-black text-ink-600 uppercase tracking-widest">{rep.date}</p>
                        {rep.photoUrl && <img src={rep.photoUrl} className="absolute inset-0 w-full h-full object-cover sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity" alt="Doc" />}
                     </div>
                     <div className="flex-1 space-y-6">
                       <div>
-                        <p className="text-2xl font-black text-slate-800 leading-none">{rep.specialist}</p>
-                        <p className="text-xs font-black text-indigo-600 uppercase tracking-widest mt-2">Professional Synthesis</p>
+                        <p className="text-2xl font-black text-ink-800 leading-none">{rep.specialist}</p>
+                        <p className="text-xs font-black text-terracotta-600 uppercase tracking-widest mt-2">Professional Synthesis</p>
                       </div>
-                      <p className="text-sm font-bold text-slate-600 leading-relaxed border-l-4 border-slate-200 pl-6">{rep.summary}</p>
+                      <p className="text-sm font-bold text-ink-600 leading-relaxed border-l-4 border-ink-200 pl-6">{rep.summary}</p>
                       <div className="flex flex-wrap gap-2 pt-4">
                         {rep.actionItems.map((item, i) => (
-                           <span key={i} className="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black uppercase border border-indigo-100">{item}</span>
+                           <span key={i} className="px-4 py-1.5 bg-terracotta-50 text-terracotta-600 rounded-xl text-xs font-black uppercase border border-terracotta-100">{item}</span>
                         ))}
                       </div>
                     </div>
@@ -834,11 +834,11 @@ export const MedicalProfile: React.FC = () => {
         {currentSection === 'gear' && (
           <div className="space-y-12 animate-in slide-in-from-bottom-4">
             <section className="space-y-10">
-              <h3 className="text-3xl font-black text-slate-900 tracking-tight px-4">Medical Gear & Technology</h3>
+              <h3 className="text-3xl font-black text-ink-900 tracking-tight px-4">Medical Gear & Technology</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
                 {filteredDevices.map(d => (
                   <div key={d.id} className="bg-amber-50/50 p-10 rounded-[3.5rem] border border-amber-100 relative group shadow-xs hover:shadow-2xl transition-all">
-                    <button aria-label={`Remove ${d.type || 'device'}`} onClick={() => updateHistory({ devices: history.devices.filter(x => x.id !== d.id) })} className="absolute top-10 right-10 text-slate-500 hover:text-rose-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity p-2">✕</button>
+                    <button aria-label={`Remove ${d.type || 'device'}`} onClick={() => updateHistory({ devices: history.devices.filter(x => x.id !== d.id) })} className="absolute top-10 right-10 text-ink-500 hover:text-terracotta-700 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity p-2">✕</button>
                     <div className="space-y-6">
                       <div className="flex justify-between items-start">
                         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-4xl shadow-xs border border-amber-100">⚙️</div>
@@ -851,8 +851,8 @@ export const MedicalProfile: React.FC = () => {
                     </div>
                   </div>
                 ))}
-                <div className="bg-slate-50 border-4 border-dashed border-slate-200 p-10 rounded-[3.5rem] space-y-4">
-                   <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest ml-4">Register Medical Technology</h4>
+                <div className="bg-ink-50 border-4 border-dashed border-ink-200 p-10 rounded-[3.5rem] space-y-4">
+                   <h4 className="text-xs font-black text-ink-600 uppercase tracking-widest ml-4">Register Medical Technology</h4>
                    <input value={newDevice.type} onChange={e => setNewDevice({...newDevice, type: e.target.value})} placeholder="Device Type (e.g. Pump, Spacer)" className={inputClass} />
                    <input value={newDevice.model} onChange={e => setNewDevice({...newDevice, model: e.target.value})} placeholder="Model / Size" className={inputClass} />
                    <button onClick={addDevice} className="w-full py-5 bg-amber-700 text-white rounded-4xl font-black uppercase text-xs tracking-widest shadow-xl">Add Gear +</button>
@@ -871,7 +871,7 @@ export const MedicalProfile: React.FC = () => {
                window.location.reload();
             }
           }}
-          className="text-xs font-black uppercase tracking-[0.4em] text-slate-500 hover:text-rose-700 transition-colors"
+          className="text-xs font-black uppercase tracking-[0.4em] text-ink-500 hover:text-terracotta-700 transition-colors"
         >
           Factory Reset Medical Hub 🗑️
         </button>

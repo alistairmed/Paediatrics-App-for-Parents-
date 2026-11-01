@@ -72,20 +72,20 @@ const ChildProfileForm: React.FC = () => {
     finish();
   };
 
-  const inputClass = "w-full p-4 rounded-2xl border-2 border-slate-300 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-hidden font-bold text-slate-900 text-base";
-  const labelClass = "block text-sm font-bold text-slate-700 mb-1.5";
+  const inputClass = "w-full p-4 rounded-2xl border-2 border-ink-300 bg-white focus:border-terracotta-600 focus:ring-4 focus:ring-terracotta-100 outline-hidden font-bold text-ink-900 text-base";
+  const labelClass = "block text-sm font-bold text-ink-700 mb-1.5";
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 pb-28">
       <header className="text-center space-y-3">
-        <div className="w-20 h-20 bg-indigo-600 text-white rounded-4xl flex items-center justify-center text-4xl mx-auto shadow-xl" aria-hidden="true">👶</div>
-        <h2 className="text-3xl font-black text-slate-800 tracking-tight">
+        <div className="w-20 h-20 bg-terracotta-600 text-white rounded-4xl flex items-center justify-center text-4xl mx-auto shadow-xl" aria-hidden="true">👶</div>
+        <h2 className="text-3xl font-black text-ink-800 tracking-tight">
           {editing ? `Edit ${editing.name}'s profile` : isFirstChild ? 'Add your child' : 'Add another child'}
         </h2>
-        <p className="text-base font-medium text-slate-600">Your child's details stay on this device.</p>
+        <p className="text-base font-medium text-ink-600">Your child's details stay on this device.</p>
       </header>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6" noValidate>
+      <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-ink-200 shadow-xl space-y-6" noValidate>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <label className="block sm:col-span-2">
             <span className={labelClass}>Child's name</span>
@@ -99,7 +99,7 @@ const ChildProfileForm: React.FC = () => {
             <legend className={labelClass}>Sex</legend>
             <div className="flex gap-2">
               {(['Female', 'Male', 'Other'] as const).map(option => (
-                <label key={option} className={`flex-1 text-center p-4 rounded-2xl border-2 font-bold cursor-pointer ${sex === option ? 'border-indigo-600 bg-indigo-50 text-indigo-800' : 'border-slate-300 text-slate-700'}`}>
+                <label key={option} className={`flex-1 text-center p-4 rounded-2xl border-2 font-bold cursor-pointer ${sex === option ? 'border-terracotta-600 bg-terracotta-50 text-terracotta-800' : 'border-ink-300 text-ink-700'}`}>
                   <input type="radio" name="sex" value={option} checked={sex === option} onChange={() => setSex(option)} className="sr-only" />
                   {option}
                 </label>
@@ -107,23 +107,23 @@ const ChildProfileForm: React.FC = () => {
             </div>
           </fieldset>
         </div>
-        <p className="text-sm font-medium text-slate-600">Record weight and height in Growth Charts.</p>
+        <p className="text-sm font-medium text-ink-600">Record weight and height in Growth Charts.</p>
 
-        {error && <p role="alert" className="text-sm font-bold text-rose-700">{error}</p>}
+        {error && <p role="alert" className="text-sm font-bold text-terracotta-700">{error}</p>}
 
-        <button type="submit" className="w-full py-5 min-h-[48px] text-white font-black rounded-4xl shadow-xl bg-indigo-600 hover:bg-indigo-700 uppercase tracking-widest">
+        <button type="submit" className="w-full py-5 min-h-[48px] text-white font-black rounded-4xl shadow-xl bg-terracotta-600 hover:bg-terracotta-700 uppercase tracking-widest">
           {editing ? 'Save Profile' : `Add ${name.trim() || 'Child'}`}
         </button>
 
         <div className="flex flex-wrap justify-center gap-4">
           {!editing && isFirstChild && (
-            <button type="button" onClick={handleSkip} className="text-sm font-bold text-slate-600 underline min-h-[44px]">Skip for now</button>
+            <button type="button" onClick={handleSkip} className="text-sm font-bold text-ink-600 underline min-h-[44px]">Skip for now</button>
           )}
           {!isFirstChild && (
-            <button type="button" onClick={finish} className="text-sm font-bold text-slate-600 underline min-h-[44px]">Cancel</button>
+            <button type="button" onClick={finish} className="text-sm font-bold text-ink-600 underline min-h-[44px]">Cancel</button>
           )}
           {editing && (
-            <button type="button" onClick={handleRemove} className="text-sm font-bold text-rose-700 underline min-h-[44px]">Remove this child</button>
+            <button type="button" onClick={handleRemove} className="text-sm font-bold text-terracotta-700 underline min-h-[44px]">Remove this child</button>
           )}
         </div>
       </form>

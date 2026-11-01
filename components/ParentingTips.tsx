@@ -85,7 +85,7 @@ const CLINICAL_MODULES = [
     theory: 'Children need a "Secure Base" to explore from and a "Safe Haven" to return to.',
     application: 'Identify when your child is "on the circle." Are they going out to play or coming in for comfort? Meet the need, then support exploration.',
     icon: '⭕',
-    color: 'border-indigo-200 bg-indigo-50/50',
+    color: 'border-terracotta-200 bg-terracotta-50/50',
     url: 'https://www.circleofsecurityinternational.com/'
   },
   { 
@@ -103,7 +103,7 @@ const CLINICAL_MODULES = [
     theory: 'Perfectionism is a "relentless pursuit of unrealistic standards" that leads to self-worth being tied solely to achievement.',
     application: 'Practice "Behavioral Experiments" – test what happens if you don\'t do something perfectly. Focus on "Good Enough" and self-compassion.',
     icon: '💎',
-    color: 'border-slate-200 bg-slate-50/50',
+    color: 'border-ink-200 bg-ink-50/50',
     url: 'https://www.cci.health.wa.gov.au/Resources/Looking-After-Yourself/Perfectionism'
   },
   { 
@@ -112,7 +112,7 @@ const CLINICAL_MODULES = [
     theory: 'Social anxiety involves a fear of negative evaluation and excessive self-focus in social situations.',
     application: 'Use "External Focus" – shift attention from internal worries to the social environment. Practice "Social Mishap" exposures to build tolerance.',
     icon: '🏘️',
-    color: 'border-blue-200 bg-blue-50/50',
+    color: 'border-sky-200 bg-sky-50/50',
     url: 'https://www.cci.health.wa.gov.au/Resources/Looking-After-Yourself/Social-Anxiety'
   },
   { 
@@ -130,7 +130,7 @@ const CLINICAL_MODULES = [
     theory: 'Being assertive means standing up for your own rights in a way that respects the rights of others.',
     application: 'Use "I" statements to express needs. Practice "The Broken Record" technique – calmly repeating your request when facing resistance.',
     icon: '🗣️',
-    color: 'border-teal-200 bg-teal-50/50',
+    color: 'border-sky-200 bg-sky-50/50',
     url: 'https://www.cci.health.wa.gov.au/Resources/Looking-After-Yourself/Assertiveness'
   },
   { 
@@ -139,7 +139,7 @@ const CLINICAL_MODULES = [
     theory: 'Treating yourself with the same kindness and understanding you would offer a friend during difficult times.',
     application: 'Identify the "Critical Inner Voice." Practice the "Self-Compassion Break": Mindfulness + Common Humanity + Self-Kindness.',
     icon: '💖',
-    color: 'border-rose-200 bg-rose-50/50',
+    color: 'border-terracotta-200 bg-terracotta-50/50',
     url: 'https://www.cci.health.wa.gov.au/Resources/Looking-After-Yourself/Self-Compassion'
   },
   { 
@@ -148,7 +148,7 @@ const CLINICAL_MODULES = [
     theory: '"Kids do well if they can." Challenging behavior occurs when demands exceed a child\'s skills.',
     application: 'Move from power-struggles to Plan B: Empathy + Define the Problem + Invitation to collaborate on a win-win solution.',
     icon: '🤝',
-    color: 'border-blue-100 bg-blue-50/20',
+    color: 'border-sky-100 bg-sky-50/20',
     url: 'https://livesinthebalance.org/'
   },
   { 
@@ -157,7 +157,7 @@ const CLINICAL_MODULES = [
     theory: 'The brain has "upstairs" (logic) and "downstairs" (emotion) parts. Stress causes dis-integration.',
     application: '"Connect and Redirect." Acknowledge the emotion (downstairs) before trying to logic through the behavior (upstairs).',
     icon: '🧠',
-    color: 'border-purple-200 bg-purple-50/50',
+    color: 'border-terracotta-200 bg-terracotta-50/50',
     url: 'https://drdansiegel.com/the-whole-brain-child/'
   },
   { 
@@ -166,7 +166,7 @@ const CLINICAL_MODULES = [
     theory: 'Attachment is built through Playfulness, Acceptance, Curiosity, and Empathy.',
     application: 'Use a "wondering" tone (Curiosity) to understand feelings: "I wonder if you are feeling a bit worried about..." instead of assuming.',
     icon: '🌊',
-    color: 'border-rose-200 bg-rose-50/50',
+    color: 'border-terracotta-200 bg-terracotta-50/50',
     url: 'https://ddpnetwork.org/about-ddp/me-the-ddp-family/pace/'
   },
   { 
@@ -260,20 +260,20 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
     <div className="space-y-8 pb-24 animate-in fade-in duration-700">
       <header className="flex flex-col md:flex-row justify-between items-start gap-6">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tight">Parenting <span className="text-amber-700">Hub</span></h2>
-          <p className="text-slate-500 font-medium">Health literacy and evidence-based clinical strategies.</p>
+          <h2 className="text-4xl font-black text-ink-800 tracking-tight">Parenting <span className="text-amber-700">Hub</span></h2>
+          <p className="text-ink-500 font-medium">Health literacy and evidence-based clinical strategies.</p>
         </div>
-        <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner overflow-x-auto no-scrollbar max-w-full">
+        <div className="flex bg-ink-100 p-1 rounded-2xl border border-ink-200 shadow-inner overflow-x-auto no-scrollbar max-w-full">
           {[
             { id: 'literacy', label: 'Health Literacy', color: 'text-emerald-700' },
             { id: 'tips', label: 'AI Strategies', color: 'text-amber-700' },
-            { id: 'mentalhealth', label: 'Resources', color: 'text-indigo-600' },
-            { id: 'clinical', label: 'Frameworks', color: 'text-teal-700' }
+            { id: 'mentalhealth', label: 'Resources', color: 'text-terracotta-600' },
+            { id: 'clinical', label: 'Frameworks', color: 'text-sky-700' }
           ].map(tab => (
             <button 
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 sm:px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? `bg-white ${tab.color} shadow-md` : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-4 sm:px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? `bg-white ${tab.color} shadow-md` : 'text-ink-600 hover:text-ink-900'}`}
             >
               {tab.label}
             </button>
@@ -302,7 +302,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="e.g. Febrile Convulsion, Stridor..."
-                    className="flex-1 p-5 rounded-2xl bg-white font-black text-slate-900 outline-hidden border-none shadow-xl placeholder-slate-400"
+                    className="flex-1 p-5 rounded-2xl bg-white font-black text-ink-900 outline-hidden border-none shadow-xl placeholder-ink-400"
                     onKeyPress={e => e.key === 'Enter' && AI_ENABLED && handleExplainTerm()}
                    />
                    {AI_ENABLED ? (
@@ -321,13 +321,13 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
           </section>
 
           {termError && (
-            <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
-              <p className="font-black text-rose-800 text-sm">⚠️ {termError}</p>
+            <div className="bg-terracotta-50 border-2 border-terracotta-200 rounded-2xl p-6 space-y-3">
+              <p className="font-black text-terracotta-800 text-sm">⚠️ {termError}</p>
               <div className="flex gap-3">
-                <button onClick={handleExplainTerm} className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all">
+                <button onClick={handleExplainTerm} className="px-5 py-2 bg-terracotta-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-700 transition-all">
                   Try Again
                 </button>
-                <button onClick={() => setTermError(null)} className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest">
+                <button onClick={() => setTermError(null)} className="px-5 py-2 bg-white border border-terracotta-200 text-terracotta-800 rounded-xl font-black text-xs uppercase tracking-widest">
                   Browse Verified Terms Below
                 </button>
               </div>
@@ -341,11 +341,11 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-emerald-50 text-emerald-700 rounded-2xl flex items-center justify-center text-3xl shadow-inner border-2 border-emerald-100">✨</div>
                     <div>
-                      <h4 className="text-2xl font-black text-slate-800 uppercase leading-none">Clinical Translation</h4>
+                      <h4 className="text-2xl font-black text-ink-800 uppercase leading-none">Clinical Translation</h4>
                       <p className="text-xs font-black text-emerald-700 uppercase tracking-widest mt-2">Personalized Contextual Logic</p>
                     </div>
                   </div>
-                  <button onClick={() => setAiTermExplanation(null)} className="text-slate-500 hover:text-slate-500 text-xs font-black uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-xl transition-all">Dismiss</button>
+                  <button onClick={() => setAiTermExplanation(null)} className="text-ink-500 hover:text-ink-500 text-xs font-black uppercase tracking-widest bg-ink-50 px-4 py-2 rounded-xl transition-all">Dismiss</button>
                </div>
                
                <div className="relative z-10 space-y-10">
@@ -359,7 +359,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                              {line.split('. ')[1]}
                            </h5>
                         ) : (
-                          <p className="text-slate-800 leading-relaxed font-bold border-l-4 border-slate-100 pl-8 text-lg mt-4">
+                          <p className="text-ink-800 leading-relaxed font-bold border-l-4 border-ink-100 pl-8 text-lg mt-4">
                             {line}
                           </p>
                         )}
@@ -369,11 +369,11 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                </div>
 
                {aiTermExplanation.sources.length > 0 && (
-                 <div className="pt-10 mt-10 border-t border-slate-100 space-y-4 relative z-10">
+                 <div className="pt-10 mt-10 border-t border-ink-100 space-y-4 relative z-10">
                     <p className="text-xs font-black text-emerald-700 uppercase tracking-widest">Scientific Grounding</p>
                     <div className="flex flex-wrap gap-2">
                       {aiTermExplanation.sources.map((s: any, i: number) => (
-                        <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-slate-600 hover:text-emerald-700 bg-slate-50 px-4 py-2.5 rounded-xl border-2 border-slate-100 transition-all flex items-center gap-2 group">
+                        <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-ink-600 hover:text-emerald-700 bg-ink-50 px-4 py-2.5 rounded-xl border-2 border-ink-100 transition-all flex items-center gap-2 group">
                           {s.web?.title || 'Health Resource'} <span className="group-hover:translate-x-1 transition-transform">↗</span>
                         </a>
                       ))}
@@ -389,7 +389,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                  <button
                   key={cat}
                   onClick={() => setLiteracyCategory(cat)}
-                  className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all ${literacyCategory === cat ? 'bg-emerald-700 border-emerald-600 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'}`}
+                  className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all ${literacyCategory === cat ? 'bg-emerald-700 border-emerald-600 text-white shadow-lg' : 'bg-white border-ink-200 text-ink-600 hover:border-ink-300'}`}
                  >
                    {cat}
                  </button>
@@ -398,21 +398,21 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTerms.map((t, i) => (
-                <div key={i} className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xs flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all group">
+                <div key={i} className="bg-white p-8 rounded-[3rem] border border-ink-100 shadow-xs flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all group">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
                       <div className="w-14 h-14 bg-emerald-50 text-emerald-700 rounded-2xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">
                         {t.icon}
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${t.category === 'Emergency' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${t.category === 'Emergency' ? 'bg-terracotta-100 text-terracotta-700' : 'bg-emerald-100 text-emerald-700'}`}>
                         {t.category}
                       </span>
                     </div>
-                    <h4 className="text-xl font-black text-slate-800 tracking-tight">{t.term}</h4>
-                    <p className="text-slate-500 font-medium text-sm leading-relaxed">{t.definition}</p>
+                    <h4 className="text-xl font-black text-ink-800 tracking-tight">{t.term}</h4>
+                    <p className="text-ink-500 font-medium text-sm leading-relaxed">{t.definition}</p>
                   </div>
-                  <div className="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between">
-                     <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Reliable Info</span>
+                  <div className="mt-6 pt-6 border-t border-ink-50 flex items-center justify-between">
+                     <span className="text-xs font-black text-ink-500 uppercase tracking-widest">Reliable Info</span>
                      <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">{t.source}</span>
                   </div>
                 </div>
@@ -425,13 +425,13 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
       {activeTab === 'tips' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xs space-y-6">
+            <div className="bg-white p-8 rounded-[2.5rem] border border-ink-100 shadow-xs space-y-6">
               <div>
-                <label htmlFor="parent-age-group" className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-2 mb-2">Age Group</label>
+                <label htmlFor="parent-age-group" className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-2 mb-2">Age Group</label>
                 <select id="parent-age-group" 
                   value={age}
                   onChange={e => setAge(e.target.value)}
-                  className="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50/50 outline-hidden font-black text-slate-900"
+                  className="w-full p-4 rounded-2xl border border-ink-100 bg-ink-50/50 outline-hidden font-black text-ink-900"
                 >
                   <option>Toddler (1-3 years)</option>
                   <option>Preschooler (3-5 years)</option>
@@ -440,13 +440,13 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-2 mb-2">Specific Concern</label>
+                <label className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-2 mb-2">Specific Concern</label>
                 <div className="flex gap-2">
                   <input 
                     type="text"
                     value={challenge}
                     onChange={e => setChallenge(e.target.value)}
-                    className="flex-1 p-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-black text-slate-900 text-sm shadow-inner placeholder-slate-400"
+                    className="flex-1 p-4 rounded-2xl border border-ink-100 bg-ink-50/50 font-black text-ink-900 text-sm shadow-inner placeholder-ink-400"
                     placeholder="Describe behavior..."
                   />
                   {AI_ENABLED ? (
@@ -463,12 +463,12 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="block text-xs font-black text-slate-600 uppercase tracking-widest ml-2">In-depth guidance</p>
+                <p className="block text-xs font-black text-ink-600 uppercase tracking-widest ml-2">In-depth guidance</p>
                 {PREMIUM_ENABLED ? (
                   <button
                     onClick={() => handleGetAdvice(undefined, true)}
                     disabled={loading || !challenge.trim()}
-                    className="w-full min-h-[48px] px-5 rounded-2xl bg-violet-700 hover:bg-violet-800 disabled:opacity-60 text-white font-black text-xs uppercase tracking-widest"
+                    className="w-full min-h-[48px] px-5 rounded-2xl bg-terracotta-700 hover:bg-terracotta-800 disabled:opacity-60 text-white font-black text-xs uppercase tracking-widest"
                   >
                     ⭐ Get In-Depth Guidance (Premium)
                   </button>
@@ -491,41 +491,41 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
 
           <div className="lg:col-span-2">
             {loading ? (
-              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white rounded-[3rem] border border-slate-100 animate-pulse text-center space-y-6 shadow-xs">
+              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white rounded-[3rem] border border-ink-100 animate-pulse text-center space-y-6 shadow-xs">
                 <div className="w-20 h-20 bg-amber-50 rounded-4xl flex items-center justify-center text-5xl animate-bounce shadow-inner">🌻</div>
                 <div className="space-y-2">
-                  <p className="font-black text-slate-800 uppercase tracking-widest text-sm">Reviewing Clinical Frameworks...</p>
-                  <p className="text-slate-600 text-xs font-bold">Finding evidence-based strategies for your child's age group.</p>
+                  <p className="font-black text-ink-800 uppercase tracking-widest text-sm">Reviewing Clinical Frameworks...</p>
+                  <p className="text-ink-600 text-xs font-bold">Finding evidence-based strategies for your child's age group.</p>
                 </div>
               </div>
             ) : adviceError ? (
-              <div className="bg-white p-10 rounded-[3rem] border border-rose-200 shadow-xl space-y-6">
-                <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
-                  <p className="font-black text-rose-800 text-sm">⚠️ {adviceError}</p>
+              <div className="bg-white p-10 rounded-[3rem] border border-terracotta-200 shadow-xl space-y-6">
+                <div className="bg-terracotta-50 border-2 border-terracotta-200 rounded-2xl p-6 space-y-3">
+                  <p className="font-black text-terracotta-800 text-sm">⚠️ {adviceError}</p>
                   <div className="flex gap-3">
-                    <button onClick={() => handleGetAdvice()} className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all">
+                    <button onClick={() => handleGetAdvice()} className="px-5 py-2 bg-terracotta-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-700 transition-all">
                       Try Again
                     </button>
-                    <button onClick={() => setActiveTab('clinical')} className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest">
+                    <button onClick={() => setActiveTab('clinical')} className="px-5 py-2 bg-white border border-terracotta-200 text-terracotta-800 rounded-xl font-black text-xs uppercase tracking-widest">
                       Browse Clinical Frameworks
                     </button>
                   </div>
                 </div>
               </div>
             ) : advice ? (
-              <div className="bg-white p-10 sm:p-14 rounded-[4rem] border border-slate-100 shadow-2xl animate-in zoom-in-95 relative overflow-hidden flex flex-col">
+              <div className="bg-white p-10 sm:p-14 rounded-[4rem] border border-ink-100 shadow-2xl animate-in zoom-in-95 relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-amber-500 rounded-full opacity-5 blur-[100px]"></div>
                 
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12 relative z-10">
                    <div className="flex items-center gap-5">
                       <div className="w-16 h-16 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center text-4xl shadow-inner border-2 border-amber-100">💡</div>
                       <div>
-                        <h4 className="text-3xl font-black text-slate-800 uppercase leading-none tracking-tighter">Parenting Strategy</h4>
+                        <h4 className="text-3xl font-black text-ink-800 uppercase leading-none tracking-tighter">Parenting Strategy</h4>
                         <p className="text-xs font-black text-amber-700 uppercase tracking-widest mt-2">Professional Caretaker Insight</p>
                       </div>
                    </div>
-                   <div className="px-5 py-2 bg-slate-50 rounded-xl border border-slate-100">
-                      <span className="text-xs font-black text-slate-600 uppercase tracking-widest">EBM Synthesis 1.0</span>
+                   <div className="px-5 py-2 bg-ink-50 rounded-xl border border-ink-100">
+                      <span className="text-xs font-black text-ink-600 uppercase tracking-widest">EBM Synthesis 1.0</span>
                    </div>
                 </div>
 
@@ -545,12 +545,12 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                            ) : isList ? (
                               <div className="flex gap-4 items-start py-2">
                                  <span className="w-2 h-2 rounded-full bg-amber-200 mt-2 shrink-0 shadow-xs"></span>
-                                 <p className="text-lg font-black text-slate-700 leading-relaxed">
+                                 <p className="text-lg font-black text-ink-700 leading-relaxed">
                                     {line.replace(/^[-•]\s*/, '')}
                                  </p>
                               </div>
                            ) : (
-                              <p className="text-xl font-black text-slate-800 leading-relaxed pl-8 border-l-4 border-slate-100">
+                              <p className="text-xl font-black text-ink-800 leading-relaxed pl-8 border-l-4 border-ink-100">
                                  {line}
                               </p>
                            )}
@@ -560,11 +560,11 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 </div>
                 
                 {advice.sources.length > 0 && (
-                  <div className="pt-10 mt-16 border-t border-slate-100 space-y-4 relative z-10">
+                  <div className="pt-10 mt-16 border-t border-ink-100 space-y-4 relative z-10">
                     <p className="text-xs font-black text-amber-700 uppercase tracking-widest">Guidelines</p>
                     <div className="flex flex-wrap gap-3">
                       {advice.sources.map((s: any, i: number) => (
-                        <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-slate-600 hover:text-amber-700 bg-white px-5 py-2.5 rounded-2xl border-2 border-slate-100 transition-all flex items-center gap-2 shadow-xs group">
+                        <a key={i} href={s.web?.uri} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-ink-600 hover:text-amber-700 bg-white px-5 py-2.5 rounded-2xl border-2 border-ink-100 transition-all flex items-center gap-2 shadow-xs group">
                           {s.web?.title || 'Health Resource'} <span className="text-xs transition-transform group-hover:translate-x-1">↗</span>
                         </a>
                       ))}
@@ -572,18 +572,18 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                   </div>
                 )}
 
-                <div className="mt-12 pt-8 border-t border-slate-50 opacity-40">
-                   <p className="text-xs font-black text-slate-600 uppercase tracking-widest text-center">
+                <div className="mt-12 pt-8 border-t border-ink-50 opacity-40">
+                   <p className="text-xs font-black text-ink-600 uppercase tracking-widest text-center">
                       Disclaimer: This strategy is for educational support only. <br/> Consult a professional for complex behavioral concerns.
                    </p>
                 </div>
               </div>
             ) : (
-              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-slate-50/50 border-4 border-dashed border-slate-200 rounded-[4rem] text-center p-12 space-y-6">
+              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-ink-50/50 border-4 border-dashed border-ink-200 rounded-[4rem] text-center p-12 space-y-6">
                 <div className="w-24 h-24 bg-white rounded-4xl flex items-center justify-center text-5xl shadow-xs grayscale opacity-30">🌻</div>
                 <div className="max-w-sm">
-                  <h4 className="font-black text-slate-800 text-xl tracking-tight mb-2 uppercase">Strategy Lab</h4>
-                  <p className="text-slate-600 font-bold">Describe a parenting challenge or select a clinical module to receive tailored synthesis.</p>
+                  <h4 className="font-black text-ink-800 text-xl tracking-tight mb-2 uppercase">Strategy Lab</h4>
+                  <p className="text-ink-600 font-bold">Describe a parenting challenge or select a clinical module to receive tailored synthesis.</p>
                 </div>
               </div>
             )}
@@ -593,10 +593,10 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
 
       {activeTab === 'mentalhealth' && (
         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-          <div className="bg-indigo-900 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
+          <div className="bg-terracotta-900 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-[80px]"></div>
             <h3 className="text-3xl font-black tracking-tighter mb-4 relative z-10">Professional support</h3>
-            <p className="text-indigo-100 font-medium opacity-80 max-w-2xl relative z-10">
+            <p className="text-terracotta-100 font-medium opacity-80 max-w-2xl relative z-10">
               Validated Australian resources for parenting, behavior, and family mental health.
             </p>
           </div>
@@ -607,19 +607,19 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                 href={res.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col justify-between"
+                className="bg-white p-8 rounded-[3rem] border border-ink-100 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col justify-between"
               >
                 <div>
                   <div className="flex justify-between items-start mb-6">
-                    <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">{res.icon}</div>
-                    <span className="text-slate-500 group-hover:text-indigo-600 transition-colors">↗</span>
+                    <div className="w-14 h-14 bg-terracotta-50 rounded-2xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">{res.icon}</div>
+                    <span className="text-ink-500 group-hover:text-terracotta-600 transition-colors">↗</span>
                   </div>
-                  <h4 className="text-2xl font-black text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors leading-tight">{res.name}</h4>
-                  <p className="text-slate-500 font-medium text-sm leading-relaxed mb-6">{res.desc}</p>
+                  <h4 className="text-2xl font-black text-ink-800 mb-2 group-hover:text-terracotta-600 transition-colors leading-tight">{res.name}</h4>
+                  <p className="text-ink-500 font-medium text-sm leading-relaxed mb-6">{res.desc}</p>
                 </div>
-                <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-50">
+                <div className="flex flex-wrap gap-2 pt-6 border-t border-ink-50">
                   {res.tags.map(tag => (
-                    <span key={tag} className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-black uppercase tracking-widest border border-indigo-100">
+                    <span key={tag} className="px-3 py-1 bg-terracotta-50 text-terracotta-600 rounded-full text-xs font-black uppercase tracking-widest border border-terracotta-100">
                       {tag}
                     </span>
                   ))}
@@ -632,10 +632,10 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
 
       {activeTab === 'clinical' && (
         <div className="space-y-10 animate-in slide-in-from-bottom-4 duration-500">
-          <div className="bg-teal-900 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
+          <div className="bg-sky-900 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-[80px]"></div>
             <h3 className="text-3xl font-black tracking-tighter mb-4 relative z-10">Clinical Framework Explainers</h3>
-            <p className="text-teal-100 font-medium opacity-80 max-w-2xl relative z-10">
+            <p className="text-sky-100 font-medium opacity-80 max-w-2xl relative z-10">
               Understanding the professional models used by pediatricians and psychologists.
             </p>
           </div>
@@ -648,45 +648,45 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                     {mod.icon}
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs font-black text-teal-700 uppercase tracking-[0.2em] mb-1">{mod.focus}</p>
-                    <h4 className="text-3xl font-black text-slate-800 leading-tight">{mod.title}</h4>
+                    <p className="text-xs font-black text-sky-700 uppercase tracking-[0.2em] mb-1">{mod.focus}</p>
+                    <h4 className="text-3xl font-black text-ink-800 leading-tight">{mod.title}</h4>
                   </div>
-                  <a href={mod.url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/40 hover:bg-white rounded-full flex items-center justify-center shadow-xs border border-white/50 transition-all text-teal-700 font-black">↗</a>
+                  <a href={mod.url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/40 hover:bg-white rounded-full flex items-center justify-center shadow-xs border border-white/50 transition-all text-sky-700 font-black">↗</a>
                 </div>
 
                 <div className="space-y-8 flex-1">
                    <div className="space-y-2">
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-600">The Clinical Theory</p>
-                      <p className="text-base font-bold text-slate-700 border-l-4 border-white/50 pl-4">{mod.theory}</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-ink-600">The Clinical Theory</p>
+                      <p className="text-base font-bold text-ink-700 border-l-4 border-white/50 pl-4">{mod.theory}</p>
                    </div>
                    <div className="space-y-2">
-                      <p className="text-xs font-black uppercase tracking-widest text-teal-700">Parental Application</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-sky-700">Parental Application</p>
                       <div className="bg-white/40 p-6 rounded-3xl border border-white/50 shadow-inner group-hover:bg-white/60 transition-all">
-                        <p className="text-base font-black text-slate-800 leading-relaxed">
+                        <p className="text-base font-black text-ink-800 leading-relaxed">
                           {mod.application}
                         </p>
                       </div>
                    </div>
                 </div>
 
-                <div className="mt-10 pt-6 border-t border-slate-200/30 flex justify-between items-center">
-                   <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Scientific Model of Care</span>
+                <div className="mt-10 pt-6 border-t border-ink-200/30 flex justify-between items-center">
+                   <span className="text-xs font-black text-ink-600 uppercase tracking-widest">Scientific Model of Care</span>
                    <div className="flex gap-2">
-                      <a href={mod.url} target="_blank" rel="noopener noreferrer" className="text-xs font-black uppercase tracking-widest text-teal-700 hover:underline">Further Reading</a>
+                      <a href={mod.url} target="_blank" rel="noopener noreferrer" className="text-xs font-black uppercase tracking-widest text-sky-700 hover:underline">Further Reading</a>
                       <div className="flex gap-1">
-                        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
-                        <span className="w-2 h-2 rounded-full bg-teal-200"></span>
+                        <span className="w-2 h-2 rounded-full bg-sky-400"></span>
+                        <span className="w-2 h-2 rounded-full bg-sky-200"></span>
                       </div>
                    </div>
                 </div>
               </div>
             ))}
 
-            <div className="bg-slate-900 p-10 rounded-[4rem] text-white flex flex-col justify-center relative overflow-hidden shadow-2xl">
-               <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-600 rounded-full opacity-20 blur-[100px]"></div>
+            <div className="bg-ink-900 p-10 rounded-[4rem] text-white flex flex-col justify-center relative overflow-hidden shadow-2xl">
+               <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-terracotta-600 rounded-full opacity-20 blur-[100px]"></div>
                <div className="relative z-10 space-y-6">
                   <h4 className="text-2xl font-black tracking-tighter uppercase">Why Frameworks Matter?</h4>
-                  <p className="text-indigo-100 text-sm font-medium leading-relaxed opacity-80">
+                  <p className="text-terracotta-100 text-sm font-medium leading-relaxed opacity-80">
                     "Frameworks aren't rules; they are lenses to see your child's behavior clearly. Instead of asking 'How do I stop this behavior?', these models help you ask 'What is my child trying to tell me?'"
                   </p>
                </div>

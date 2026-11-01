@@ -50,43 +50,43 @@ export const PasscodeSettings: React.FC = () => {
     }
   };
 
-  const inputClass = "w-full p-3 rounded-xl border-2 border-slate-300 focus:border-indigo-600 outline-hidden font-black text-slate-900";
+  const inputClass = "w-full p-3 rounded-xl border-2 border-ink-300 focus:border-terracotta-600 outline-hidden font-black text-ink-900";
 
   return (
-    <section className="bg-white p-6 sm:p-10 rounded-4xl sm:rounded-[3rem] border border-slate-100 shadow-xl space-y-4">
+    <section className="bg-white p-6 sm:p-10 rounded-4xl sm:rounded-[3rem] border border-ink-100 shadow-xl space-y-4">
       <div className="flex items-center gap-3">
         <span className="text-2xl" aria-hidden="true">🔐</span>
-        <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Passcode Lock</h3>
-        <span className={`ml-auto px-3 py-1 rounded-full text-xs font-black ${enabled ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}`}>{enabled ? 'On' : 'Off'}</span>
+        <h3 className="text-xl font-black text-ink-800 uppercase tracking-tight">Passcode Lock</h3>
+        <span className={`ml-auto px-3 py-1 rounded-full text-xs font-black ${enabled ? 'bg-emerald-100 text-emerald-800' : 'bg-ink-100 text-ink-600'}`}>{enabled ? 'On' : 'Off'}</span>
       </div>
 
       {enabled ? (
         <form onSubmit={handleDisable} className="space-y-4">
-          <p className="text-sm font-medium text-slate-600 leading-relaxed">
+          <p className="text-sm font-medium text-ink-600 leading-relaxed">
             Your child's profile, medical history and audit log are encrypted on this device. The app locks again after 5 minutes in the background.
           </p>
-          <button type="button" onClick={lockNow} className="px-5 py-3 rounded-xl bg-slate-900 text-white font-black text-xs uppercase tracking-widest">Lock Now</button>
+          <button type="button" onClick={lockNow} className="px-5 py-3 rounded-xl bg-ink-900 text-white font-black text-xs uppercase tracking-widest">Lock Now</button>
           <label className="block pt-2">
-            <span className="block text-xs font-bold text-slate-700 mb-1">To turn the lock off, enter your passcode</span>
+            <span className="block text-xs font-bold text-ink-700 mb-1">To turn the lock off, enter your passcode</span>
             <input type="password" autoComplete="current-password" value={passcode} onChange={e => setPasscode(e.target.value)} className={inputClass} />
           </label>
-          {error && <p role="alert" className="text-sm font-bold text-rose-700">{error}</p>}
-          <button type="submit" disabled={busy || !passcode} className="px-5 py-3 rounded-xl bg-white border-2 border-slate-300 text-slate-800 font-black text-xs uppercase tracking-widest disabled:opacity-50">
+          {error && <p role="alert" className="text-sm font-bold text-terracotta-700">{error}</p>}
+          <button type="submit" disabled={busy || !passcode} className="px-5 py-3 rounded-xl bg-white border-2 border-ink-300 text-ink-800 font-black text-xs uppercase tracking-widest disabled:opacity-50">
             {busy ? 'Checking…' : 'Turn Lock Off'}
           </button>
         </form>
       ) : (
         <form onSubmit={handleEnable} className="space-y-4">
-          <p className="text-sm font-medium text-slate-600 leading-relaxed">
+          <p className="text-sm font-medium text-ink-600 leading-relaxed">
             Encrypt your child's records on this device with a passcode, so someone using this phone or browser can't read them without it.
           </p>
           <div className="grid sm:grid-cols-2 gap-3">
             <label className="block">
-              <span className="block text-xs font-bold text-slate-700 mb-1">New passcode (at least {MIN_LENGTH} characters)</span>
+              <span className="block text-xs font-bold text-ink-700 mb-1">New passcode (at least {MIN_LENGTH} characters)</span>
               <input type="password" autoComplete="new-password" value={passcode} onChange={e => setPasscode(e.target.value)} className={inputClass} />
             </label>
             <label className="block">
-              <span className="block text-xs font-bold text-slate-700 mb-1">Repeat passcode</span>
+              <span className="block text-xs font-bold text-ink-700 mb-1">Repeat passcode</span>
               <input type="password" autoComplete="new-password" value={confirmation} onChange={e => setConfirmation(e.target.value)} className={inputClass} />
             </label>
           </div>
@@ -94,8 +94,8 @@ export const PasscodeSettings: React.FC = () => {
             <input type="checkbox" checked={understood} onChange={e => setUnderstood(e.target.checked)} className="mt-1 w-5 h-5 shrink-0" />
             <span className="text-sm font-bold text-amber-950">I understand that if I forget this passcode, my records can't be recovered.</span>
           </label>
-          {error && <p role="alert" className="text-sm font-bold text-rose-700">{error}</p>}
-          <button type="submit" disabled={busy} className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-slate-400">
+          {error && <p role="alert" className="text-sm font-bold text-terracotta-700">{error}</p>}
+          <button type="submit" disabled={busy} className="px-5 py-3 rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
             {busy ? 'Encrypting…' : 'Turn On Passcode Lock'}
           </button>
         </form>

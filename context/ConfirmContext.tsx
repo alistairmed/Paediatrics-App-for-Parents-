@@ -44,7 +44,7 @@ export const ConfirmProvider: React.FC<{ children: React.ReactNode }> = ({ child
     <ConfirmContext.Provider value={confirm}>
       {children}
       {request && (
-        <div className="fixed inset-0 z-150 bg-slate-900/60 flex items-center justify-center p-4" onClick={() => close(false)}>
+        <div className="fixed inset-0 z-150 bg-ink-900/60 flex items-center justify-center p-4" onClick={() => close(false)}>
           <div
             role="alertdialog"
             aria-modal="true"
@@ -53,15 +53,15 @@ export const ConfirmProvider: React.FC<{ children: React.ReactNode }> = ({ child
             onClick={e => e.stopPropagation()}
             className="bg-white rounded-4xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5"
           >
-            <h2 id="confirm-title" className="text-xl font-black text-slate-800">{request.title}</h2>
-            <p id="confirm-message" className="text-base font-medium text-slate-700 leading-relaxed">{request.message}</p>
+            <h2 id="confirm-title" className="text-xl font-black text-ink-800">{request.title}</h2>
+            <p id="confirm-message" className="text-base font-medium text-ink-700 leading-relaxed">{request.message}</p>
             <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
-              <button ref={cancelRef} onClick={() => close(false)} className="min-h-[48px] px-6 rounded-2xl border-2 border-slate-300 font-black text-slate-800">
+              <button ref={cancelRef} onClick={() => close(false)} className="min-h-[48px] px-6 rounded-2xl border-2 border-ink-300 font-black text-ink-800">
                 {request.cancelLabel || 'Cancel'}
               </button>
               <button
                 onClick={() => close(true)}
-                className={`min-h-[48px] px-6 rounded-2xl font-black text-white ${request.danger ? 'bg-rose-600 hover:bg-rose-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                className={`min-h-[48px] px-6 rounded-2xl font-black text-white ${request.danger ? 'bg-terracotta-600 hover:bg-terracotta-700' : 'bg-terracotta-600 hover:bg-terracotta-700'}`}
               >
                 {request.confirmLabel || 'OK'}
               </button>

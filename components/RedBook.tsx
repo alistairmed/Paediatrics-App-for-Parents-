@@ -69,8 +69,8 @@ export const RedBook: React.FC = () => {
   return (
     <div className="space-y-6 pb-32">
       {hasAlerts && (
-        <div className="bg-white rounded-3xl border-2 border-rose-500 shadow-xl overflow-hidden animate-in slide-in-from-top-4">
-          <div className="bg-rose-600 px-6 py-3 flex items-center justify-between text-white">
+        <div className="bg-white rounded-3xl border-2 border-terracotta-500 shadow-xl overflow-hidden animate-in slide-in-from-top-4">
+          <div className="bg-terracotta-600 px-6 py-3 flex items-center justify-between text-white">
             <div className="flex items-center gap-2">
               <span className="animate-bounce">🚨</span>
               <h3 className="font-black text-xs uppercase tracking-widest">Clinical Patterns of Concern</h3>
@@ -78,20 +78,20 @@ export const RedBook: React.FC = () => {
           </div>
           <div className="p-5 space-y-4">
             {alerts.overdueVax.length > 0 && (
-              <div className="flex items-start gap-3 bg-rose-50 p-4 rounded-2xl border border-rose-100">
+              <div className="flex items-start gap-3 bg-terracotta-50 p-4 rounded-2xl border border-terracotta-100">
                 <span className="text-xl">💉</span>
                 <div className="flex-1">
-                  <p className="font-black text-rose-900 text-sm">Vaccines not yet recorded</p>
-                  <p className="text-rose-800 text-xs font-bold mt-0.5">Overdue: {alerts.overdueVax.map(st => st.visit.name).join(', ')}. Book with your GP or immunisation provider, or record them if they've been given.</p>
+                  <p className="font-black text-terracotta-900 text-sm">Vaccines not yet recorded</p>
+                  <p className="text-terracotta-800 text-xs font-bold mt-0.5">Overdue: {alerts.overdueVax.map(st => st.visit.name).join(', ')}. Book with your GP or immunisation provider, or record them if they've been given.</p>
                 </div>
               </div>
             )}
             {alerts.activeRedFlags.length > 0 && (
-              <div className="flex items-start gap-3 bg-rose-100 p-4 rounded-2xl border border-rose-200">
+              <div className="flex items-start gap-3 bg-terracotta-100 p-4 rounded-2xl border border-terracotta-200">
                 <span className="text-xl">🚩</span>
                 <div className="flex-1">
-                  <p className="font-black text-rose-900 text-sm">Things to discuss</p>
-                  <p className="text-rose-800 text-xs font-bold mt-0.5">You've noted {alerts.activeRedFlags.length} {alerts.activeRedFlags.length === 1 ? 'item' : 'items'} on the milestones page. Talk to your GP or child health nurse about them.</p>
+                  <p className="font-black text-terracotta-900 text-sm">Things to discuss</p>
+                  <p className="text-terracotta-800 text-xs font-bold mt-0.5">You've noted {alerts.activeRedFlags.length} {alerts.activeRedFlags.length === 1 ? 'item' : 'items'} on the milestones page. Talk to your GP or child health nurse about them.</p>
                 </div>
               </div>
             )}
@@ -100,17 +100,17 @@ export const RedBook: React.FC = () => {
       )}
 
       <header className="flex items-center gap-4 px-1">
-        <div className="w-12 h-16 bg-rose-600 rounded-xl flex items-center justify-center text-white font-black text-xs -rotate-3 border-2 border-white shadow-lg uppercase">Book</div>
+        <div className="w-12 h-16 bg-terracotta-600 rounded-xl flex items-center justify-center text-white font-black text-xs -rotate-3 border-2 border-white shadow-lg uppercase">Book</div>
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Digital <span className="text-rose-700">Red Book</span></h2>
-          <p className="text-slate-500 text-xs font-medium">Standardized Child Health Record Sync</p>
+          <h2 className="text-3xl font-black text-ink-800 tracking-tighter">Digital <span className="text-terracotta-700">Red Book</span></h2>
+          <p className="text-ink-500 text-xs font-medium">Standardized Child Health Record Sync</p>
         </div>
       </header>
 
-      <nav className="sticky top-[58px] md:top-0 z-40 bg-[#FBFBFE]/80 backdrop-blur-md py-2">
-        <div className="bg-white p-1 rounded-full border border-slate-200 shadow-xs flex items-center">
+      <nav className="sticky top-[58px] md:top-0 z-40 bg-cream/80 backdrop-blur-md py-2">
+        <div className="bg-white p-1 rounded-full border border-ink-200 shadow-xs flex items-center">
           {tabs.map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`flex-1 py-3.5 rounded-full font-black transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2 ${activeTab === tab.id ? 'bg-rose-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`flex-1 py-3.5 rounded-full font-black transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2 ${activeTab === tab.id ? 'bg-terracotta-600 text-white shadow-md' : 'text-ink-500 hover:bg-ink-50'}`}>
               <span className="text-lg">{tab.icon}</span>
               <span className="hidden sm:inline">{tab.label}</span>
             </button>
@@ -118,15 +118,15 @@ export const RedBook: React.FC = () => {
         </div>
       </nav>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden min-h-[500px] animate-in slide-in-from-bottom-4">
+      <div className="bg-white rounded-[2.5rem] border border-ink-100 shadow-xl overflow-hidden min-h-[500px] animate-in slide-in-from-bottom-4">
         {activeTab === 'checks' && (
           <div className="p-5 sm:p-8 space-y-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-black text-slate-800 flex items-center gap-2"> Assessment Log</h3>
-              <span className="text-xs font-black text-slate-600 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg">Synchronized Baseline</span>
+              <h3 className="text-xl font-black text-ink-800 flex items-center gap-2"> Assessment Log</h3>
+              <span className="text-xs font-black text-ink-600 uppercase tracking-widest bg-ink-50 px-3 py-1 rounded-lg">Synchronized Baseline</span>
             </div>
             
-            <div className="space-y-4 relative before:absolute before:left-5 before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-100">
+            <div className="space-y-4 relative before:absolute before:left-5 before:top-4 before:bottom-4 before:w-0.5 before:bg-ink-100">
               {checks.map((check) => {
                 const vax = getVaxStatusForMilestone(check.ageMilestone);
                 return (
@@ -134,39 +134,39 @@ export const RedBook: React.FC = () => {
                     <button aria-label={check.completed ? `Mark the ${check.ageMilestone} check as not done` : `Mark the ${check.ageMilestone} check as done`} 
                       onClick={() => toggleCheck(check.id)}
                       className={`absolute left-0 w-10 h-10 rounded-2xl border-2 flex items-center justify-center transition-all z-10 shadow-xs ${
-                        check.completed ? 'bg-rose-600 border-rose-500 text-white' : 'bg-white border-slate-100 text-slate-200'
+                        check.completed ? 'bg-terracotta-600 border-terracotta-500 text-white' : 'bg-white border-ink-100 text-ink-200'
                       }`}
                     >
                       {check.completed ? '✓' : ''}
                     </button>
                     <div 
                       className={`p-6 rounded-3xl border transition-all cursor-pointer ${
-                        activeCheck === check.id ? 'border-rose-100 bg-rose-50/30 shadow-lg' : 'border-slate-50 bg-white shadow-xs hover:border-rose-100'
+                        activeCheck === check.id ? 'border-terracotta-100 bg-terracotta-50/30 shadow-lg' : 'border-ink-50 bg-white shadow-xs hover:border-terracotta-100'
                       }`}
                       onClick={() => setActiveCheck(activeCheck === check.id ? null : check.id)}
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-black text-xl text-slate-800 tracking-tight">{check.ageMilestone} Health Check</h4>
+                          <h4 className="font-black text-xl text-ink-800 tracking-tight">{check.ageMilestone} Health Check</h4>
                           <div className="flex gap-2 mt-2">
                             {check.completed && <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-100 uppercase">Assessment Complete</span>}
                             {vax && (
                               <span className={`text-xs font-black uppercase px-2 py-0.5 rounded border ${
-                                vax.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'
+                                vax.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-terracotta-50 text-terracotta-700 border-terracotta-100'
                               }`}>
                                 {vax.status === 'completed' ? 'Vax Given' : 'Vax Pending'}
                               </span>
                             )}
                           </div>
                         </div>
-                        <span className="text-slate-500 text-xs mt-1">▼</span>
+                        <span className="text-ink-500 text-xs mt-1">▼</span>
                       </div>
                       {activeCheck === check.id && (
                         <div className="mt-6 space-y-6 animate-in slide-in-from-top-2" onClick={e => e.stopPropagation()}>
                           <div className="relative">
-                            <label htmlFor="redboo-assessment-notes" className="text-xs font-black uppercase text-slate-600 tracking-widest absolute -top-2 left-4 bg-white px-2">Assessment Notes</label>
+                            <label htmlFor="redboo-assessment-notes" className="text-xs font-black uppercase text-ink-600 tracking-widest absolute -top-2 left-4 bg-white px-2">Assessment Notes</label>
                             <textarea id="redboo-assessment-notes" 
-                                className="w-full h-32 p-6 rounded-4xl border border-slate-100 bg-white text-sm font-bold outline-hidden focus:ring-4 focus:ring-rose-50 transition-all shadow-inner"
+                                className="w-full h-32 p-6 rounded-4xl border border-ink-100 bg-white text-sm font-bold outline-hidden focus:ring-4 focus:ring-terracotta-50 transition-all shadow-inner"
                                 placeholder="Log weight gain, feeding concerns, or developmental observations..."
                                 value={check.notes}
                                 onChange={(e) => updateNotes(check.id, e.target.value)}
@@ -176,7 +176,7 @@ export const RedBook: React.FC = () => {
                             <div className="flex flex-col sm:flex-row gap-3">
                                 <button 
                                     onClick={() => handleScheduleCheck(check.ageMilestone)}
-                                    className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-indigo-700 transition-all active:scale-95"
+                                    className="flex-1 py-4 bg-terracotta-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-terracotta-700 transition-all active:scale-95"
                                 >
                                     🗓️ Schedule Review
                                 </button>

@@ -33,8 +33,8 @@ const MEDICINES = [
 export const MedicineInfo: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <div className="space-y-8 pb-20">
     <header className="space-y-2">
-      <h2 className="text-3xl font-black text-slate-800">Medicines <span className="text-emerald-700">& Pain Relief</span></h2>
-      <p className="text-base font-medium text-slate-600 max-w-2xl">
+      <h2 className="text-3xl font-black text-ink-800">Medicines <span className="text-emerald-700">& Pain Relief</span></h2>
+      <p className="text-base font-medium text-ink-600 max-w-2xl">
         General information only. Paeds Pouch doesn't tell you how much or how often to give a medicine.
       </p>
     </header>
@@ -45,13 +45,13 @@ export const MedicineInfo: React.FC<{ children?: React.ReactNode }> = ({ childre
 
     <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {MEDICINES.map(medicine => (
-        <article key={medicine.name} className="bg-white border-2 border-slate-200 rounded-4xl p-6 space-y-3" aria-labelledby={`medicine-${medicine.name}`}>
-          <h3 id={`medicine-${medicine.name}`} className="text-lg font-black text-slate-800">{medicine.name}</h3>
-          <p className="text-base font-medium text-slate-700"><strong>What it's for:</strong> {medicine.usedFor}</p>
-          <p className="text-base font-medium text-slate-700"><strong>Common forms:</strong> {medicine.forms}</p>
+        <article key={medicine.name} className="bg-white border-2 border-ink-200 rounded-4xl p-6 space-y-3" aria-labelledby={`medicine-${medicine.name}`}>
+          <h3 id={`medicine-${medicine.name}`} className="text-lg font-black text-ink-800">{medicine.name}</h3>
+          <p className="text-base font-medium text-ink-700"><strong>What it's for:</strong> {medicine.usedFor}</p>
+          <p className="text-base font-medium text-ink-700"><strong>Common forms:</strong> {medicine.forms}</p>
           <div>
-            <p className="text-base font-bold text-slate-800">Ask a pharmacist or doctor before using it if:</p>
-            <ul className="mt-1 space-y-1 list-disc pl-5 text-base font-medium text-slate-700">
+            <p className="text-base font-bold text-ink-800">Ask a pharmacist or doctor before using it if:</p>
+            <ul className="mt-1 space-y-1 list-disc pl-5 text-base font-medium text-ink-700">
               {medicine.ask.map(point => <li key={point}>{point}</li>)}
             </ul>
           </div>
@@ -59,9 +59,9 @@ export const MedicineInfo: React.FC<{ children?: React.ReactNode }> = ({ childre
       ))}
     </section>
 
-    <section className="bg-white border-2 border-slate-200 rounded-4xl p-6 space-y-2">
-      <h3 className="text-lg font-black text-slate-800">Using children's medicines safely</h3>
-      <ul className="space-y-1 list-disc pl-5 text-base font-medium text-slate-700">
+    <section className="bg-white border-2 border-ink-200 rounded-4xl p-6 space-y-2">
+      <h3 className="text-lg font-black text-ink-800">Using children's medicines safely</h3>
+      <ul className="space-y-1 list-disc pl-5 text-base font-medium text-ink-700">
         <li>Products come in different strengths, so read the label every time, including when you buy a new bottle.</li>
         <li>Use the measuring device that comes with the product.</li>
         <li>Keep medicines out of reach of children.</li>
