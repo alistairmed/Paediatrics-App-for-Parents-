@@ -3,7 +3,7 @@ import { useState, useCallback, useRef } from "react";
 import { readItem, writeItem } from "../utils/vault";
 
 /** Fired on window when a value couldn't be saved (usually because storage is full). */
-export const STORAGE_ERROR_EVENT = "pedipulse:storage-error";
+export const STORAGE_ERROR_EVENT = "paeds-pouch:storage-error";
 
 /**
  * A safe wrapper for localStorage with error handling and type safety.

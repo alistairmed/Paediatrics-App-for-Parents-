@@ -71,6 +71,13 @@ ENTITLEMENT_SECRET=<same as the server> npm run mint-token -- --sub tester --day
 Paste the printed code into **Privacy, Backup & Lock → Premium access code**.
 The script refuses to run when `NODE_ENV=production` or on Vercel.
 
+## Spend limits
+
+Set a **monthly spend limit in Google AI Studio and the Anthropic Console**
+before switching AI on. The app's caps (20 requests per device per day, the
+per-IP limit, per-token monthly caps and output-token caps) slow abuse but are
+not a billing ceiling; only the providers' spend limits are.
+
 ## Vercel Firewall rate limit checklist
 
 Do this in the Vercel dashboard before switching AI on.
@@ -81,7 +88,7 @@ Do this in the Vercel dashboard before switching AI on.
 - [ ] Optional second rule: same path, **24 h** window, **100 requests** per IP
 - [ ] **Save** → **Review Changes** → **Publish**
 - [ ] Check: send 11 requests in a minute from one IP and confirm the 11th gets `429`
-- [ ] Set budget alerts or spend limits on the Google project and the Anthropic workspace that own the keys
+- [ ] Set a monthly spend limit in Google AI Studio (or the Google Cloud billing account that owns the Gemini key) and in the Anthropic Console (Settings → Limits) for the workspace that owns the Claude key, with an email alert before the limit
 
 ## Content-Security-Policy
 

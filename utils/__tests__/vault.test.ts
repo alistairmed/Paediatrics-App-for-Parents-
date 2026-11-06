@@ -78,3 +78,119 @@ describe('Vault', () => {
     expect(localStorage.getItem('pedipulse_profile')).toBe('{"name":"Mia"}');
   });
 });
+
+describe('Vault with the iOS Keychain / Android Keystore', () => {
+  beforeEach(() => { (globalThis as any).localStorage = new MemoryStorage(); });
+
+  // Stands in for the secure store; survives "reloads" like the real Keychain.
+  const makeStore = () => {
+    const m = new Map<string, string>();
+    return {
+      items: m,
+      get: async (k: string) => m.get(k) ?? null,
+      set: async (k: string, v: string) => { m.set(k, v); },
+      remove: async (k: string) => { m.delete(k); },
+    };
+  };
+  const freshVault = async () => { vi.resetModules(); return import('../vault'); };
+
+  test('An existing user\'s lock moves into secure storage and still opens with the same passcode', async () => {
+    localStorage.setItem('pedipulse_history', '{"pastMedicalHistory":"Asthma"}');
+    const web = await freshVault();
+    await web.enableLock('123456', 1000);
+    const encrypted = localStorage.getItem('pedipulse_history');
+    expect(localStorage.getItem(web.LOCK_META_KEY)).not.toBeNull();
+
+    // First start of the app version that uses secure storage.
+    const store = makeStore();
+    const app = await freshVault();
+    await app.initVault(store);
+    expect(store.items.has(app.LOCK_META_KEY)).toBe(true);
+    expect(localStorage.getItem(app.LOCK_META_KEY)).toBeNull();
+    expect(localStorage.getItem('pedipulse_history')).toBe(encrypted); // records untouched
+    expect(app.isLockEnabled()).toBe(true);
+    expect(await app.unlock('000000')).toBe(false);
+    expect(await app.unlock('123456')).toBe(true);
+    expect(app.readItem('pedipulse_history')).toBe('{"pastMedicalHistory":"Asthma"}');
+
+    // Later starts read it from secure storage only.
+    const again = await freshVault();
+    await again.initVault(store);
+    expect(again.isLockEnabled()).toBe(true);
+    expect(await again.unlock('123456')).toBe(true);
+  });
+
+  test('Turning the lock on and off uses secure storage, not localStorage', async () => {
+    localStorage.setItem('pedipulse_children', '{"children":[]}');
+    const store = makeStore();
+    const v = await freshVault();
+    await v.initVault(store);
+    await v.enableLock('123456', 1000);
+    expect(localStorage.getItem(v.LOCK_META_KEY)).toBeNull();
+    expect(store.items.has(v.LOCK_META_KEY)).toBe(true);
+    expect(await v.disableLock('123456')).toBe(true);
+    expect(store.items.has(v.LOCK_META_KEY)).toBe(false);
+    expect(v.isLockEnabled()).toBe(false);
+    expect(localStorage.getItem('pedipulse_children')).toBe('{"children":[]}');
+  });
+
+  test('If secure storage already has the lock, a stale localStorage copy is removed, not used', async () => {
+    const store = makeStore();
+    const v = await freshVault();
+    await v.initVault(store);
+    await v.enableLock('123456', 1000);
+    const kept = store.items.get(v.LOCK_META_KEY);
+    localStorage.setItem(v.LOCK_META_KEY, '{"stale":true}');
+    const again = await freshVault();
+    await again.initVault(store);
+    expect(store.items.get(v.LOCK_META_KEY)).toBe(kept);
+    expect(localStorage.getItem(v.LOCK_META_KEY)).toBeNull();
+  });
+
+  test('Factory reset also clears the secure-storage items', async () => {
+    (globalThis as any).window = { location: { reload: vi.fn() } };
+    const store = makeStore();
+    const v = await freshVault();
+    await v.initVault(store);
+    await v.enableLock('123456', 1000);
+    v.registerSecureKey('bio-key');
+    store.items.set('bio-key', 'secret');
+    await v.eraseAllData();
+    expect(store.items.size).toBe(0);
+    expect(v.isLockEnabled()).toBe(false);
+    expect((globalThis as any).window.location.reload).toHaveBeenCalled();
+    delete (globalThis as any).window;
+  });
+});
+
+describe('Biometric unlock key', () => {
+  beforeEach(() => { (globalThis as any).localStorage = new MemoryStorage(); });
+  const freshVault = async () => { vi.resetModules(); return import('../vault'); };
+
+  test('The exported key unlocks the records; a wrong passcode exports nothing', async () => {
+    localStorage.setItem('pedipulse_history', '{"allergies":["egg"]}');
+    const v = await freshVault();
+    await v.enableLock('123456', 1000);
+    expect(await v.exportKeyForBiometrics('000000')).toBeNull();
+    const raw = await v.exportKeyForBiometrics('123456');
+    expect(raw).toMatch(/^[A-Za-z0-9+/]+=*$/);
+
+    const { importRawKey } = await import('../crypto');
+    const later = await freshVault(); // app restarted, locked
+    expect(later.isUnlocked()).toBe(false);
+    expect(await later.unlockWithKey(await importRawKey(raw!))).toBe(true);
+    expect(later.readItem('pedipulse_history')).toBe('{"allergies":["egg"]}');
+  });
+
+  test('A key from an old passcode no longer unlocks after the passcode changes', async () => {
+    const v = await freshVault();
+    await v.enableLock('123456', 1000);
+    const old = await v.exportKeyForBiometrics('123456');
+    expect(await v.disableLock('123456')).toBe(true);
+    await v.enableLock('654321', 1000);
+    const { importRawKey } = await import('../crypto');
+    const later = await freshVault();
+    expect(await later.unlockWithKey(await importRawKey(old!))).toBe(false);
+    expect(later.isUnlocked()).toBe(false);
+  });
+});

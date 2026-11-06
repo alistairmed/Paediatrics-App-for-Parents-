@@ -191,11 +191,11 @@ export const ScreeningTool: React.FC = () => {
 
   const getDomainColor = (domain: string) => {
     switch (domain) {
-      case 'Mood': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
-      case 'Social': return 'bg-rose-50 text-rose-700 border-rose-100';
+      case 'Mood': return 'bg-terracotta-50 text-terracotta-600 border-terracotta-100';
+      case 'Social': return 'bg-terracotta-50 text-terracotta-700 border-terracotta-100';
       case 'Focus': return 'bg-amber-50 text-amber-700 border-amber-100';
       case 'Development': return 'bg-emerald-50 text-emerald-700 border-emerald-100';
-      default: return 'bg-teal-50 text-teal-700 border-teal-100';
+      default: return 'bg-sky-50 text-sky-700 border-sky-100';
     }
   };
 
@@ -213,24 +213,24 @@ export const ScreeningTool: React.FC = () => {
     <div className="space-y-8 sm:space-y-10 pb-28 animate-in fade-in duration-700">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 sm:gap-6">
         <div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter leading-none">Conversation <span className="text-teal-700">Starters</span></h2>
-          <p className="text-slate-500 font-medium mt-2 text-xs sm:text-sm">Short checklists to help you put what you've noticed into words before seeing your GP, child health nurse or paediatrician. They aren't tests and don't give a score.</p>
+          <h2 className="text-3xl sm:text-4xl font-black text-ink-800 tracking-tighter leading-none">Conversation <span className="text-sky-700">Starters</span></h2>
+          <p className="text-ink-500 font-medium mt-2 text-xs sm:text-sm">Short checklists to help you put what you've noticed into words before seeing your GP, child health nurse or paediatrician. They aren't tests and don't give a score.</p>
         </div>
         <div className="flex flex-wrap gap-2 w-full md:w-auto">
             {viewState !== 'hub' && (
-                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-slate-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xs min-h-[44px]">Back to Checklists</button>
+                <button onClick={() => {setViewState('hub'); setActiveModKey(null); setAnalysis(null); setShowAnswers(false);}} className="bg-white border border-ink-200 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xs min-h-[44px]">Back to Checklists</button>
             )}
             {viewState === 'hub' && (
-                <button onClick={handleStartFinder} className="w-full md:w-auto bg-teal-700 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl hover:bg-teal-800 active:scale-95 transition-all min-h-[44px]">Start Test Finder ✨</button>
+                <button onClick={handleStartFinder} className="w-full md:w-auto bg-sky-700 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl hover:bg-sky-800 active:scale-95 transition-all min-h-[44px]">Start Test Finder ✨</button>
             )}
         </div>
       </header>
 
       {viewState === 'finder' && (
-        <div className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] border border-teal-100 shadow-2xl space-y-8 sm:space-y-12 animate-in zoom-in-95">
+        <div className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] border border-sky-100 shadow-2xl space-y-8 sm:space-y-12 animate-in zoom-in-95">
             <div className="text-center space-y-2">
-                <h3 className="text-2xl sm:text-3xl font-black text-slate-800 uppercase">Find a checklist</h3>
-                <p className="text-slate-500 font-medium text-xs sm:text-sm">Answer 2 simple questions to find a checklist that fits.</p>
+                <h3 className="text-2xl sm:text-3xl font-black text-ink-800 uppercase">Find a checklist</h3>
+                <p className="text-ink-500 font-medium text-xs sm:text-sm">Answer 2 simple questions to find a checklist that fits.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -241,17 +241,17 @@ export const ScreeningTool: React.FC = () => {
                             if (!finderPath.age) setFinderPath({ age: opt.id });
                             else handleSelectTest(opt.test);
                         }}
-                        className="bg-slate-50 p-6 sm:p-8 rounded-4xl border border-slate-100 hover:border-teal-500 hover:bg-teal-50 transition-all text-center group min-h-[44px]"
+                        className="bg-ink-50 p-6 sm:p-8 rounded-4xl border border-ink-100 hover:border-sky-500 hover:bg-sky-50 transition-all text-center group min-h-[44px]"
                     >
-                        <p className="text-base sm:text-lg font-black text-slate-800 group-hover:text-teal-900">{opt.label}</p>
-                        <p className="text-xs font-black text-slate-600 uppercase tracking-widest mt-1">Select Option <span>→</span></p>
+                        <p className="text-base sm:text-lg font-black text-ink-800 group-hover:text-sky-900">{opt.label}</p>
+                        <p className="text-xs font-black text-ink-600 uppercase tracking-widest mt-1">Select Option <span>→</span></p>
                     </button>
                 ))}
             </div>
             
             {finderPath.age && (
                 <div className="flex justify-center">
-                    <button onClick={() => setFinderPath({})} className="text-xs font-black uppercase text-slate-600 hover:text-teal-700 min-h-[44px]">← Back to Start</button>
+                    <button onClick={() => setFinderPath({})} className="text-xs font-black uppercase text-ink-600 hover:text-sky-700 min-h-[44px]">← Back to Start</button>
                 </div>
             )}
         </div>
@@ -263,7 +263,7 @@ export const ScreeningTool: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {Object.values(SCREENING_MODS).map((mod) => {
               return (
-                <div key={mod.id} className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-slate-100 shadow-xs hover:shadow-xl transition-all group relative flex flex-col justify-between">
+                <div key={mod.id} className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] border border-ink-100 shadow-xs hover:shadow-xl transition-all group relative flex flex-col justify-between">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
                         <div className="flex items-center gap-2">
@@ -272,12 +272,12 @@ export const ScreeningTool: React.FC = () => {
                               {mod.domain}
                           </span>
                         </div>
-                        <span className="text-xs font-black text-slate-600 uppercase">Age: {mod.ageRange}</span>
+                        <span className="text-xs font-black text-ink-600 uppercase">Age: {mod.ageRange}</span>
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight leading-none">{mod.name}</h3>
-                    <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">{mod.description}</p>
+                    <h3 className="text-2xl sm:text-3xl font-black text-ink-800 tracking-tight leading-none">{mod.name}</h3>
+                    <p className="text-xs sm:text-sm text-ink-500 font-medium leading-relaxed">{mod.description}</p>
                   </div>
-                  <button onClick={() => handleSelectTest(mod.id)} className="mt-6 sm:mt-8 py-4 sm:py-5 min-h-[44px] bg-slate-900 text-white rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-[0.15em] shadow-lg group-hover:bg-teal-800 transition-all">Start Assessment</button>
+                  <button onClick={() => handleSelectTest(mod.id)} className="mt-6 sm:mt-8 py-4 sm:py-5 min-h-[44px] bg-ink-900 text-white rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-[0.15em] shadow-lg group-hover:bg-sky-800 transition-all">Start Assessment</button>
                 </div>
               );
             })}
@@ -289,40 +289,40 @@ export const ScreeningTool: React.FC = () => {
         <div className="space-y-8">
           {showAnswers ? (
             <div className="space-y-6">
-              <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-5 print:shadow-none print:border-0 print:p-0">
+              <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-ink-200 shadow-xl space-y-5 print:shadow-none print:border-0 print:p-0">
                 <div>
-                  <h3 className="text-2xl font-black text-slate-800">{activeMod.name}: your answers</h3>
-                  <p className="text-sm font-bold text-slate-600">{new Date().toLocaleDateString('en-AU')} · a conversation starter, not a test or a score</p>
+                  <h3 className="text-2xl font-black text-ink-800">{activeMod.name}: your answers</h3>
+                  <p className="text-sm font-bold text-ink-600">{new Date().toLocaleDateString('en-AU')} · a conversation starter, not a test or a score</p>
                 </div>
-                <ul className="divide-y divide-slate-100">
+                <ul className="divide-y divide-ink-100">
                   {activeMod.questions.map(q => {
                     const answer = activeMod.options.find(o => o.value === responses[q.id]);
                     return (
                       <li key={q.id} className="py-3 flex flex-col sm:flex-row sm:justify-between gap-1 break-inside-avoid">
-                        <span className="text-base font-medium text-slate-800">{q.text}</span>
-                        <span className={`text-base font-black shrink-0 ${answer ? 'text-teal-800' : 'text-slate-600'}`}>{answer ? answer.label : 'Not answered'}</span>
+                        <span className="text-base font-medium text-ink-800">{q.text}</span>
+                        <span className={`text-base font-black shrink-0 ${answer ? 'text-sky-800' : 'text-ink-600'}`}>{answer ? answer.label : 'Not answered'}</span>
                       </li>
                     );
                   })}
                 </ul>
-                <p className="text-sm font-medium text-slate-600">
+                <p className="text-sm font-medium text-ink-600">
                   Take this to your GP, child health nurse or paediatrician. They can talk it through with you and decide whether anything else is needed.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 print:hidden">
-                <button onClick={() => window.print()} className="min-h-[48px] px-6 rounded-2xl bg-teal-700 text-white font-black uppercase tracking-widest text-xs">Print or Save as PDF</button>
-                <button onClick={() => setShowAnswers(false)} className="min-h-[48px] px-6 rounded-2xl border-2 border-slate-300 font-black uppercase tracking-widest text-xs text-slate-700">Change Answers</button>
+                <button onClick={() => window.print()} className="min-h-[48px] px-6 rounded-2xl bg-sky-700 text-white font-black uppercase tracking-widest text-xs">Print or Save as PDF</button>
+                <button onClick={() => setShowAnswers(false)} className="min-h-[48px] px-6 rounded-2xl border-2 border-ink-300 font-black uppercase tracking-widest text-xs text-ink-700">Change Answers</button>
               </div>
             </div>
           ) : !analysis ? (
             <div className="space-y-4 animate-in slide-in-from-bottom-4">
-              <div className="bg-indigo-900 p-10 rounded-[3.5rem] text-white shadow-2xl mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="bg-terracotta-900 p-10 rounded-[3.5rem] text-white shadow-2xl mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
                  <div className="space-y-2">
                     <h3 className="text-3xl font-black tracking-tighter leading-none">{activeMod.name}</h3>
-                    <p className="text-indigo-200 text-sm font-medium opacity-70">Conversation starter for your appointment.</p>
+                    <p className="text-terracotta-200 text-sm font-medium opacity-70">Conversation starter for your appointment.</p>
                  </div>
                  <div className="px-6 py-2 bg-white/10 rounded-xl border border-white/10">
-                    <span className="text-xs font-black text-indigo-100">{Object.keys(responses).length} / {activeMod.questions.length} Complete</span>
+                    <span className="text-xs font-black text-terracotta-100">{Object.keys(responses).length} / {activeMod.questions.length} Complete</span>
                  </div>
               </div>
 
@@ -338,20 +338,20 @@ export const ScreeningTool: React.FC = () => {
               </div>
 
               {activeMod.questions.map((q, i) => (
-                <div key={q.id} className="bg-white p-8 rounded-[3rem] border border-slate-100 flex flex-col lg:flex-row justify-between items-center gap-6 shadow-xs hover:border-teal-100 transition-colors">
+                <div key={q.id} className="bg-white p-8 rounded-[3rem] border border-ink-100 flex flex-col lg:flex-row justify-between items-center gap-6 shadow-xs hover:border-sky-100 transition-colors">
                   <div className="flex gap-6 items-start flex-1">
-                    <span className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-xs font-black text-slate-600 shrink-0 border border-slate-100">{i+1}</span>
-                    <p className="text-xl font-black text-slate-700 leading-snug">{q.text}</p>
+                    <span className="w-10 h-10 rounded-2xl bg-ink-50 flex items-center justify-center text-xs font-black text-ink-600 shrink-0 border border-ink-100">{i+1}</span>
+                    <p className="text-xl font-black text-ink-700 leading-snug">{q.text}</p>
                   </div>
-                  <div className="flex bg-slate-50 p-1.5 rounded-3xl border border-slate-100 shadow-inner overflow-x-auto no-scrollbar">
+                  <div className="flex bg-ink-50 p-1.5 rounded-3xl border border-ink-100 shadow-inner overflow-x-auto no-scrollbar">
                     {activeMod.options.map(opt => (
                       <button 
                         key={opt.value}
                         onClick={() => handleResponse(q.id, opt.value)}
                         className={`px-6 py-3.5 rounded-xl text-xs font-black uppercase transition-all whitespace-nowrap ${
                             responses[q.id] === opt.value 
-                            ? (opt.color || 'bg-teal-700 text-white shadow-lg') 
-                            : 'text-slate-600 hover:text-slate-600'
+                            ? (opt.color || 'bg-sky-700 text-white shadow-lg') 
+                            : 'text-ink-600 hover:text-ink-600'
                         }`}
                       >
                         {opt.label}
@@ -365,7 +365,7 @@ export const ScreeningTool: React.FC = () => {
                     <button 
                       onClick={handleSubmit} 
                       disabled={loading || Object.keys(responses).length < activeMod.questions.length}
-                      className="w-full py-7 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-slate-200 transition-all hover:bg-indigo-700 active:scale-95"
+                      className="w-full py-7 bg-terracotta-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-2xl disabled:bg-ink-200 transition-all hover:bg-terracotta-700 active:scale-95"
                   >
                       {loading ? 'Preparing…' : 'Finalize & Prepare Handover ✨'}
                   </button>
@@ -374,59 +374,59 @@ export const ScreeningTool: React.FC = () => {
                     <button
                       onClick={() => setShowAnswers(true)}
                       disabled={Object.keys(responses).length === 0}
-                      className="w-full py-6 bg-teal-700 text-white rounded-4xl font-black uppercase tracking-widest shadow-xl disabled:bg-slate-300 hover:bg-teal-800"
+                      className="w-full py-6 bg-sky-700 text-white rounded-4xl font-black uppercase tracking-widest shadow-xl disabled:bg-ink-300 hover:bg-sky-800"
                     >
                       See My Answers
                     </button>
-                    <p className="text-sm font-medium text-slate-600 text-center">You don't have to answer every question.</p>
+                    <p className="text-sm font-medium text-ink-600 text-center">You don't have to answer every question.</p>
                   </div>
                 )}
               </div>
             </div>
           ) : (
             <div className="space-y-10 animate-in zoom-in-95">
-              <div className="bg-white p-12 rounded-[4rem] border-l-24 border-l-teal-600 shadow-2xl space-y-12 relative overflow-hidden">
-                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-teal-50 rounded-full opacity-50 blur-[100px]"></div>
+              <div className="bg-white p-12 rounded-[4rem] border-l-24 border-l-sky-600 shadow-2xl space-y-12 relative overflow-hidden">
+                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-sky-50 rounded-full opacity-50 blur-[100px]"></div>
                  
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
                     <div className="space-y-8">
                         <div className="flex items-center gap-6">
-                            <div className="w-20 h-20 bg-teal-50 text-teal-700 rounded-3xl flex items-center justify-center text-5xl shadow-inner border border-teal-100">🔬</div>
+                            <div className="w-20 h-20 bg-sky-50 text-sky-700 rounded-3xl flex items-center justify-center text-5xl shadow-inner border border-sky-100">🔬</div>
                             <div>
-                                <h3 className="text-4xl font-black text-slate-800 leading-none tracking-tight">Pattern Insight</h3>
-                                <p className="text-xs font-black uppercase tracking-[0.3em] text-teal-700 mt-2">Clinical Synthesis for Specialist</p>
+                                <h3 className="text-4xl font-black text-ink-800 leading-none tracking-tight">Pattern Insight</h3>
+                                <p className="text-xs font-black uppercase tracking-[0.3em] text-sky-700 mt-2">Clinical Synthesis for Specialist</p>
                             </div>
                         </div>
-                        <p className="text-slate-700 font-bold leading-relaxed text-2xl border-l-4 border-slate-100 pl-8">{analysis.overallSummary}</p>
+                        <p className="text-ink-700 font-bold leading-relaxed text-2xl border-l-4 border-ink-100 pl-8">{analysis.overallSummary}</p>
                         
                         <div className="space-y-4 pt-8">
-                            <h4 className="text-xs font-black uppercase text-teal-700 tracking-[0.3em] ml-2">Clinical Recommendations</h4>
+                            <h4 className="text-xs font-black uppercase text-sky-700 tracking-[0.3em] ml-2">Clinical Recommendations</h4>
                             <div className="space-y-4">
                                 {analysis.actionableTips?.map((t: string, i: number) => (
-                                    <div key={i} className="bg-teal-50/50 p-6 rounded-3xl border border-teal-100 flex gap-6 shadow-xs group hover:bg-white transition-all">
+                                    <div key={i} className="bg-sky-50/50 p-6 rounded-3xl border border-sky-100 flex gap-6 shadow-xs group hover:bg-white transition-all">
                                         <span className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-xs group-hover:scale-110 transition-transform">📋</span>
-                                        <p className="text-sm font-black text-teal-950 leading-snug">{t}</p>
+                                        <p className="text-sm font-black text-sky-950 leading-snug">{t}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-slate-50/50 p-10 rounded-[4rem] border border-slate-100 h-[500px] shadow-inner">
+                    <div className="bg-ink-50/50 p-10 rounded-[4rem] border border-ink-100 h-[500px] shadow-inner">
                         <div className="text-center mb-8">
-                            <h4 className="text-xs font-black uppercase text-slate-600 tracking-[0.3em]">Domain Distribution Profile</h4>
+                            <h4 className="text-xs font-black uppercase text-ink-600 tracking-[0.3em]">Domain Distribution Profile</h4>
                         </div>
                         <ResponsiveContainer width="100%" height="100%">
                             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                                <PolarGrid stroke="#cbd5e1" strokeWidth={1} />
-                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 900 }} />
+                                <PolarGrid stroke="var(--color-sky-soft)" strokeWidth={1} />
+                                <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--color-ink-500)', fontSize: 11, fontWeight: 900 }} />
                                 <PolarRadiusAxis angle={30} domain={[0, activeMod.type === 'binary' ? 1 : activeMod.type === 'tri-state' ? 10 : 3]} tick={false} axisLine={false} />
                                 <Radar
                                     name="Current Intensity"
                                     dataKey="A"
-                                    stroke="#0d9488"
+                                    stroke="var(--color-sky-700)"
                                     strokeWidth={4}
-                                    fill="#14b8a6"
+                                    fill="var(--color-sky-brand)"
                                     fillOpacity={0.6}
                                 />
                                 <Tooltip contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
@@ -435,7 +435,7 @@ export const ScreeningTool: React.FC = () => {
                     </div>
                  </div>
 
-                 <div className="pt-10 border-t border-slate-100 flex justify-between items-center opacity-40">
+                 <div className="pt-10 border-t border-ink-100 flex justify-between items-center opacity-40">
                     <p className="text-xs font-black uppercase tracking-widest">Standardized Tool: {activeMod.name}</p>
                     <p className="text-xs font-black uppercase tracking-widest">Pattern Generated: {new Date().toLocaleDateString('en-AU')}</p>
                  </div>

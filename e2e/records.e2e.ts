@@ -67,7 +67,7 @@ test('an encrypted backup file can be saved', async ({ page }) => {
   await passwords.nth(1).fill('correct horse');
   const download = page.waitForEvent('download');
   await form.getByRole('button', { name: 'Save Backup File' }).click();
-  expect((await download).suggestedFilename()).toMatch(/^pedipulse-backup-.*\.json$/);
+  expect((await download).suggestedFilename()).toMatch(/^paeds-pouch-backup-.*\.json$/);
 });
 
 test('a backup can be restored after the records change, with a confirmation first', async ({ page }) => {

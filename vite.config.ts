@@ -52,7 +52,7 @@ const aiDevProxy = (env: Record<string, string>): Plugin => ({
  * service worker can save the whole app for offline use.
  */
 const serviceWorker = (): Plugin => ({
-  name: 'pedipulse-service-worker',
+  name: 'paeds-pouch-service-worker',
   apply: 'build',
   generateBundle(_options, bundle) {
     const publicFiles = ['/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png', '/icons/favicon-32.png'];

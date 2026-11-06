@@ -74,7 +74,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[2.5rem] p-6 border-2 border-slate-100 shadow-xl space-y-4 animate-in fade-in">
+    <div className="bg-white rounded-[2.5rem] p-6 border-2 border-ink-100 shadow-xl space-y-4 animate-in fade-in">
       {/* Top Search Input & Controls */}
       <div className="flex flex-col sm:flex-row gap-3 items-center">
         {/* Keyword Search Input */}
@@ -85,12 +85,12 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full pl-12 pr-10 py-3.5 bg-slate-50 border-2 border-slate-200 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-100 rounded-2xl text-slate-800 font-bold text-sm transition-all placeholder:text-slate-600"
+            className="w-full pl-12 pr-10 py-3.5 bg-ink-50 border-2 border-ink-200 focus:border-terracotta-500 focus:bg-white focus:ring-4 focus:ring-terracotta-100 rounded-2xl text-ink-800 font-bold text-sm transition-all placeholder:text-ink-600"
           />
           {searchQuery && (
             <button aria-label="Clear search"
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-xs font-black transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-ink-200 hover:bg-ink-300 text-ink-600 flex items-center justify-center text-xs font-black transition-colors"
               title="Clear search text"
             >
               ✕
@@ -103,14 +103,14 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           onClick={() => setShowDatePicker(!showDatePicker)}
           className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition-all border-2 ${
             startDate || endDate
-              ? 'bg-violet-600 border-violet-600 text-white shadow-md'
-              : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+              ? 'bg-terracotta-600 border-terracotta-600 text-white shadow-md'
+              : 'bg-ink-50 border-ink-200 text-ink-700 hover:bg-ink-100'
           }`}
         >
           <span>📅</span>
           <span>{startDate || endDate ? 'Date Filtered' : 'Date Range'}</span>
           {startDate || endDate ? (
-            <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+            <span className="w-2 h-2 rounded-full bg-terracotta-400"></span>
           ) : null}
         </button>
 
@@ -118,7 +118,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         {hasActiveFilters && (
           <button
             onClick={handleClear}
-            className="px-4 py-3.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-100 rounded-2xl font-black text-xs uppercase tracking-wider transition-all"
+            className="px-4 py-3.5 bg-terracotta-50 hover:bg-terracotta-100 text-terracotta-700 border-2 border-terracotta-100 rounded-2xl font-black text-xs uppercase tracking-wider transition-all"
           >
             Clear Filters
           </button>
@@ -128,7 +128,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {/* Category Pills (If categories provided) */}
       {categories && categories.length > 0 && (
         <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 scrollbar-none">
-          <span className="text-xs font-black uppercase tracking-widest text-slate-600 shrink-0 mr-1">
+          <span className="text-xs font-black uppercase tracking-widest text-ink-600 shrink-0 mr-1">
             Category:
           </span>
           {categories.map((cat) => {
@@ -139,8 +139,8 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 onClick={() => onCategoryChange && onCategoryChange(cat.value)}
                 className={`px-4 py-1.5 rounded-full font-black text-xs transition-all shrink-0 ${
                   isSelected
-                    ? 'bg-violet-600 text-white shadow-xs scale-105'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-terracotta-600 text-white shadow-xs scale-105'
+                    : 'bg-ink-100 text-ink-600 hover:bg-ink-200'
                 }`}
               >
                 {cat.label}
@@ -152,39 +152,39 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
       {/* Collapsible Date Range Controls & Presets */}
       {showDatePicker && (
-        <div className="pt-3 border-t border-slate-100 space-y-4 animate-in slide-in-from-top-2">
+        <div className="pt-3 border-t border-ink-100 space-y-4 animate-in slide-in-from-top-2">
           {/* Presets */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-slate-600 mr-2">
+            <span className="text-xs font-black uppercase tracking-widest text-ink-600 mr-2">
               Presets:
             </span>
             <button
               onClick={() => applyPreset('all')}
-              className="px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 font-bold text-xs transition-colors"
+              className="px-3 py-1 bg-ink-100 hover:bg-ink-200 rounded-xl text-ink-700 font-bold text-xs transition-colors"
             >
               All Time
             </button>
             <button
               onClick={() => applyPreset('today')}
-              className="px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 font-bold text-xs transition-colors"
+              className="px-3 py-1 bg-ink-100 hover:bg-ink-200 rounded-xl text-ink-700 font-bold text-xs transition-colors"
             >
               Today
             </button>
             <button
               onClick={() => applyPreset('7days')}
-              className="px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 font-bold text-xs transition-colors"
+              className="px-3 py-1 bg-ink-100 hover:bg-ink-200 rounded-xl text-ink-700 font-bold text-xs transition-colors"
             >
               Last 7 Days
             </button>
             <button
               onClick={() => applyPreset('30days')}
-              className="px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 font-bold text-xs transition-colors"
+              className="px-3 py-1 bg-ink-100 hover:bg-ink-200 rounded-xl text-ink-700 font-bold text-xs transition-colors"
             >
               Last 30 Days
             </button>
             <button
               onClick={() => applyPreset('thisYear')}
-              className="px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 font-bold text-xs transition-colors"
+              className="px-3 py-1 bg-ink-100 hover:bg-ink-200 rounded-xl text-ink-700 font-bold text-xs transition-colors"
             >
               This Year
             </button>
@@ -193,25 +193,25 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           {/* Explicit Start and End Date inputs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="search-from-date" className="block text-xs font-black uppercase tracking-widest text-slate-600 mb-1">
+              <label htmlFor="search-from-date" className="block text-xs font-black uppercase tracking-widest text-ink-600 mb-1">
                 From Date
               </label>
               <input id="search-from-date"
                 type="date"
                 value={startDate}
                 onChange={(e) => onStartDateChange(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-200 focus:border-violet-500 rounded-xl font-bold text-xs text-slate-800"
+                className="w-full px-4 py-2.5 bg-ink-50 border-2 border-ink-200 focus:border-terracotta-500 rounded-xl font-bold text-xs text-ink-800"
               />
             </div>
             <div>
-              <label htmlFor="search-to-date" className="block text-xs font-black uppercase tracking-widest text-slate-600 mb-1">
+              <label htmlFor="search-to-date" className="block text-xs font-black uppercase tracking-widest text-ink-600 mb-1">
                 To Date
               </label>
               <input id="search-to-date"
                 type="date"
                 value={endDate}
                 onChange={(e) => onEndDateChange(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-200 focus:border-violet-500 rounded-xl font-bold text-xs text-slate-800"
+                className="w-full px-4 py-2.5 bg-ink-50 border-2 border-ink-200 focus:border-terracotta-500 rounded-xl font-bold text-xs text-ink-800"
               />
             </div>
           </div>
@@ -219,22 +219,22 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       )}
 
       {/* Active Filter Badges & Count Feedback */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs font-bold border-t border-slate-100/80">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs font-bold border-t border-ink-100/80">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-black uppercase tracking-widest text-slate-600">
+          <span className="text-xs font-black uppercase tracking-widest text-ink-600">
             Results:
           </span>
-          <span className="px-3 py-1 bg-violet-50 text-violet-700 rounded-full font-black text-xs">
+          <span className="px-3 py-1 bg-terracotta-50 text-terracotta-700 rounded-full font-black text-xs">
             Showing {filteredCount} of {totalCount} {totalCount === 1 ? 'entry' : 'entries'}
           </span>
 
           {/* Active Filter Badges */}
           {searchQuery && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-ink-100 text-ink-700 rounded-full text-xs font-bold">
               <span>Text: &quot;{searchQuery}&quot;</span>
               <button aria-label="Clear search text"
                 onClick={() => onSearchChange('')}
-                className="hover:text-rose-700 font-black"
+                className="hover:text-terracotta-700 font-black"
               >
                 ✕
               </button>
@@ -242,11 +242,11 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           )}
 
           {startDate && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-terracotta-50 text-terracotta-700 rounded-full text-xs font-bold">
               <span>From: {startDate}</span>
               <button aria-label="Clear start date"
                 onClick={() => onStartDateChange('')}
-                className="hover:text-rose-700 font-black"
+                className="hover:text-terracotta-700 font-black"
               >
                 ✕
               </button>
@@ -254,11 +254,11 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           )}
 
           {endDate && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-terracotta-50 text-terracotta-700 rounded-full text-xs font-bold">
               <span>To: {endDate}</span>
               <button aria-label="Clear end date"
                 onClick={() => onEndDateChange('')}
-                className="hover:text-rose-700 font-black"
+                className="hover:text-terracotta-700 font-black"
               >
                 ✕
               </button>
@@ -267,7 +267,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         </div>
 
         {filteredCount === 0 && totalCount > 0 && (
-          <p className="text-rose-700 text-xs font-bold">
+          <p className="text-terracotta-700 text-xs font-bold">
             No entries match your search criteria.
           </p>
         )}

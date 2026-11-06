@@ -58,33 +58,33 @@ export const PrintableSummary: React.FC = () => {
 
   const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
     <section className="break-inside-avoid space-y-1">
-      <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider border-b border-slate-300 pb-1">{title}</h3>
-      <div className="text-sm text-slate-800 leading-relaxed">{children}</div>
+      <h3 className="text-sm font-black text-ink-800 uppercase tracking-wider border-b border-ink-300 pb-1">{title}</h3>
+      <div className="text-sm text-ink-800 leading-relaxed">{children}</div>
     </section>
   );
-  const none = <p className="text-slate-500">None recorded.</p>;
+  const none = <p className="text-ink-500">None recorded.</p>;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-20 print:pb-0 print:max-w-none">
       <div className="print:hidden space-y-3">
-        <h2 className="text-3xl font-black text-slate-800">Summary for your doctor</h2>
-        <p className="text-base font-medium text-slate-600">A one-page summary of {childProfile?.name ? `${childProfile.name}'s` : 'your child\'s'} records. Print it, or choose "Save as PDF" in the print window.</p>
+        <h2 className="text-3xl font-black text-ink-800">Summary for your doctor</h2>
+        <p className="text-base font-medium text-ink-600">A one-page summary of {childProfile?.name ? `${childProfile.name}'s` : 'your child\'s'} records. Print it, or choose "Save as PDF" in the print window.</p>
         <label className="block">
-          <span className="block text-sm font-bold text-slate-700 mb-1">Anything you want to tell the doctor (printed at the top, not saved)</span>
-          <textarea value={note} onChange={e => setNote(e.target.value)} rows={3} className="w-full p-3 rounded-xl border-2 border-slate-300 font-medium text-slate-900" />
+          <span className="block text-sm font-bold text-ink-700 mb-1">Anything you want to tell the doctor (printed at the top, not saved)</span>
+          <textarea value={note} onChange={e => setNote(e.target.value)} rows={3} className="w-full p-3 rounded-xl border-2 border-ink-300 font-medium text-ink-900" />
         </label>
-        <button onClick={() => window.print()} className="min-h-[48px] px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-xs">Print or Save as PDF</button>
+        <button onClick={() => window.print()} className="min-h-[48px] px-6 rounded-2xl bg-terracotta-600 hover:bg-terracotta-700 text-white font-black uppercase tracking-widest text-xs">Print or Save as PDF</button>
       </div>
 
-      <article className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-5 print:border-0 print:p-0 print:rounded-none" aria-label="Printable summary">
-        <header className="flex justify-between items-start gap-4 border-b-2 border-slate-800 pb-3">
+      <article className="bg-white border border-ink-200 rounded-2xl p-6 sm:p-8 space-y-5 print:border-0 print:p-0 print:rounded-none" aria-label="Printable summary">
+        <header className="flex justify-between items-start gap-4 border-b-2 border-ink-800 pb-3">
           <div>
-            <h1 className="text-2xl font-black text-slate-900">{childProfile?.name || 'Child'}</h1>
-            <p className="text-sm font-bold text-slate-700">
+            <h1 className="text-2xl font-black text-ink-900">{childProfile?.name || 'Child'}</h1>
+            <p className="text-sm font-bold text-ink-700">
               {childProfile?.dob ? `Born ${fmtDate(childProfile.dob)}` : 'Date of birth not recorded'}{childAge ? ` · ${childAge}` : ''}{childProfile?.sex ? ` · ${childProfile.sex}` : ''}
             </p>
           </div>
-          <p className="text-xs font-bold text-slate-600 text-right">Prepared by the parent/carer<br />{fmtDate(new Date())}</p>
+          <p className="text-xs font-bold text-ink-600 text-right">Prepared by the parent/carer<br />{fmtDate(new Date())}</p>
         </header>
 
         {note.trim() && <Section title="Parent's note"><p className="whitespace-pre-wrap">{note}</p></Section>}
@@ -99,7 +99,7 @@ export const PrintableSummary: React.FC = () => {
           <Section title="Conditions">{conditions.length ? <ul className="list-disc pl-5">{conditions.map(c => <li key={c.id}>{c.name}{c.status === 'Under Investigation' ? ' (being investigated)' : ''}</li>)}</ul> : none}</Section>
           <Section title="Growth">
             {growth.length ? <ul className="list-disc pl-5">{growth.map(([k, v]) => <li key={k}><strong>{k}:</strong> {v}</li>)}</ul> : none}
-            {growth.length > 0 && <p className="text-xs text-slate-600 mt-1">Percentiles are for information. Discuss growth concerns with your GP or child health nurse.</p>}
+            {growth.length > 0 && <p className="text-xs text-ink-600 mt-1">Percentiles are for information. Discuss growth concerns with your GP or child health nurse.</p>}
           </Section>
         </div>
 
@@ -111,7 +111,7 @@ export const PrintableSummary: React.FC = () => {
         )}
 
         <Section title="Vaccines">
-          {!vaccines.known && <p className="text-slate-500">Add a date of birth to show the NIP schedule.</p>}
+          {!vaccines.known && <p className="text-ink-500">Add a date of birth to show the NIP schedule.</p>}
           {vaccines.known && <>
             <p><strong>Given:</strong> {vaccines.given.length ? vaccines.given.map(s => `${s.visit.name}${s.givenDate ? ` (${formatNipDate(s.givenDate)})` : ''}`).join(', ') : 'none recorded'}</p>
             {vaccines.overdue.length > 0 && <p><strong>Overdue (not recorded):</strong> {vaccines.overdue.map(s => s.visit.name).join(', ')}</p>}
@@ -119,13 +119,13 @@ export const PrintableSummary: React.FC = () => {
             {vaccines.next && <p><strong>Next due:</strong> {vaccines.next.visit.name}, {formatNipDate(vaccines.next.dueDate)}</p>}
           </>}
           {vaccines.other.length > 0 && <p><strong>Other vaccines recorded:</strong> {vaccines.other.map(v => `${v.name}${v.receivedDate ? ` (${fmtDate(v.receivedDate)})` : ''}`).join(', ')}</p>}
-          <p className="text-xs text-slate-600">{NIP_FOOTNOTE}</p>
+          <p className="text-xs text-ink-600">{NIP_FOOTNOTE}</p>
         </Section>
 
         <Section title="Last 7 days (from the parent's log)">
           {recentLogs.length
             ? <table className="w-full text-left text-sm"><tbody>{recentLogs.map(l => (
-                <tr key={l.id} className="border-b border-slate-100 align-top">
+                <tr key={l.id} className="border-b border-ink-100 align-top">
                   <td className="py-1 pr-3 whitespace-nowrap">{fmtDateTime(l.timestamp)}</td>
                   <td className="py-1 pr-3">{l.type}{l.medicationName ? `: ${l.medicationName}` : ''}</td>
                   <td className="py-1">{l.value}{l.notes ? ` – ${l.notes}` : ''}</td>
@@ -139,8 +139,8 @@ export const PrintableSummary: React.FC = () => {
           </Section>
         )}
 
-        <footer className="text-xs text-slate-500 border-t border-slate-200 pt-2">
-          Recorded by the parent or carer in PediPulse. Not a clinical record; please confirm details with the family.
+        <footer className="text-xs text-ink-500 border-t border-ink-200 pt-2">
+          Recorded by the parent or carer in Paeds Pouch. Not a clinical record; please confirm details with the family.
         </footer>
       </article>
     </div>

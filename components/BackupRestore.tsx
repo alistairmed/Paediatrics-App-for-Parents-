@@ -47,7 +47,7 @@ export const BackupRestore: React.FC = () => {
     setRestoreError(null);
     setBusy(true);
     try {
-      if (restoreFile.size > MAX_BACKUP_BYTES) throw new BackupError('This file is too large to be a PediPulse backup.');
+      if (restoreFile.size > MAX_BACKUP_BYTES) throw new BackupError('This file is too large to be a Paeds Pouch backup.');
       const { records, createdAt } = await readBackup(await restoreFile.text(), restorePassword);
       const date = new Date(createdAt);
       const made = isNaN(date.getTime()) ? 'an unknown date' : date.toLocaleString('en-AU');
@@ -63,54 +63,54 @@ export const BackupRestore: React.FC = () => {
     }
   };
 
-  const inputClass = "w-full p-3 rounded-xl border-2 border-slate-300 focus:border-indigo-600 outline-hidden font-black text-slate-900";
+  const inputClass = "w-full p-3 rounded-xl border-2 border-ink-300 focus:border-terracotta-600 outline-hidden font-black text-ink-900";
 
   return (
-    <section className="bg-white p-6 sm:p-10 rounded-4xl sm:rounded-[3rem] border border-slate-100 shadow-xl space-y-6">
+    <section className="bg-white p-6 sm:p-10 rounded-4xl sm:rounded-[3rem] border border-ink-100 shadow-xl space-y-6">
       <div className="flex items-center gap-3">
         <span className="text-2xl" aria-hidden="true">💾</span>
-        <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Backup & Restore</h3>
+        <h3 className="text-xl font-black text-ink-800 uppercase tracking-tight">Backup & Restore</h3>
       </div>
-      <p className="text-sm font-medium text-slate-600 leading-relaxed">
+      <p className="text-sm font-medium text-ink-600 leading-relaxed">
         Your records live only on this device. Save an encrypted backup file regularly, and keep it somewhere safe such as your own cloud drive.
       </p>
 
       <form onSubmit={handleExport} className="space-y-3">
-        <h4 className="font-black text-slate-800">Save a backup</h4>
+        <h4 className="font-black text-ink-800">Save a backup</h4>
         <div className="grid sm:grid-cols-2 gap-3">
           <label className="block">
-            <span className="block text-xs font-bold text-slate-700 mb-1">Backup password (at least {MIN_BACKUP_PASSWORD} characters)</span>
+            <span className="block text-xs font-bold text-ink-700 mb-1">Backup password (at least {MIN_BACKUP_PASSWORD} characters)</span>
             <input type="password" autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} className={inputClass} />
           </label>
           <label className="block">
-            <span className="block text-xs font-bold text-slate-700 mb-1">Repeat password</span>
+            <span className="block text-xs font-bold text-ink-700 mb-1">Repeat password</span>
             <input type="password" autoComplete="new-password" value={confirmation} onChange={e => setConfirmation(e.target.value)} className={inputClass} />
           </label>
         </div>
         <p className="text-xs font-bold text-amber-800">You'll need this password to restore the backup. It can't be recovered.</p>
-        {exportError && <p role="alert" className="text-sm font-bold text-rose-700">{exportError}</p>}
-        <button type="submit" disabled={busy} className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-slate-400">
+        {exportError && <p role="alert" className="text-sm font-bold text-terracotta-700">{exportError}</p>}
+        <button type="submit" disabled={busy} className="px-5 py-3 rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
           {busy ? 'Working…' : 'Save Backup File'}
         </button>
       </form>
 
-      <form onSubmit={handleRestore} className="space-y-3 pt-4 border-t border-slate-100">
-        <h4 className="font-black text-slate-800">Restore a backup</h4>
+      <form onSubmit={handleRestore} className="space-y-3 pt-4 border-t border-ink-100">
+        <h4 className="font-black text-ink-800">Restore a backup</h4>
         <input ref={fileRef} type="file" accept=".json,application/json" className="hidden" onChange={e => { setRestoreFile(e.target.files?.[0] || null); setRestoreError(null); }} />
         <div className="flex flex-wrap items-center gap-3">
-          <button type="button" onClick={() => fileRef.current?.click()} className="px-5 py-3 rounded-xl bg-white border-2 border-slate-300 text-slate-800 font-black text-xs uppercase tracking-widest">
+          <button type="button" onClick={() => fileRef.current?.click()} className="px-5 py-3 rounded-xl bg-white border-2 border-ink-300 text-ink-800 font-black text-xs uppercase tracking-widest">
             Choose Backup File
           </button>
-          <span className="text-sm font-bold text-slate-600">{restoreFile ? restoreFile.name : 'No file chosen'}</span>
+          <span className="text-sm font-bold text-ink-600">{restoreFile ? restoreFile.name : 'No file chosen'}</span>
         </div>
         {restoreFile && (
           <>
             <label className="block max-w-sm">
-              <span className="block text-xs font-bold text-slate-700 mb-1">Backup password</span>
+              <span className="block text-xs font-bold text-ink-700 mb-1">Backup password</span>
               <input type="password" autoComplete="current-password" value={restorePassword} onChange={e => setRestorePassword(e.target.value)} className={inputClass} />
             </label>
-            {restoreError && <p role="alert" className="text-sm font-bold text-rose-700">{restoreError}</p>}
-            <button type="submit" disabled={busy || !restorePassword} className="px-5 py-3 rounded-xl bg-slate-900 text-white font-black text-xs uppercase tracking-widest disabled:bg-slate-400">
+            {restoreError && <p role="alert" className="text-sm font-bold text-terracotta-700">{restoreError}</p>}
+            <button type="submit" disabled={busy || !restorePassword} className="px-5 py-3 rounded-xl bg-ink-900 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
               {busy ? 'Working…' : 'Restore Backup'}
             </button>
           </>

@@ -1,7 +1,8 @@
-import { PEDI_PULSE_PROMPTS, withSafetyInstruction } from './prompts';
+import { APP_PROMPTS, withSafetyInstruction } from './prompts';
 
 export { withSafetyInstruction };
 import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
+import { apiUrl } from '../config/platform';
 import { AI_FEATURES, AiFeature } from '../config/aiFeatures';
 import { ensureAiConsent, takeAiQuota, AI_DAILY_LIMIT, getPremiumCode } from './aiGuard';
 import { deidentifiedSummary, SummaryInput } from './deidentify';
@@ -56,7 +57,7 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     const code = tier === 'premium' ? getPremiumCode() : null;
     if (code) headers.Authorization = `Bearer ${code}`;
-    const res = await fetch('/api/ai', {
+    const res = await fetch(apiUrl('/api/ai'), {
       method: 'POST',
       headers,
       body: JSON.stringify(withSafetyInstruction({ ...payload, tier })),
@@ -95,7 +96,7 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
     clearTimeout(timeoutId);
 
     if (err instanceof AiError) {
-      console.error('[PediPulse AI Error]', { type: err.type, status: err.status, message: err.message });
+      console.error('[Paeds Pouch Error]', { type: err.type, status: err.status, message: err.message });
       throw err;
     }
 
@@ -105,7 +106,7 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
         'TIMEOUT',
         408
       );
-      console.error('[PediPulse AI Error]', { type: timeoutError.type, message: timeoutError.message });
+      console.error('[Paeds Pouch Error]', { type: timeoutError.type, message: timeoutError.message });
       throw timeoutError;
     }
 
@@ -113,13 +114,13 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
       'Unable to connect to AI services. Please check your network connection and try again.',
       'NETWORK'
     );
-    console.error('[PediPulse AI Error]', { type: netError.type, originalError: err?.message || String(err) });
+    console.error('[Paeds Pouch Error]', { type: netError.type, originalError: err?.message || String(err) });
     throw netError;
   }
 }
 
 export const analyzeScreening = async (testName: string, responses: any) => {
-  const prompt = `${PEDI_PULSE_PROMPTS.v1.screeningAnalysis.replace('{testName}', testName)}\n\nRESPONSES: ${JSON.stringify(responses)}`;
+  const prompt = `${APP_PROMPTS.v1.screeningAnalysis.replace('{testName}', testName)}\n\nRESPONSES: ${JSON.stringify(responses)}`;
 
   const data = await callAi({
     feature: 'screening-summary',
@@ -148,7 +149,7 @@ export const analyzeScreening = async (testName: string, responses: any) => {
  * sent (services/deidentify.ts): no name, date of birth or contact details.
  */
 export const analyzeMedicalProfile = async (input: SummaryInput) => {
-  const prompt = `${PEDI_PULSE_PROMPTS.v1.isbarHandover}\n\nDE-IDENTIFIED SUMMARY: ${JSON.stringify(deidentifiedSummary(input))}`;
+  const prompt = `${APP_PROMPTS.v1.isbarHandover}\n\nDE-IDENTIFIED SUMMARY: ${JSON.stringify(deidentifiedSummary(input))}`;
 
   const data = await callAi({
     feature: 'handover',
@@ -159,7 +160,7 @@ export const analyzeMedicalProfile = async (input: SummaryInput) => {
 };
 
 export const generateCalmingStory = async (childName: string, theme: string) => {
-  const prompt = PEDI_PULSE_PROMPTS.v1.calmingStory
+  const prompt = APP_PROMPTS.v1.calmingStory
     .replace('{childName}', childName)
     .replace('{theme}', theme);
 
@@ -240,17 +241,13 @@ export const explainMedicalTerm = async (term: string, ageGroup: string = 'infan
   return { text, sources };
 };
 
-export const prepareAppointmentQuestions = async (
-  history: MedicalHistory,
-  appointment: Appointment,
-  recentRedFlags: string[] = []
-) => {
-
+/** The prompt for appointment questions: practical questions for the parent, no clinical judgement. */
+export function appointmentQuestionsPrompt(history: MedicalHistory, appointment: Appointment, notedToDiscuss: string[] = []): string {
   const context = {
     pastMedicalHistory: history.pastMedicalHistory,
     currentMedications: history.currentMedications,
     recentAcuteLogs: history.acuteLogs?.slice(0, 10),
-    notedToDiscuss: recentRedFlags,
+    notedToDiscuss,
     appointment: {
       provider: appointment.provider,
       specialty: appointment.specialty,
@@ -258,13 +255,21 @@ export const prepareAppointmentQuestions = async (
     },
   };
 
-  const prompt = `Based on the following medical history and the purpose of the upcoming appointment, generate 5-7 high-quality, clinical questions for the parent to ask the specialist (${appointment.specialty}) during the visit.
-  Include questions about anything the parent has noted to discuss: ${recentRedFlags.join(', ') || 'nothing noted'}.
-  
+  return `Based on the following medical history and the purpose of the upcoming appointment, generate 5-7 practical questions for the parent to ask the specialist (${appointment.specialty}) during the visit.
+  Include questions about anything the parent has noted to discuss: ${notedToDiscuss.join(', ') || 'nothing noted'}.
+
   CONTEXT:
   ${JSON.stringify(context)}
-  
+
   FORMAT: Provide a bulleted list of questions.`;
+}
+
+export const prepareAppointmentQuestions = async (
+  history: MedicalHistory,
+  appointment: Appointment,
+  notedToDiscuss: string[] = []
+) => {
+  const prompt = appointmentQuestionsPrompt(history, appointment, notedToDiscuss);
 
   const data = await callAi({
     feature: 'appointment-questions',

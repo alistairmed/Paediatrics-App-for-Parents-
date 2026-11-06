@@ -28,7 +28,7 @@ export function withSafetyInstruction(payload: any): any {
   };
 }
 
-export const PEDI_PULSE_PROMPTS = {
+export const APP_PROMPTS = {
   v1: {
     isbarHandover: `
       Analyze the provided JSON medical history. Generate a concise ISBAR (Identification, Situation, Background, Assessment, Recommendation) handover. 

@@ -1,6 +1,6 @@
 {
-  "name": "PediPulse AI",
-  "description": "An Australian paediatric health record and parent support tool featuring growth tracking, developmental milestone monitoring, Australian NIP vaccine schedule, ISBAR summaries, and AI parent support.",
+  "name": "Paeds Pouch",
+  "description": "Keep your child's growth, vaccines and appointments in one private place on your phone. Australian NIP schedule, WHO growth charts and a printable summary for the doctor. Optional AI helper, off by default.",
   "requestFramePermissions": [
     "camera",
     "microphone"

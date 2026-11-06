@@ -1,21 +1,27 @@
 import { deriveKey, encryptString, decryptString, randomSalt, PBKDF2_ITERATIONS } from './crypto';
 import { readItem, writeItem, LOCK_META_KEY } from './vault';
 import { AI_CONSENT_KEY, AI_USAGE_KEY, PREMIUM_CODE_KEY } from '../services/aiGuard';
+import { VACCINE_REMINDERS_KEY } from '../services/vaccineNotifications';
 
 /**
- * Password-protected backup of every PediPulse record on this device.
+ * Password-protected backup of every Paeds Pouch record on this device.
  * The file holds only ciphertext plus the salt needed to derive the key.
  */
+// The app was renamed from PediPulse to Paeds Pouch. These internal values keep
+// the old name on purpose: existing backup files carry this format marker, and
+// every saved record uses this key prefix. Changing them would make older
+// backups unreadable and hide existing users' records.
 export const BACKUP_FORMAT = 'pedipulse-backup';
 export const MIN_BACKUP_PASSWORD = 8;
 const RECORD_PREFIX = 'pedipulse_';
 /**
  * Settings that belong to this device and this person's choices: the
- * passcode lock, AI consent and usage, and the premium access code. They are
+ * passcode lock, AI consent and usage, the premium access code and phone
+ * reminders. They are
  * never backed up, and never restored, so a backup file can't lock a parent
  * out or switch on AI sharing.
  */
-const DEVICE_ONLY = [LOCK_META_KEY, AI_CONSENT_KEY, AI_USAGE_KEY, PREMIUM_CODE_KEY];
+const DEVICE_ONLY = [LOCK_META_KEY, AI_CONSENT_KEY, AI_USAGE_KEY, PREMIUM_CODE_KEY, VACCINE_REMINDERS_KEY];
 /** Largest backup file accepted (a year of busy records is well under 1 MB). */
 export const MAX_BACKUP_BYTES = 25 * 1024 * 1024;
 /** Key-derivation rounds accepted from a file: enough headroom, but a crafted file can't freeze the browser. */
@@ -30,7 +36,7 @@ interface BackupFile {
   data: string;
 }
 
-/** All PediPulse records, decrypted if the passcode lock is on and unlocked. */
+/** All Paeds Pouch records, decrypted if the passcode lock is on and unlocked. */
 export function collectRecords(): Record<string, string> {
   const records: Record<string, string> = {};
   for (let i = 0; i < localStorage.length; i++) {
@@ -61,15 +67,15 @@ export class BackupError extends Error {}
 
 /** Decrypts a backup file. Throws BackupError with a message safe to show. */
 export async function readBackup(text: string, password: string): Promise<{ records: Record<string, string>; createdAt: string }> {
-  if (text.length > MAX_BACKUP_BYTES) throw new BackupError('This file is too large to be a PediPulse backup.');
+  if (text.length > MAX_BACKUP_BYTES) throw new BackupError('This file is too large to be a Paeds Pouch backup.');
   let file: BackupFile;
   try {
     file = JSON.parse(text);
   } catch {
-    throw new BackupError("This isn't a PediPulse backup file.");
+    throw new BackupError("This isn't a Paeds Pouch backup file.");
   }
   if (file?.format !== BACKUP_FORMAT || file.version !== 1 || typeof file.salt !== 'string' || typeof file.data !== 'string') {
-    throw new BackupError("This isn't a PediPulse backup file, or it was made by a newer version.");
+    throw new BackupError("This isn't a Paeds Pouch backup file, or it was made by a newer version.");
   }
   if (!Number.isInteger(file.iterations) || file.iterations < 1 || file.iterations > MAX_ITERATIONS || !/^[A-Za-z0-9+/=]{16,64}$/.test(file.salt)) {
     throw new BackupError('This backup file is damaged.');
@@ -104,4 +110,4 @@ export async function restoreRecords(records: Record<string, string>): Promise<v
   for (const [key, value] of incoming) await writeItem(key, value);
 }
 
-export const backupFileName = (date = new Date()) => `pedipulse-backup-${date.toISOString().slice(0, 10)}.json`;
+export const backupFileName = (date = new Date()) => `paeds-pouch-backup-${date.toISOString().slice(0, 10)}.json`;

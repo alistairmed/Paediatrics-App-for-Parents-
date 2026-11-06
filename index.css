@@ -1,5 +1,62 @@
 @import 'tailwindcss';
 
+@theme {
+  /*
+   * Paeds Pouch palette (brand/PALETTE.md). Use these tokens, not hex values.
+   * brand: terracotta, for logo tiles, icons, borders and the chart line.
+   * brand-dark: buttons and small text or links on cream or white (5.3:1 with white;
+   *   plain terracotta is only 3.8:1, below WCAG AA for normal-size text).
+   * cream: page backgrounds. ink: text. sky-soft / sky-brand: charts and
+   *   "up to date" vaccine states (dark text on sky-soft; sky-brand isn't for text).
+   */
+  --color-brand: #c8693a;
+  --color-brand-dark: #a9532a;
+  --color-cream: #fff3e3;
+  --color-ink: #3b1d0c;
+  --color-sky-soft: #bfe0f5;
+  --color-sky-brand: #4aa3df;
+
+  /*
+   * Full scales in the palette's hues. Each shade has the same OKLCH lightness as
+   * the Tailwind shade it replaced (indigo/rose -> terracotta, teal -> sky,
+   * slate -> ink), so text contrast stays where it was. Palette colours are
+   * pinned at terracotta-500/600, sky-200/500 and ink-50/800.
+   */
+  --color-terracotta-50: #fef2ed;
+  --color-terracotta-100: #ffe6db;
+  --color-terracotta-200: #ffd0ba;
+  --color-terracotta-300: #f4ae8f;
+  --color-terracotta-400: #de8a63;
+  --color-terracotta-500: #c8693a;
+  --color-terracotta-600: #a9532a;
+  --color-terracotta-700: #87401c;
+  --color-terracotta-800: #6f3415;
+  --color-terracotta-900: #602c11;
+  --color-terracotta-950: #3a1807;
+  --color-sky-50: #f5fbff;
+  --color-sky-100: #e2f2ff;
+  --color-sky-200: #bfe0f5;
+  --color-sky-300: #a7d6fa;
+  --color-sky-400: #84bee9;
+  --color-sky-500: #4aa3df;
+  --color-sky-600: #0171aa;
+  --color-sky-700: #206d9c;
+  --color-sky-800: #18577e;
+  --color-sky-900: #13486a;
+  --color-sky-950: #082b41;
+  --color-ink-50: #fff3e3;
+  --color-ink-100: #fff1eb;
+  --color-ink-200: #f5e4db;
+  --color-ink-300: #e4cfc5;
+  --color-ink-400: #b6998a;
+  --color-ink-500: #856757;
+  --color-ink-600: #664e42;
+  --color-ink-700: #4e3c32;
+  --color-ink-800: #3b1d0c;
+  --color-ink-900: #1f1611;
+  --color-ink-950: #0b0604;
+}
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -20,7 +77,8 @@
 
 body {
   font-family: 'Quicksand', sans-serif;
-  background-color: #f8fafc;
+  background-color: var(--color-cream);
+  color: var(--color-ink);
 }
 
 /* Tailwind v4 gives buttons the default cursor; keep the v3 pointer. */

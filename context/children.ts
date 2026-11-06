@@ -16,6 +16,8 @@ export interface ChildrenState {
   children: ChildRecord[];
 }
 
+// Storage keys keep the "pedipulse_" prefix from the app's old name (PediPulse)
+// on purpose: renaming them would hide every existing user's records.
 export const CHILDREN_KEY = 'pedipulse_children';
 export const GUEST_ID = 'guest';
 export const EMPTY_CHILDREN: ChildrenState = { activeId: null, children: [] };

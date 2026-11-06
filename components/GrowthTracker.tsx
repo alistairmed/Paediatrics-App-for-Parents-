@@ -107,19 +107,19 @@ export const GrowthTracker: React.FC = () => {
   const latestPercentile = latest ? growthPercentile(sex, measure.id, latest.age, latest.value!) : null;
   const olderThanWho = latest && latest.age > WHO_MAX_MONTHS;
 
-  const inputClass = "w-full p-3 rounded-xl border-2 border-slate-300 bg-white font-bold text-slate-900";
-  const labelClass = "block text-sm font-bold text-slate-700 mb-1";
+  const inputClass = "w-full p-3 rounded-xl border-2 border-ink-300 bg-white font-bold text-ink-900";
+  const labelClass = "block text-sm font-bold text-ink-700 mb-1";
 
   return (
     <div className="space-y-6">
       <header className="space-y-1">
-        <h2 className="text-3xl font-black text-slate-800 tracking-tight">Growth{childProfile ? ` – ${childProfile.name}` : ''}</h2>
-        <p className="text-base font-medium text-slate-600">Plotted on the WHO Child Growth Standards (birth to 5 years), as used in the Red Book.</p>
+        <h2 className="text-3xl font-black text-ink-800 tracking-tight">Growth{childProfile ? ` – ${childProfile.name}` : ''}</h2>
+        <p className="text-base font-medium text-ink-600">Plotted on the WHO Child Growth Standards (birth to 5 years), as used in the Red Book.</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <form onSubmit={handleAdd} className="bg-white p-6 rounded-4xl border border-slate-200 shadow-xs space-y-4 self-start">
-          <h3 className="font-black text-slate-800">Add a measurement</h3>
+        <form onSubmit={handleAdd} className="bg-white p-6 rounded-4xl border border-ink-200 shadow-xs space-y-4 self-start">
+          <h3 className="font-black text-ink-800">Add a measurement</h3>
           <label className="block">
             <span className={labelClass}>Date measured</span>
             <input type="date" max={today} value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} className={inputClass} />
@@ -137,16 +137,16 @@ export const GrowthTracker: React.FC = () => {
             <input inputMode="decimal" value={form.head} onChange={e => setForm({ ...form, head: e.target.value })} placeholder="optional" className={inputClass} />
           </label>
           {!childProfile?.dob && <p className="text-sm font-bold text-amber-800">Add your child's date of birth to plot measurements by age.</p>}
-          <button type="submit" className="w-full min-h-[48px] bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl uppercase tracking-widest text-xs">Save Measurement</button>
+          <button type="submit" className="w-full min-h-[48px] bg-terracotta-600 hover:bg-terracotta-700 text-white font-black rounded-xl uppercase tracking-widest text-xs">Save Measurement</button>
         </form>
 
-        <section className="lg:col-span-2 bg-white p-6 rounded-4xl border border-slate-200 shadow-xs space-y-4" aria-labelledby="growth-chart-title">
+        <section className="lg:col-span-2 bg-white p-6 rounded-4xl border border-ink-200 shadow-xs space-y-4" aria-labelledby="growth-chart-title">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h3 id="growth-chart-title" className="font-black text-slate-800">{measure.label} for age ({sex === 'male' ? 'boys' : 'girls'})</h3>
-            <div className="flex gap-1 bg-slate-100 p-1 rounded-xl" role="tablist" aria-label="Measurement">
+            <h3 id="growth-chart-title" className="font-black text-ink-800">{measure.label} for age ({sex === 'male' ? 'boys' : 'girls'})</h3>
+            <div className="flex gap-1 bg-ink-100 p-1 rounded-xl" role="tablist" aria-label="Measurement">
               {MEASURES.map(m => (
                 <button key={m.id} role="tab" aria-selected={m.id === measureId} onClick={() => setMeasureId(m.id)}
-                  className={`px-3 py-2 rounded-lg text-sm font-bold min-h-[40px] ${m.id === measureId ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600'}`}>
+                  className={`px-3 py-2 rounded-lg text-sm font-bold min-h-[40px] ${m.id === measureId ? 'bg-white text-terracotta-700 shadow-sm' : 'text-ink-600'}`}>
                   {m.label}
                 </button>
               ))}
@@ -154,10 +154,10 @@ export const GrowthTracker: React.FC = () => {
           </div>
 
           {childProfile?.sex === 'Other' && (
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
+            <div className="flex items-center gap-2 text-sm font-bold text-ink-700">
               <span>Chart:</span>
               {(['female', 'male'] as const).map(s => (
-                <button key={s} onClick={() => setChartSex(s)} aria-pressed={chartSex === s} className={`px-3 py-1 rounded-lg border-2 ${chartSex === s ? 'border-indigo-600 text-indigo-700' : 'border-slate-300'}`}>
+                <button key={s} onClick={() => setChartSex(s)} aria-pressed={chartSex === s} className={`px-3 py-1 rounded-lg border-2 ${chartSex === s ? 'border-terracotta-600 text-terracotta-700' : 'border-ink-300'}`}>
                   {s === 'female' ? 'Girls' : 'Boys'}
                 </button>
               ))}
@@ -165,7 +165,7 @@ export const GrowthTracker: React.FC = () => {
           )}
 
           {latest && (
-            <p className="text-base font-bold text-slate-800" aria-live="polite">
+            <p className="text-base font-bold text-ink-800" aria-live="polite">
               Latest: {latest.value} {measure.unit} on {new Date(latest.date).toLocaleDateString('en-AU')}
               {latestPercentile !== null ? ` – around the ${describePercentile(latestPercentile)} percentile.` : '.'}
             </p>
@@ -175,39 +175,39 @@ export const GrowthTracker: React.FC = () => {
           <div className="h-[380px] w-full" role="img" aria-label={`${measure.label} growth chart with WHO percentile lines`}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 8, right: 16, bottom: 16, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="age" type="number" domain={[0, 'dataMax']} tick={{ fill: '#475569', fontSize: 12 }} label={{ value: 'Age (months)', position: 'insideBottom', offset: -8, fill: '#475569', fontSize: 12 }} />
-                <YAxis domain={['auto', 'auto']} tick={{ fill: '#475569', fontSize: 12 }} unit={` ${measure.unit}`} width={64} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-ink-200)" />
+                <XAxis dataKey="age" type="number" domain={[0, 'dataMax']} tick={{ fill: 'var(--color-ink-600)', fontSize: 12 }} label={{ value: 'Age (months)', position: 'insideBottom', offset: -8, fill: 'var(--color-ink-600)', fontSize: 12 }} />
+                <YAxis domain={['auto', 'auto']} tick={{ fill: 'var(--color-ink-600)', fontSize: 12 }} unit={` ${measure.unit}`} width={64} />
                 <Tooltip formatter={(v: number) => `${v} ${measure.unit}`} labelFormatter={(a: number) => `${Math.round(a * 10) / 10} months`} />
                 {PERCENTILE_LINES.map(line => (
                   <Line key={line.label} type="monotone" dataKey={line.label} name={line.label} dot={false} connectNulls isAnimationActive={false}
-                    stroke={line.z === 0 ? '#64748b' : '#cbd5e1'} strokeWidth={line.z === 0 ? 2 : 1.5} strokeDasharray={line.z === 0 ? undefined : '6 4'} />
+                    stroke={line.z === 0 ? 'var(--color-ink-500)' : 'var(--color-sky-soft)'} strokeWidth={line.z === 0 ? 2 : 1.5} strokeDasharray={line.z === 0 ? undefined : '6 4'} />
                 ))}
-                <Line type="monotone" dataKey="child" name={childProfile?.name || 'Your child'} stroke="#4f46e5" strokeWidth={3} connectNulls dot={{ r: 5, fill: '#4f46e5' }} isAnimationActive={false} />
+                <Line type="monotone" dataKey="child" name={childProfile?.name || 'Your child'} stroke="var(--color-brand)" strokeWidth={3} connectNulls dot={{ r: 5, fill: 'var(--color-brand)' }} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold text-slate-700" aria-label="Chart key">
-            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-[3px] border-indigo-600" />{childProfile?.name || 'Your child'}</li>
-            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-2 border-slate-500" />50th percentile</li>
-            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-2 border-dashed border-slate-400" />3rd, 15th, 85th and 97th percentiles</li>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold text-ink-700" aria-label="Chart key">
+            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-[3px] border-terracotta-600" />{childProfile?.name || 'Your child'}</li>
+            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-2 border-ink-500" />50th percentile</li>
+            <li className="flex items-center gap-2"><span aria-hidden="true" className="inline-block w-6 border-t-2 border-dashed border-ink-400" />3rd, 15th, 85th and 97th percentiles</li>
           </ul>
-          <p className="text-base font-bold text-slate-800">
+          <p className="text-base font-bold text-ink-800">
             Percentiles are for information. Discuss growth concerns with your GP or child health nurse.
           </p>
-          <p className="text-sm font-medium text-slate-600">
+          <p className="text-sm font-medium text-ink-600">
             A percentile shows how a measurement compares with other children of the same age and sex; a single reading isn't good or bad.
           </p>
         </section>
       </div>
 
       {measurementRows.length > 0 && (
-        <section className="bg-white p-6 rounded-4xl border border-slate-200 shadow-xs space-y-3" aria-labelledby="growth-history-title">
-          <h3 id="growth-history-title" className="font-black text-slate-800">All measurements</h3>
+        <section className="bg-white p-6 rounded-4xl border border-ink-200 shadow-xs space-y-3" aria-labelledby="growth-history-title">
+          <h3 id="growth-history-title" className="font-black text-ink-800">All measurements</h3>
           <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="All measurements with WHO percentiles">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b-2 border-slate-200 text-slate-700">
+                <tr className="border-b-2 border-ink-200 text-ink-700">
                   <th scope="col" className="py-2 pr-4 font-black">Date</th>
                   <th scope="col" className="py-2 pr-4 font-black">Age</th>
                   {MEASURES.map(m => <th key={m.id} scope="col" className="py-2 pr-4 font-black">{m.label} ({m.unit})</th>)}
@@ -215,19 +215,19 @@ export const GrowthTracker: React.FC = () => {
               </thead>
               <tbody>
                 {measurementRows.map(row => (
-                  <tr key={row.key} className="border-b border-slate-100 align-top">
-                    <td className="py-2 pr-4 font-bold text-slate-800 whitespace-nowrap">{new Date(row.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                    <td className="py-2 pr-4 text-slate-700 whitespace-nowrap">{row.age >= 0 ? `${Math.round(row.age * 10) / 10} mo` : '–'}</td>
+                  <tr key={row.key} className="border-b border-ink-100 align-top">
+                    <td className="py-2 pr-4 font-bold text-ink-800 whitespace-nowrap">{new Date(row.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td className="py-2 pr-4 text-ink-700 whitespace-nowrap">{row.age >= 0 ? `${Math.round(row.age * 10) / 10} mo` : '–'}</td>
                     {row.cells.map((cell, i) => (
-                      <td key={MEASURES[i].id} className="py-2 pr-4 text-slate-800">
+                      <td key={MEASURES[i].id} className="py-2 pr-4 text-ink-800">
                         {cell ? (
                           <>
                             <span className="font-bold">{cell.value}</span>
-                            <span className="block text-xs font-medium text-slate-600">
+                            <span className="block text-xs font-medium text-ink-600">
                               {cell.percentile !== null ? `${describePercentile(cell.percentile)} percentile` : 'no WHO percentile'}
                             </span>
                           </>
-                        ) : <span className="text-slate-500">–</span>}
+                        ) : <span className="text-ink-500">–</span>}
                       </td>
                     ))}
                   </tr>

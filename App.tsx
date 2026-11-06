@@ -42,7 +42,7 @@ const EthicsSafety = lazy(() => import('./components/EthicsSafety').then(m => ({
 const SickDayPlanView = lazy(() => import('./components/SickDayPlanView').then(m => ({ default: m.SickDayPlanView })));
 
 const ViewLoading: React.FC = () => (
-  <div className="py-24 text-center text-slate-600 font-black text-xs uppercase tracking-widest animate-pulse">Loading…</div>
+  <div className="py-24 text-center text-ink-600 font-black text-xs uppercase tracking-widest animate-pulse">Loading…</div>
 );
 
 const DisclaimerModal: React.FC = () => {
@@ -53,13 +53,13 @@ const DisclaimerModal: React.FC = () => {
   if (hasAcceptedDisclaimer || activeView === 'privacy' || activeView === 'terms') return null;
 
   return (
-    <div className="fixed inset-0 z-100 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100 bg-ink-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div role="dialog" aria-modal="true" aria-labelledby="disclaimer-title" className="bg-white rounded-[3rem] max-w-lg w-full p-10 shadow-2xl space-y-8 animate-in zoom-in-95">
-         <div className="w-20 h-20 bg-rose-50 text-rose-700 rounded-4xl flex items-center justify-center text-4xl shadow-inner mx-auto" aria-hidden="true">⚠️</div>
+         <div className="w-20 h-20 bg-terracotta-50 text-terracotta-700 rounded-4xl flex items-center justify-center text-4xl shadow-inner mx-auto" aria-hidden="true">⚠️</div>
          <div className="text-center space-y-4">
-            <h2 id="disclaimer-title" className="text-3xl font-black text-slate-800 tracking-tight leading-none">Purpose & Safety Notice</h2>
-            <div className="text-slate-700 font-medium space-y-4 leading-relaxed text-base">
-               <p>PediPulse helps you keep your child's health records and find <strong>general information</strong>. Your records stay on this device.</p>
+            <h2 id="disclaimer-title" className="text-3xl font-black text-ink-800 tracking-tight leading-none">Purpose & Safety Notice</h2>
+            <div className="text-ink-700 font-medium space-y-4 leading-relaxed text-base">
+               <p>Paeds Pouch helps you keep your child's health records and find <strong>general information</strong>. Your records stay on this device.</p>
                <p>It is <strong>NOT medical advice</strong> and doesn't diagnose, assess symptoms or calculate doses.</p>
                <p><strong>In an emergency, call 000.</strong></p>
             </div>
@@ -67,12 +67,12 @@ const DisclaimerModal: React.FC = () => {
          <div className="space-y-3">
            <button 
             onClick={acceptDisclaimer}
-            className="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black uppercase tracking-widest shadow-xl hover:bg-indigo-700 transition-all"
+            className="w-full py-5 bg-terracotta-600 text-white rounded-3xl font-black uppercase tracking-widest shadow-xl hover:bg-terracotta-700 transition-all"
            >
              I Understand & Agree
            </button>
-           <p className="text-center text-sm font-bold text-slate-600">
-             Read the <button onClick={() => navigateTo('privacy')} className="underline text-indigo-700">Privacy Policy</button> and <button onClick={() => navigateTo('terms')} className="underline text-indigo-700">Terms of Use</button>.
+           <p className="text-center text-sm font-bold text-ink-600">
+             Read the <button onClick={() => navigateTo('privacy')} className="underline text-terracotta-700">Privacy Policy</button> and <button onClick={() => navigateTo('terms')} className="underline text-terracotta-700">Terms of Use</button>.
            </p>
          </div>
       </div>
@@ -87,7 +87,7 @@ const DashboardView: React.FC = () => {
   return (
     <div className="space-y-12">
       {nextAppointment && (
-        <div className="bg-indigo-600 p-8 rounded-[3rem] text-white flex items-center justify-between shadow-2xl animate-in slide-in-from-top-4">
+        <div className="bg-terracotta-600 p-8 rounded-[3rem] text-white flex items-center justify-between shadow-2xl animate-in slide-in-from-top-4">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl">🗓️</div>
             <div>
@@ -95,7 +95,7 @@ const DashboardView: React.FC = () => {
                <p className="text-2xl font-black">{nextAppointment.specialty} with {nextAppointment.provider}</p>
             </div>
           </div>
-          <button onClick={() => navigateTo('appointments')} className="bg-white text-indigo-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-transform">Prepare</button>
+          <button onClick={() => navigateTo('appointments')} className="bg-white text-terracotta-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-transform">Prepare</button>
         </div>
       )}
       <Dashboard />
@@ -160,9 +160,9 @@ const AppContent: React.FC = () => {
   return (
     <Layout activeView={activeView} onNavigate={navigateTo}>
       <DisclaimerModal />
-      <div className="print:hidden bg-rose-50 border-b border-rose-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-xs space-y-1">
-        <p className="text-xs font-black text-rose-700 uppercase tracking-wider sm:tracking-[0.2em]">General information only, not medical advice</p>
-        <p className="hidden sm:block text-xs text-rose-700 font-bold">{AI_ENABLED ? 'AI features send what you enter to an AI service' : 'Your records stay on this device'} • In an emergency, call 000.</p>
+      <div className="print:hidden bg-terracotta-50 border-b border-terracotta-100 px-4 py-2 sm:px-6 sm:py-3 text-center mb-4 sm:mb-8 rounded-2xl shadow-xs space-y-1">
+        <p className="text-xs font-black text-terracotta-700 uppercase tracking-wider sm:tracking-[0.2em]">General information only, not medical advice</p>
+        <p className="hidden sm:block text-xs text-terracotta-700 font-bold">{AI_ENABLED ? 'AI features send what you enter to an AI service' : 'Your records stay on this device'} • In an emergency, call 000.</p>
       </div>
       <Suspense fallback={<ViewLoading />}>
         {ViewComponent}

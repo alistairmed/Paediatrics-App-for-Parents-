@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { CHILD } from './helpers';
+import { CHILD, openWithChild } from './helpers';
 
 test('milestones use plain wording, update old saved items and keep the parent\'s notes', async ({ page }) => {
   // A child whose saved milestones still have the old "Red Flag:" text.
@@ -24,4 +24,25 @@ test('milestones use plain wording, update old saved items and keep the parent\'
   await page.goto('/#/redbook');
   await expect(page.getByText('Things to discuss')).toBeVisible();
   await expect(page.getByText(/You've noted 1 item on the milestones page/)).toBeVisible();
+});
+
+test('losing skills gets the "see your GP soon" line; no alarm words anywhere in milestones or the Red Book', async ({ page }) => {
+  await openWithChild(page, 'milestones');
+  const ALARM = /red flag|urgent|critical|clinical action/i;
+
+  expect(await page.locator('main').innerText()).not.toMatch(ALARM);
+  await page.getByRole('button', { name: 'Things to Discuss' }).click();
+  expect(await page.locator('main').innerText()).not.toMatch(ALARM);
+
+  await page.getByRole('button', { name: /All Ages/ }).click();
+  // All Ages has three items to discuss: one about losing skills, two others.
+  await expect(page.getByText('Loses skills they used to have', { exact: true })).toBeVisible();
+  await expect(page.getByText("If your child has stopped doing things they could do before, see your GP soon. Don't wait for the next routine check.")).toHaveCount(1);
+  await expect(page.getByText('If you notice this, tick it and mention it to your GP or child health nurse.')).toHaveCount(2);
+  expect(await page.locator('main').innerText()).not.toMatch(ALARM);
+  await expect(page.getByText(/If your child stops doing things they could do before, see your GP soon\./)).toBeVisible();
+
+  await page.goto('/#/redbook');
+  await expect(page.getByRole('heading').first()).toBeVisible();
+  expect(await page.locator('main').innerText()).not.toMatch(ALARM);
 });

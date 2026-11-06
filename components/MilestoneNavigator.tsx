@@ -4,6 +4,11 @@ import { Milestone } from '../types';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { RCH_FACT_SHEETS } from '../clinical/factSheets';
 
+/** Items about losing skills a child already had: these get their own, firmer line. */
+export const REGRESSION_IDS = new Set(['loss-skills']);
+export const REGRESSION_LINE = "If your child has stopped doing things they could do before, see your GP soon. Don't wait for the next routine check.";
+export const DISCUSS_LINE = 'If you notice this, tick it and mention it to your GP or child health nurse.';
+
 export const INITIAL_DATA: Milestone[] = [
   // 6-8 WEEKS
   { id: "6w-m1", ageRange: "6-8 Weeks", category: "Motor", description: "Lifts head briefly when prone. Example: Can clear chin from the floor for a few seconds.", completed: false, isRedFlag: false },
@@ -202,13 +207,13 @@ export const MilestoneNavigator: React.FC = () => {
   const CategoryBadge = ({ category }: { category: string }) => {
     const domain = domains.find(d => d.name === category);
     const colors: Record<string, string> = {
-      Motor: 'bg-blue-50 text-blue-600 border-blue-100',
-      Language: 'bg-purple-50 text-purple-600 border-purple-100',
+      Motor: 'bg-sky-50 text-sky-600 border-sky-100',
+      Language: 'bg-terracotta-50 text-terracotta-600 border-terracotta-100',
       Social: 'bg-pink-50 text-pink-700 border-pink-100',
       Cognitive: 'bg-amber-50 text-amber-700 border-amber-100',
     };
     return (
-      <span className={`px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider border shadow-xs flex items-center gap-1.5 ${colors[category] || 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+      <span className={`px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider border shadow-xs flex items-center gap-1.5 ${colors[category] || 'bg-ink-50 text-ink-500 border-ink-100'}`}>
         <span>{domain?.icon}</span>
         {category}
       </span>
@@ -218,15 +223,15 @@ export const MilestoneNavigator: React.FC = () => {
   return (
     <div className="space-y-6 pb-32 animate-in fade-in duration-500 max-w-4xl mx-auto">
       {/* Mobile-Optimized Sticky Header */}
-      <header className="sticky top-0 z-50 bg-[#FBFBFE]/95 backdrop-blur-xl border-b border-slate-100 px-4 py-4 -mx-4 md:static md:bg-transparent md:border-none md:p-0 md:m-0">
+      <header className="sticky top-0 z-50 bg-cream/95 backdrop-blur-xl border-b border-ink-100 px-4 py-4 -mx-4 md:static md:bg-transparent md:border-none md:p-0 md:m-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-             <div className="w-10 h-10 bg-teal-700 rounded-xl flex items-center justify-center text-xl shadow-lg -rotate-3">✨</div>
-             <h2 className="text-2xl font-black text-slate-800 tracking-tighter">Mile<span className="text-teal-700">stones</span></h2>
+             <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center text-xl shadow-lg -rotate-3">✨</div>
+             <h2 className="text-2xl font-black text-ink-800 tracking-tighter">Mile<span className="text-sky-700">stones</span></h2>
           </div>
           <button aria-label={showAddCustom ? 'Cancel adding a milestone' : 'Add a milestone'} 
             onClick={() => setShowAddCustom(!showAddCustom)}
-            className="bg-teal-50 text-teal-700 p-2.5 rounded-xl border border-teal-100 shadow-xs active:scale-95 transition-all"
+            className="bg-sky-50 text-sky-700 p-2.5 rounded-xl border border-sky-100 shadow-xs active:scale-95 transition-all"
             title="Add Observation"
           >
             {showAddCustom ? <span className="text-sm font-black">Cancel</span> : <span className="text-xl">➕</span>}
@@ -236,30 +241,30 @@ export const MilestoneNavigator: React.FC = () => {
 
       {/* Quick Source Link */}
       <div className="px-4 flex flex-wrap items-center gap-2">
-        <p className="text-slate-700 text-sm font-bold">A guide to typical development. Every child develops at their own pace.</p>
-        <a href={RCH_FACT_SHEETS.all.url} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-teal-700 bg-teal-50 px-2 py-0.5 rounded-sm uppercase tracking-widest border border-teal-100">RCH Kids Health Info ↗</a>
+        <p className="text-ink-700 text-sm font-bold">A guide to typical development. Every child develops at their own pace.</p>
+        <a href={RCH_FACT_SHEETS.all.url} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-sky-700 bg-sky-50 px-2 py-0.5 rounded-sm uppercase tracking-widest border border-sky-100">RCH Kids Health Info ↗</a>
       </div>
 
       {/* Floating Entry Panel */}
       {showAddCustom && (
-        <div className="fixed inset-x-4 top-20 z-60 bg-white p-6 rounded-[2.5rem] border-2 border-teal-100 shadow-2xl animate-in slide-in-from-top-4 space-y-6 md:relative md:top-0 md:inset-x-0 md:bg-teal-50/50">
-           <h3 className="text-lg font-black text-teal-900 tracking-tight">Log Private Observation for {activeAge}</h3>
+        <div className="fixed inset-x-4 top-20 z-60 bg-white p-6 rounded-[2.5rem] border-2 border-sky-100 shadow-2xl animate-in slide-in-from-top-4 space-y-6 md:relative md:top-0 md:inset-x-0 md:bg-sky-50/50">
+           <h3 className="text-lg font-black text-sky-900 tracking-tight">Log Private Observation for {activeAge}</h3>
            <div className="space-y-4">
               <div className="space-y-1">
-                <label htmlFor="milest-observation" className="text-xs font-black text-teal-700 uppercase tracking-widest ml-3">Observation</label>
+                <label htmlFor="milest-observation" className="text-xs font-black text-sky-700 uppercase tracking-widest ml-3">Observation</label>
                 <input id="milest-observation" 
                   placeholder="e.g. Points to birds, says 'Dada'..." 
                   value={customMilestone.description}
                   onChange={e => setCustomMilestone({...customMilestone, description: e.target.value})}
-                  className="w-full p-4 rounded-xl bg-white border-2 border-teal-200 font-black text-slate-900 outline-hidden shadow-inner focus:border-teal-500"
+                  className="w-full p-4 rounded-xl bg-white border-2 border-sky-200 font-black text-ink-900 outline-hidden shadow-inner focus:border-sky-500"
                 />
               </div>
               <div className="space-y-1">
-                <label htmlFor="milest-category" className="text-xs font-black text-teal-700 uppercase tracking-widest ml-3">Category</label>
+                <label htmlFor="milest-category" className="text-xs font-black text-sky-700 uppercase tracking-widest ml-3">Category</label>
                 <select id="milest-category" 
                   value={customMilestone.category}
                   onChange={e => setCustomMilestone({...customMilestone, category: e.target.value as any})}
-                  className="w-full p-4 rounded-xl bg-white border-2 border-teal-200 font-black text-slate-900 outline-hidden shadow-inner appearance-none"
+                  className="w-full p-4 rounded-xl bg-white border-2 border-sky-200 font-black text-ink-900 outline-hidden shadow-inner appearance-none"
                 >
                   <option>Motor</option>
                   <option>Social</option>
@@ -267,13 +272,13 @@ export const MilestoneNavigator: React.FC = () => {
                   <option>Cognitive</option>
                 </select>
               </div>
-              <button onClick={handleAddCustom} className="w-full py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Synchronize ✨</button>
+              <button onClick={handleAddCustom} className="w-full py-4 bg-sky-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Synchronize ✨</button>
            </div>
         </div>
       )}
 
       {/* Age Horizontal Selection */}
-      <nav className="overflow-x-auto no-scrollbar py-2 -mx-4 px-4 bg-[#FBFBFE]">
+      <nav className="overflow-x-auto no-scrollbar py-2 -mx-4 px-4 bg-cream">
         <div className="flex gap-2 min-w-max">
           {ageGroups.map(age => {
             const stats = completionStats[age] || { completed: 0, total: 0 };
@@ -285,8 +290,8 @@ export const MilestoneNavigator: React.FC = () => {
                 onClick={() => setActiveAge(age)} 
                 className={`relative px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all overflow-hidden border-2 ${
                   isActive 
-                    ? 'bg-teal-700 text-white border-teal-600 shadow-lg scale-105' 
-                    : 'bg-white text-slate-600 border-slate-100 hover:border-teal-100'
+                    ? 'bg-sky-700 text-white border-sky-600 shadow-lg scale-105' 
+                    : 'bg-white text-ink-600 border-ink-100 hover:border-sky-100'
                 }`}
               >
                 <div className="relative z-10 flex flex-col items-center gap-1">
@@ -294,7 +299,7 @@ export const MilestoneNavigator: React.FC = () => {
                   {stats.total > 0 && <span className="text-xs">{stats.completed}/{stats.total}</span>}
                 </div>
                 {isActive && (
-                  <div className="absolute bottom-0 left-0 h-1 bg-teal-300 opacity-50 transition-all duration-700" style={{ width: `${progress}%` }} />
+                  <div className="absolute bottom-0 left-0 h-1 bg-sky-300 opacity-50 transition-all duration-700" style={{ width: `${progress}%` }} />
                 )}
               </button>
             );
@@ -304,9 +309,9 @@ export const MilestoneNavigator: React.FC = () => {
 
       {/* Filter Segmented Control */}
       <div className="px-4 space-y-4">
-         <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner">
-            <button onClick={() => setShowRedFlags(false)} className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${!showRedFlags ? 'bg-white text-teal-700 shadow-md' : 'text-slate-600'}`}>Standard Progress</button>
-            <button onClick={() => setShowRedFlags(true)} className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${showRedFlags ? 'bg-amber-800 text-white shadow-md' : 'text-slate-600'}`}>Things to Discuss</button>
+         <div className="flex bg-ink-100 p-1 rounded-2xl border border-ink-200 shadow-inner">
+            <button onClick={() => setShowRedFlags(false)} className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${!showRedFlags ? 'bg-white text-sky-700 shadow-md' : 'text-ink-600'}`}>Standard Progress</button>
+            <button onClick={() => setShowRedFlags(true)} className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${showRedFlags ? 'bg-amber-800 text-white shadow-md' : 'text-ink-600'}`}>Things to Discuss</button>
          </div>
 
          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
@@ -314,7 +319,7 @@ export const MilestoneNavigator: React.FC = () => {
               <button 
                 key={d.name} 
                 onClick={() => setSelectedDomain(d.name as any)}
-                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 flex items-center gap-2 ${selectedDomain === d.name ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-white border-slate-50 text-slate-600'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 flex items-center gap-2 ${selectedDomain === d.name ? 'bg-sky-50 border-sky-200 text-sky-700' : 'bg-white border-ink-50 text-ink-600'}`}
               >
                 <span>{d.icon}</span>
                 {d.name}
@@ -336,7 +341,7 @@ export const MilestoneNavigator: React.FC = () => {
               className={`rounded-4xl border-2 transition-all flex flex-col group ${
                 m.completed 
                   ? (showRedFlags ? 'bg-amber-50 border-amber-500 shadow-md' : 'bg-emerald-50 border-emerald-300 shadow-md') 
-                  : 'bg-white border-slate-100 shadow-xs'
+                  : 'bg-white border-ink-100 shadow-xs'
               }`}
             >
               <div className="p-5 flex flex-col h-full gap-4 relative overflow-hidden">
@@ -352,7 +357,7 @@ export const MilestoneNavigator: React.FC = () => {
                     className={`w-11 h-11 rounded-2xl border-2 flex items-center justify-center transition-all z-10 ${
                       m.completed 
                         ? (showRedFlags ? 'bg-amber-800 border-white text-white rotate-360 shadow-lg' : 'bg-emerald-700 border-white text-white rotate-360 shadow-lg') 
-                        : 'bg-slate-50 border-slate-100 text-slate-200 hover:border-teal-200 active:scale-90 shadow-inner'
+                        : 'bg-ink-50 border-ink-100 text-ink-200 hover:border-sky-200 active:scale-90 shadow-inner'
                     }`}
                   >
                     {m.completed ? <span className="font-black text-xl">✓</span> : null}
@@ -360,44 +365,48 @@ export const MilestoneNavigator: React.FC = () => {
                 </div>
                 
                 <div className="flex-1 space-y-3 z-10">
-                  <p className={`text-lg font-black leading-tight tracking-tight  ${showRedFlags ? 'text-amber-950' : 'text-slate-800'}`}>
+                  <p className={`text-lg font-black leading-tight tracking-tight  ${showRedFlags ? 'text-amber-950' : 'text-ink-800'}`}>
                     {title}
                   </p>
                   {example && (
-                    <div className={`p-3 rounded-2xl border ${showRedFlags ? 'bg-white/60 border-amber-200' : 'bg-slate-50 border-slate-100'}`}>
-                        <p className={`text-xs font-bold  leading-snug ${showRedFlags ? 'text-amber-900' : 'text-slate-600'}`}>
+                    <div className={`p-3 rounded-2xl border ${showRedFlags ? 'bg-white/60 border-amber-200' : 'bg-ink-50 border-ink-100'}`}>
+                        <p className={`text-xs font-bold  leading-snug ${showRedFlags ? 'text-amber-900' : 'text-ink-600'}`}>
                         "{example}"
                         </p>
                     </div>
                   )}
                 </div>
 
-                <div className={`pt-4 border-t z-10 space-y-2 ${showRedFlags ? 'border-amber-200' : 'border-slate-100'}`}>
-                   <label className={`text-xs font-black uppercase tracking-widest ml-2 ${showRedFlags ? 'text-amber-900' : 'text-slate-600'}`}>Journal Entry</label>
+                <div className={`pt-4 border-t z-10 space-y-2 ${showRedFlags ? 'border-amber-200' : 'border-ink-100'}`}>
+                   <label className={`text-xs font-black uppercase tracking-widest ml-2 ${showRedFlags ? 'text-amber-900' : 'text-ink-600'}`}>Journal Entry</label>
                    <textarea 
                     value={m.notes || ''}
                     onChange={e => updateNotes(m.id, e.target.value)}
                     placeholder="Capture the moment..."
                     className={`w-full h-20 p-4 rounded-2xl border font-bold  text-xs outline-hidden focus:ring-2 transition-all shadow-inner resize-none ${
-                        showRedFlags ? 'bg-white/60 border-amber-100 focus:ring-amber-100 text-amber-950' : 'bg-white/50 border-slate-50 focus:ring-teal-100/50 text-slate-600'
+                        showRedFlags ? 'bg-white/60 border-amber-100 focus:ring-amber-100 text-amber-950' : 'bg-white/50 border-ink-50 focus:ring-sky-100/50 text-ink-600'
                     }`}
                    />
                 </div>
 
-                {m.isRedFlag && !m.completed && (
+                {REGRESSION_IDS.has(m.id) ? (
                   <p className="text-amber-950 font-bold text-sm pt-2 border-t border-amber-200 bg-amber-50 p-4 rounded-2xl z-10">
-                    If you notice this, tick it and mention it to your GP or child health nurse.
+                    {REGRESSION_LINE}
+                  </p>
+                ) : m.isRedFlag && !m.completed && (
+                  <p className="text-amber-950 font-bold text-sm pt-2 border-t border-amber-200 bg-amber-50 p-4 rounded-2xl z-10">
+                    {DISCUSS_LINE}
                   </p>
                 )}
               </div>
             </div>
           );
         }) : (
-          <div className="col-span-full py-24 flex flex-col items-center justify-center bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[2.5rem] text-center">
+          <div className="col-span-full py-24 flex flex-col items-center justify-center bg-ink-50/50 border-2 border-dashed border-ink-200 rounded-[2.5rem] text-center">
             <span className="text-6xl mb-6 grayscale">🌱</span>
             <div className="max-w-xs space-y-1">
-                <p className="font-black text-sm uppercase tracking-widest text-slate-500">No matching markers</p>
-                <p className="text-xs text-slate-600 font-bold">Try a different domain filter.</p>
+                <p className="font-black text-sm uppercase tracking-widest text-ink-500">No matching markers</p>
+                <p className="text-xs text-ink-600 font-bold">Try a different domain filter.</p>
             </div>
           </div>
         )}
@@ -405,17 +414,17 @@ export const MilestoneNavigator: React.FC = () => {
       
       {/* Bottom Expert Insight (Mobile Optimized) */}
       <div className="px-4">
-        <div className="bg-slate-900 p-8 rounded-[3rem] text-white flex flex-col gap-6 shadow-xl relative overflow-hidden border-b-12 border-slate-950">
-          <div className="absolute top-0 right-0 -mr-10 -mt-10 w-48 h-48 bg-indigo-600 rounded-full opacity-10 blur-3xl"></div>
+        <div className="bg-ink-900 p-8 rounded-[3rem] text-white flex flex-col gap-6 shadow-xl relative overflow-hidden border-b-12 border-ink-950">
+          <div className="absolute top-0 right-0 -mr-10 -mt-10 w-48 h-48 bg-terracotta-600 rounded-full opacity-10 blur-3xl"></div>
           <div className="flex items-center gap-4 relative z-10">
             <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-3xl shrink-0 border border-white/10 shadow-inner">📜</div>
-            <h4 className="text-xl font-black uppercase tracking-tighter text-indigo-100 leading-none">About milestones</h4>
+            <h4 className="text-xl font-black uppercase tracking-tighter text-terracotta-100 leading-none">About milestones</h4>
           </div>
-          <p className="text-indigo-50 text-sm font-medium leading-relaxed relative z-10">
-            Milestones are a guide, not a test, and every child develops at their own pace. If your child stops doing things they could do before,
-            or you're worried about their hearing, vision, movement, speech or play, talk to your GP or child health nurse. They can also do the checks in your child's Red Book.
+          <p className="text-terracotta-50 text-sm font-medium leading-relaxed relative z-10">
+            Milestones are a guide, not a test, and every child develops at their own pace. If your child stops doing things they could do before, see your GP soon.
+            If you're worried about their hearing, vision, movement, speech or play, talk to your GP or child health nurse. They can also do the checks in your child's Red Book.
           </p>
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-indigo-300 pt-4 border-t border-white/5">General information, not a diagnosis</p>
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-terracotta-300 pt-4 border-t border-white/5">General information, not a diagnosis</p>
         </div>
       </div>
     </div>

@@ -110,27 +110,27 @@ export const CalmStory: React.FC = () => {
   return (
     <div className="space-y-6">
       <header>
-        <h2 className="text-3xl font-black text-slate-800 tracking-tight">CalmCast <span className="text-indigo-600">Stories</span></h2>
-        <p className="text-slate-500 text-sm font-medium">Instant soothing stories for doctor visits or bedtime.</p>
+        <h2 className="text-3xl font-black text-ink-800 tracking-tight">CalmCast <span className="text-terracotta-600">Stories</span></h2>
+        <p className="text-ink-500 text-sm font-medium">Instant soothing stories for doctor visits or bedtime.</p>
       </header>
 
-      <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-slate-100 max-w-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-12 -mt-12 w-48 h-48 bg-indigo-50 rounded-full opacity-50 blur-3xl -z-10"></div>
+      <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-ink-100 max-w-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-12 -mt-12 w-48 h-48 bg-terracotta-50 rounded-full opacity-50 blur-3xl -z-10"></div>
         
         <div className="space-y-8 relative z-10">
           <div>
-            <label htmlFor="calmst-who-is-the-story-for" className="block text-xs font-black text-slate-600 uppercase tracking-[0.2em] mb-3 ml-2">Who is the story for?</label>
+            <label htmlFor="calmst-who-is-the-story-for" className="block text-xs font-black text-ink-600 uppercase tracking-[0.2em] mb-3 ml-2">Who is the story for?</label>
             <input id="calmst-who-is-the-story-for" 
               type="text" 
               value={childName}
               onChange={e => setChildName(e.target.value)}
               placeholder="Enter child's name..."
-              className="w-full p-6 rounded-2xl border-2 border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-hidden bg-indigo-50/30 text-indigo-950 font-black text-lg placeholder-indigo-300 transition-all shadow-inner" 
+              className="w-full p-6 rounded-2xl border-2 border-terracotta-100 focus:ring-4 focus:ring-terracotta-50 outline-hidden bg-terracotta-50/30 text-terracotta-950 font-black text-lg placeholder-terracotta-300 transition-all shadow-inner" 
             />
           </div>
 
           <div>
-            <label className="block text-xs font-black text-slate-600 uppercase tracking-[0.2em] mb-4 ml-2">Choose a Magical Theme</label>
+            <label className="block text-xs font-black text-ink-600 uppercase tracking-[0.2em] mb-4 ml-2">Choose a Magical Theme</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {themes.map(t => (
                 <button
@@ -138,8 +138,8 @@ export const CalmStory: React.FC = () => {
                   onClick={() => setTheme(t.name)}
                   className={`p-5 rounded-3xl border-2 flex flex-col items-center gap-3 transition-all ${
                     theme === t.name 
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl scale-105' 
-                      : 'bg-white border-slate-50 text-slate-600 hover:border-indigo-100 hover:bg-slate-50'
+                      ? 'bg-terracotta-600 border-terracotta-600 text-white shadow-xl scale-105' 
+                      : 'bg-white border-ink-50 text-ink-600 hover:border-terracotta-100 hover:bg-ink-50'
                   }`}
                 >
                   <span className="text-4xl filter drop-shadow-md">{t.icon}</span>
@@ -160,18 +160,18 @@ export const CalmStory: React.FC = () => {
           )}
 
           {errorMessage && (
-            <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 space-y-3">
-              <p className="font-black text-rose-800 text-sm">⚠️ {errorMessage}</p>
+            <div className="bg-terracotta-50 border-2 border-terracotta-200 rounded-2xl p-6 space-y-3">
+              <p className="font-black text-terracotta-800 text-sm">⚠️ {errorMessage}</p>
               <div className="flex gap-3">
                 <button 
                   onClick={handleGenerate} 
-                  className="px-5 py-2 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all"
+                  className="px-5 py-2 bg-terracotta-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-700 transition-all"
                 >
                   Try Again
                 </button>
                 <button 
                   onClick={() => setShowManualStory(true)} 
-                  className="px-5 py-2 bg-white border border-rose-200 text-rose-800 rounded-xl font-black text-xs uppercase tracking-widest"
+                  className="px-5 py-2 bg-white border border-terracotta-200 text-terracotta-800 rounded-xl font-black text-xs uppercase tracking-widest"
                 >
                   Read Manual Story Instead
                 </button>
@@ -184,7 +184,7 @@ export const CalmStory: React.FC = () => {
               onClick={handleGenerate}
               disabled={loading || !childName}
               className={`w-full py-6 rounded-4xl font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
-                loading || !childName ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700'
+                loading || !childName ? 'bg-ink-300' : 'bg-terracotta-600 hover:bg-terracotta-700'
               }`}
             >
               {loading ? (
@@ -200,25 +200,25 @@ export const CalmStory: React.FC = () => {
             </button>
           ) : (
             <AiOffNotice feature="The narrated story">
-              <button onClick={() => setShowManualStory(true)} className="px-5 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest">Read the Written Story Instead</button>
+              <button onClick={() => setShowManualStory(true)} className="px-5 py-2 bg-white border border-ink-200 text-ink-700 rounded-xl font-black text-xs uppercase tracking-widest">Read the Written Story Instead</button>
             </AiOffNotice>
           )}
 
           {(showManualStory || !errorMessage) && (
-            <div className="pt-4 border-t border-slate-100">
+            <div className="pt-4 border-t border-ink-100">
               <button 
                 onClick={() => setShowManualStory(!showManualStory)} 
-                className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline flex items-center gap-2"
+                className="text-xs font-black text-terracotta-600 uppercase tracking-widest hover:underline flex items-center gap-2"
               >
                 📖 {showManualStory ? 'Hide Read-Aloud Bedtime Story' : 'Read a Calm Bedtime Story Manually'}
               </button>
 
               {showManualStory && (
-                <div className="mt-4 p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 space-y-3">
-                  <h4 className="font-black text-indigo-950 text-sm uppercase tracking-widest">
+                <div className="mt-4 p-6 bg-terracotta-50/50 rounded-2xl border border-terracotta-100 space-y-3">
+                  <h4 className="font-black text-terracotta-950 text-sm uppercase tracking-widest">
                     {theme} Bedtime Tale for {childName || 'Child'}
                   </h4>
-                  <p className="text-slate-800 font-bold leading-relaxed text-sm">
+                  <p className="text-ink-800 font-bold leading-relaxed text-sm">
                     {getFallbackStoryText()}
                   </p>
                 </div>
@@ -228,11 +228,11 @@ export const CalmStory: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-indigo-50 p-8 rounded-[2.5rem] border border-indigo-100 flex items-center gap-6 max-w-2xl">
-        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-indigo-50 shrink-0">
+      <div className="bg-terracotta-50 p-8 rounded-[2.5rem] border border-terracotta-100 flex items-center gap-6 max-w-2xl">
+        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-terracotta-50 shrink-0">
           💡
         </div>
-        <p className="text-indigo-800 text-sm font-bold leading-relaxed">
+        <p className="text-terracotta-800 text-sm font-bold leading-relaxed">
           "Try generating a story when your child feels anxious about a check-up. Use their favorite animals in the theme to build a positive clinical association."
         </p>
       </div>

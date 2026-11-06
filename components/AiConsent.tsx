@@ -5,7 +5,7 @@ import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
 import { setAiConsentPrompt, hasAiConsent, withdrawAiConsent, AI_DAILY_LIMIT, getPremiumCode, setPremiumCode } from '../services/aiGuard';
 
 const CONSENT_MESSAGE =
-  'To answer, PediPulse sends what you typed or uploaded for this feature, and any child details it needs (such as age), ' +
+  'To answer, Paeds Pouch sends what you typed or uploaded for this feature, and any child details it needs (such as age), ' +
   "to an AI service through our server: Google's Gemini for most features" +
   (PREMIUM_ENABLED ? ", and Anthropic's Claude for premium features, which receive a de-identified summary only (no name, date of birth or contact details)" : '') +
   '. These companies may process it outside Australia. ' +
@@ -45,30 +45,30 @@ export const AiConsentSettings: React.FC = () => {
     showToast('Premium access code saved on this device.');
   };
   return (
-    <section className="bg-white p-6 sm:p-8 rounded-4xl border border-slate-200 space-y-3" aria-labelledby="ai-consent-title">
-      <h3 id="ai-consent-title" className="text-xl font-black text-slate-800">AI features</h3>
-      <p className="text-base font-medium text-slate-700">
+    <section className="bg-white p-6 sm:p-8 rounded-4xl border border-ink-200 space-y-3" aria-labelledby="ai-consent-title">
+      <h3 id="ai-consent-title" className="text-xl font-black text-ink-800">AI features</h3>
+      <p className="text-base font-medium text-ink-700">
         {given
-          ? 'You have allowed PediPulse to send the questions you ask to an AI service.'
-          : "You haven't allowed AI features. PediPulse will ask before sending anything."}
+          ? 'You have allowed Paeds Pouch to send the questions you ask to an AI service.'
+          : "You haven't allowed AI features. Paeds Pouch will ask before sending anything."}
       </p>
       {given && (
         <button
           onClick={() => { withdrawAiConsent(); setGiven(false); showToast('AI permission withdrawn.'); }}
-          className="min-h-[48px] px-5 rounded-xl border-2 border-slate-300 font-black text-slate-800 uppercase tracking-widest text-xs"
+          className="min-h-[48px] px-5 rounded-xl border-2 border-ink-300 font-black text-ink-800 uppercase tracking-widest text-xs"
         >
           Withdraw Permission
         </button>
       )}
       {PREMIUM_ENABLED && (
-        <div className="pt-3 border-t border-slate-200 space-y-2">
-          <h4 className="text-base font-black text-slate-800">Premium access code</h4>
+        <div className="pt-3 border-t border-ink-200 space-y-2">
+          <h4 className="text-base font-black text-ink-800">Premium access code</h4>
           {hasCode ? (
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-base font-medium text-slate-700">A premium access code is saved on this device.</p>
+              <p className="text-base font-medium text-ink-700">A premium access code is saved on this device.</p>
               <button
                 onClick={() => { setPremiumCode(null); setHasCode(false); showToast('Premium access code removed.'); }}
-                className="min-h-[44px] px-4 rounded-xl border-2 border-slate-300 font-black text-slate-800 uppercase tracking-widest text-xs"
+                className="min-h-[44px] px-4 rounded-xl border-2 border-ink-300 font-black text-ink-800 uppercase tracking-widest text-xs"
               >
                 Remove Code
               </button>
@@ -76,11 +76,11 @@ export const AiConsentSettings: React.FC = () => {
           ) : (
             <form onSubmit={saveCode} className="flex flex-wrap items-end gap-3">
               <label className="flex-1 min-w-[12rem]">
-                <span className="block text-sm font-bold text-slate-700 mb-1">Access code</span>
+                <span className="block text-sm font-bold text-ink-700 mb-1">Access code</span>
                 <input value={code} onChange={e => setCode(e.target.value)} autoComplete="off" spellCheck={false}
-                  className="w-full p-3 rounded-xl border-2 border-slate-300 font-mono text-sm text-slate-900" />
+                  className="w-full p-3 rounded-xl border-2 border-ink-300 font-mono text-sm text-ink-900" />
               </label>
-              <button type="submit" className="min-h-[48px] px-5 rounded-xl bg-violet-700 hover:bg-violet-800 text-white font-black uppercase tracking-widest text-xs">
+              <button type="submit" className="min-h-[48px] px-5 rounded-xl bg-terracotta-700 hover:bg-terracotta-800 text-white font-black uppercase tracking-widest text-xs">
                 Save Code
               </button>
             </form>

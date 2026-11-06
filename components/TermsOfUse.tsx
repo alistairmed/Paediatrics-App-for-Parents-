@@ -50,6 +50,16 @@ export const TermsOfUse: React.FC = () => (
         ),
       },
       {
+        heading: 'Optional AI helper',
+        body: (
+          <p>
+            If AI features are switched on, they give general information only, can be wrong, and are not medical advice. They are optional, ask for
+            your permission first, and send only what the Privacy Policy describes. Premium features, when available, need an access code and have
+            monthly limits.
+          </p>
+        ),
+      },
+      {
         heading: 'Liability',
         body: (
           <p>

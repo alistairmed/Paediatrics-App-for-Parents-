@@ -1,4 +1,4 @@
-import { deriveKey, encryptString, decryptString, isEncrypted, randomSalt, PBKDF2_ITERATIONS } from './crypto';
+import { deriveKey, deriveRawKey, encryptString, decryptString, isEncrypted, randomSalt, PBKDF2_ITERATIONS } from './crypto';
 
 /**
  * Optional passcode lock for health records in browser storage.
@@ -20,6 +20,9 @@ const storedSensitiveKeys = (): string[] => {
   }
   return keys;
 };
+// Kept from the app's old name (PediPulse): existing passcode locks are stored
+// under this key and verified against this text, so renaming them would lock
+// existing users out of their records.
 export const LOCK_META_KEY = 'pedipulse_lock';
 const CHECK_TEXT = 'pedipulse-lock-check';
 
@@ -30,13 +33,57 @@ interface LockMeta {
   check: string;
 }
 
+/**
+ * Where the lock settings (salt, iteration count, check value) live. On the
+ * web: localStorage, as before. In the iOS and Android apps: the Keychain or
+ * Keystore, set by initVault() at start-up. The encryption key itself is never
+ * stored: it is derived from the passcode each time.
+ */
+export interface LockMetaStore {
+  get(key: string): Promise<string | null>;
+  set(key: string, value: string): Promise<void>;
+  remove(key: string): Promise<void>;
+}
+let metaStore: LockMetaStore | null = null;
+/** In-memory copy of the lock settings when a secure store is used (reads stay synchronous). */
+let metaRaw: string | null = null;
+
+/**
+ * Uses a secure store for the lock settings. Existing users' settings are moved
+ * out of localStorage into it (copied first, then removed), so their records
+ * stay unlockable with the same passcode. Without a store, nothing changes.
+ */
+export async function initVault(store?: LockMetaStore): Promise<void> {
+  if (!store) { metaStore = null; metaRaw = null; return; }
+  let value = await store.get(LOCK_META_KEY);
+  const legacy = localStorage.getItem(LOCK_META_KEY);
+  if (legacy !== null) {
+    if (value === null) {
+      await store.set(LOCK_META_KEY, legacy);
+      value = await store.get(LOCK_META_KEY);
+    }
+    if (value !== null) localStorage.removeItem(LOCK_META_KEY);
+  }
+  metaStore = store;
+  metaRaw = value;
+}
+
+const writeMeta = async (value: string) => {
+  if (metaStore) { await metaStore.set(LOCK_META_KEY, value); metaRaw = value; }
+  else localStorage.setItem(LOCK_META_KEY, value);
+};
+const removeMeta = async () => {
+  if (metaStore) { await metaStore.remove(LOCK_META_KEY); metaRaw = null; }
+  else localStorage.removeItem(LOCK_META_KEY);
+};
+
 let key: CryptoKey | null = null;
 const cache = new Map<string, string | null>();
 let writeChain: Promise<void> = Promise.resolve();
 
 const readMeta = (): LockMeta | null => {
   try {
-    const raw = localStorage.getItem(LOCK_META_KEY);
+    const raw = metaStore ? metaRaw : localStorage.getItem(LOCK_META_KEY);
     return raw ? (JSON.parse(raw) as LockMeta) : null;
   } catch {
     return null;
@@ -86,17 +133,41 @@ async function checkPasscode(passcode: string, meta: LockMeta): Promise<CryptoKe
   }
 }
 
-export async function unlock(passcode: string): Promise<boolean> {
-  const meta = readMeta();
-  if (!meta) return true;
-  const candidate = await checkPasscode(passcode, meta);
-  if (!candidate) return false;
+const openWith = async (candidate: CryptoKey) => {
   for (const k of storedSensitiveKeys()) {
     const raw = localStorage.getItem(k);
     cache.set(k, raw === null ? null : isEncrypted(raw) ? await decryptString(candidate, raw) : raw);
   }
   key = candidate;
+};
+
+export async function unlock(passcode: string): Promise<boolean> {
+  const meta = readMeta();
+  if (!meta) return true;
+  const candidate = await checkPasscode(passcode, meta);
+  if (!candidate) return false;
+  await openWith(candidate);
   return true;
+}
+
+/** Unlocks with a key from biometric unlock. False if it no longer matches (the passcode changed). */
+export async function unlockWithKey(candidate: CryptoKey): Promise<boolean> {
+  const meta = readMeta();
+  if (!meta) return true;
+  try {
+    if ((await decryptString(candidate, meta.check)) !== CHECK_TEXT) return false;
+  } catch {
+    return false;
+  }
+  await openWith(candidate);
+  return true;
+}
+
+/** The encryption key, exported for biometric unlock, after checking the passcode. Null if it's wrong. */
+export async function exportKeyForBiometrics(passcode: string): Promise<string | null> {
+  const meta = readMeta();
+  if (!meta || !(await checkPasscode(passcode, meta))) return null;
+  return deriveRawKey(passcode, meta.salt, meta.iterations);
 }
 
 export async function verifyPasscode(passcode: string): Promise<boolean> {
@@ -114,10 +185,10 @@ export async function enableLock(passcode: string, iterations = PBKDF2_ITERATION
 
   try {
     for (const [k, v] of encrypted) if (v !== null) localStorage.setItem(k, v);
-    localStorage.setItem(LOCK_META_KEY, JSON.stringify(meta));
+    await writeMeta(JSON.stringify(meta));
   } catch {
     for (const [k, v] of plain) v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
-    localStorage.removeItem(LOCK_META_KEY);
+    await removeMeta().catch(() => {});
     throw new Error('Not enough storage to encrypt your records. Remove some photos and try again.');
   }
   for (const [k, v] of plain) cache.set(k, v);
@@ -132,7 +203,7 @@ export async function disableLock(passcode: string): Promise<boolean> {
     if (v === null || v === undefined) localStorage.removeItem(k);
     else localStorage.setItem(k, v);
   }
-  localStorage.removeItem(LOCK_META_KEY);
+  await removeMeta();
   key = null;
   cache.clear();
   return true;
@@ -146,7 +217,23 @@ export function lockNow(): void {
 }
 
 /** For a forgotten passcode: the records can't be decrypted, so start again. */
-export function eraseAllData(): void {
+/** Secure-store items other features keep (such as the biometric unlock key); erased with everything else. */
+const extraSecureKeys = new Set<string>();
+export const registerSecureKey = (k: string) => { extraSecureKeys.add(k); };
+
+/**
+ * Factory reset: deletes every record and the lock settings, including the
+ * Keychain/Keystore items in the apps, then reloads.
+ */
+export async function eraseAllData(): Promise<void> {
+  await writeChain.catch(() => {});
+  if (metaStore) {
+    await metaStore.remove(LOCK_META_KEY).catch(() => {});
+    for (const k of extraSecureKeys) await metaStore.remove(k).catch(() => {});
+    metaRaw = null;
+  }
   localStorage.clear();
-  window.location.reload();
+  key = null;
+  cache.clear();
+  if (typeof window !== 'undefined' && typeof window.location?.reload === 'function') window.location.reload();
 }
