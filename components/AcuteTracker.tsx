@@ -175,13 +175,13 @@ export const AcuteTracker: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-10">
         <div className="max-w-xl mx-auto w-full">
-          <div className="bg-white p-10 rounded-[4rem] border border-ink-100 shadow-2xl space-y-10 sticky top-8">
-            <div className="flex bg-ink-50 p-2 rounded-3xl border border-ink-200 shadow-inner overflow-x-auto no-scrollbar">
+          <div className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] border border-ink-100 shadow-2xl space-y-10 sticky top-8">
+            <div role="group" aria-label="Type of entry" className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-ink-50 p-2 rounded-3xl border border-ink-200 shadow-inner">
                {['Fluid', 'Temperature', 'Output', 'Medication'].map((t) => (
                   <button 
                     key={t} 
                     onClick={() => setType(t as any)} aria-pressed={type === t}
-                    className={`flex-1 py-5 px-2 rounded-2xl text-3xl transition-all min-w-[75px] ${type === t ? 'bg-white shadow-lg text-terracotta-700 scale-105 z-10' : 'text-ink-700 hover:bg-white/60'}`}
+                    className={`min-h-[44px] py-3 px-2 rounded-2xl text-3xl transition-all ${type === t ? 'bg-white shadow-lg text-terracotta-700 scale-105 z-10' : 'text-ink-700 hover:bg-white/60'}`}
                   >
                     <span className="block">{(icons as any)[t]}</span>
                     <span className="text-xs font-black uppercase mt-2 block tracking-tight">{t}</span>
