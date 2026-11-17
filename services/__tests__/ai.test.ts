@@ -4,7 +4,7 @@ import { SAFETY_SYSTEM_INSTRUCTION } from '../prompts';
 
 describe('AI safety instruction', () => {
   test('Adds the safety instruction to every request', () => {
-    const payload = withSafetyInstruction({ model: 'gemini-3.8-flash', contents: 'Tell me about MMR' });
+    const payload = withSafetyInstruction({ model: 'gemini-3.5-flash-lite', contents: 'Tell me about MMR' });
     expect(payload.systemInstruction).toBe(SAFETY_SYSTEM_INSTRUCTION);
     expect(payload.contents).toBe('Tell me about MMR');
   });
