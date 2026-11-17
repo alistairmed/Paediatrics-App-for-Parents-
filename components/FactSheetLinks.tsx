@@ -30,7 +30,7 @@ export const Helplines: React.FC = () => (
       {HELPLINES.map(line => (
         <li key={line.number} className="bg-white border-2 border-ink-200 rounded-2xl p-5">
           <span className="block text-sm font-bold text-ink-600">{line.name}</span>
-          <a href={`tel:${line.number.replace(/\s/g, '')}`} className="block text-2xl font-black text-terracotta-700 my-1">{line.number}</a>
+          <a href={`tel:${line.number.replace(/\s/g, '')}`} className="flex items-center min-h-[44px] text-2xl font-black text-terracotta-700 my-1">{line.number}</a>
           <span className="block text-sm font-medium text-ink-600">{line.note}</span>
         </li>
       ))}

@@ -146,7 +146,7 @@ export const GrowthTracker: React.FC = () => {
             <div className="flex gap-1 bg-ink-100 p-1 rounded-xl" role="tablist" aria-label="Measurement">
               {MEASURES.map(m => (
                 <button key={m.id} role="tab" aria-selected={m.id === measureId} onClick={() => setMeasureId(m.id)}
-                  className={`px-3 py-2 rounded-lg text-sm font-bold min-h-[40px] ${m.id === measureId ? 'bg-white text-terracotta-700 shadow-sm' : 'text-ink-600'}`}>
+                  className={`px-3 py-2 rounded-lg text-sm font-bold min-h-[44px] ${m.id === measureId ? 'bg-white text-terracotta-700 shadow-sm' : 'text-ink-600'}`}>
                   {m.label}
                 </button>
               ))}
@@ -157,7 +157,7 @@ export const GrowthTracker: React.FC = () => {
             <div className="flex items-center gap-2 text-sm font-bold text-ink-700">
               <span>Chart:</span>
               {(['female', 'male'] as const).map(s => (
-                <button key={s} onClick={() => setChartSex(s)} aria-pressed={chartSex === s} className={`px-3 py-1 rounded-lg border-2 ${chartSex === s ? 'border-terracotta-600 text-terracotta-700' : 'border-ink-300'}`}>
+                <button key={s} onClick={() => setChartSex(s)} aria-pressed={chartSex === s} className={`px-4 py-2 min-h-[44px] rounded-lg border-2 ${chartSex === s ? 'border-terracotta-600 text-terracotta-700' : 'border-ink-300'}`}>
                   {s === 'female' ? 'Girls' : 'Boys'}
                 </button>
               ))}

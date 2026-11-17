@@ -6,16 +6,6 @@ import { SearchFilterBar } from './SearchFilterBar';
 import { useToast } from '../context/ToastContext';
 import { useConfirm } from '../context/ConfirmContext';
 
-const icons = { 
-  Fluid: '🥤', 
-  Temperature: '🌡️', 
-  Output: '🚽', 
-  Medication: '💊', 
-  Vomit: '🤮', 
-  Triage: '✨', 
-  'Physical Exam': '👨‍⚕️' 
-};
-
 const units: Record<string, string> = {
   Fluid: 'ml',
   Temperature: '°C',
@@ -57,10 +47,10 @@ export const AcuteTracker: React.FC = () => {
 
   const categoryOptions = useMemo(() => [
     { value: 'all', label: 'All Types' },
-    { value: 'Fluid', label: '🥤 Fluid' },
-    { value: 'Temperature', label: '🌡️ Temperature' },
-    { value: 'Output', label: '🚽 Output' },
-    { value: 'Medication', label: '💊 Medication' }
+    { value: 'Fluid', label: 'Fluid' },
+    { value: 'Temperature', label: 'Temperature' },
+    { value: 'Output', label: 'Output' },
+    { value: 'Medication', label: 'Medication' }
   ], []);
 
   // Vitals entries were only logged by the removed clinician mode.
@@ -160,7 +150,7 @@ export const AcuteTracker: React.FC = () => {
     <div className="space-y-10 pb-24 animate-in fade-in">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 px-1">
         <div>
-          <h2 className="text-4xl font-black text-ink-800 tracking-tight leading-none">Acute <span className="text-terracotta-700">Surveillance</span></h2>
+          <h2 className="text-4xl font-black text-ink-800 tracking-tight leading-none">Sick day <span className="text-terracotta-700">log</span></h2>
           <p className="text-ink-500 font-bold mt-2">Track recovery and comfort.</p>
         </div>
         <div className="flex gap-3">
@@ -175,16 +165,15 @@ export const AcuteTracker: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-10">
         <div className="max-w-xl mx-auto w-full">
-          <div className="bg-white p-10 rounded-[4rem] border border-ink-100 shadow-2xl space-y-10 sticky top-8">
-            <div className="flex bg-ink-50 p-2 rounded-3xl border border-ink-200 shadow-inner overflow-x-auto no-scrollbar">
+          <div className="bg-white p-5 sm:p-10 rounded-[2.5rem] sm:rounded-[4rem] border border-ink-100 shadow-2xl space-y-10 sticky top-8">
+            <div role="group" aria-label="Type of entry" className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-ink-50 p-2 rounded-3xl border border-ink-200 shadow-inner">
                {['Fluid', 'Temperature', 'Output', 'Medication'].map((t) => (
                   <button 
                     key={t} 
                     onClick={() => setType(t as any)} aria-pressed={type === t}
-                    className={`flex-1 py-5 px-2 rounded-2xl text-3xl transition-all min-w-[75px] ${type === t ? 'bg-white shadow-lg text-terracotta-700 scale-105 z-10' : 'text-ink-700 hover:bg-white/60'}`}
+                    className={`min-h-[44px] py-3 px-2 rounded-2xl text-xs transition-all ${type === t ? 'bg-white shadow-lg text-terracotta-700 scale-105 z-10' : 'text-ink-700 hover:bg-white/60'}`}
                   >
-                    <span className="block">{(icons as any)[t]}</span>
-                    <span className="text-xs font-black uppercase mt-2 block tracking-tight">{t}</span>
+                    <span className="text-xs font-black uppercase block tracking-tight">{t}</span>
                   </button>
                ))}
             </div>
@@ -226,7 +215,6 @@ export const AcuteTracker: React.FC = () => {
                <div className="absolute top-0 right-0 -mr-10 -mt-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
                <div className="flex justify-between items-center relative z-10">
                   <div className="flex items-center gap-4">
-                     <span className="text-3xl">💧</span>
                      <div>
                         <p className="text-xs font-black uppercase tracking-widest">Hydration Balance</p>
                         <p className="text-2xl font-black">{balanceStats.balance} ml</p>
@@ -265,7 +253,7 @@ export const AcuteTracker: React.FC = () => {
                     <div key={entry.id} className={`p-6 rounded-[2.5rem] border transition-all flex items-center justify-between group bg-white border-ink-100 shadow-xs`}>
                        <div className="flex items-center gap-8">
                           <span className={`text-xs font-black w-14 shrink-0 uppercase text-ink-600`}>{formatLogTime(entry.timestamp)}</span>
-                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 bg-ink-50`}>{(icons as any)[entry.type]}</div>
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black text-terracotta-700 shrink-0 bg-ink-50`}>{entry.type.charAt(0)}</div>
                           <div className="max-w-[200px] sm:max-w-md">
                              <p className="text-base font-black leading-tight tracking-tight">{entry.value}</p>
                              {entry.notes && <p className={`text-xs font-bold  mt-3 leading-relaxed text-ink-500 border-l-2 border-ink-100 pl-4`}>{entry.notes}</p>}

@@ -273,7 +273,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
             <button 
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 sm:px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? `bg-white ${tab.color} shadow-md` : 'text-ink-600 hover:text-ink-900'}`}
+              className={`px-4 sm:px-6 py-2 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? `bg-white ${tab.color} shadow-md` : 'text-ink-600 hover:text-ink-900'}`}
             >
               {tab.label}
             </button>
@@ -389,7 +389,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                  <button
                   key={cat}
                   onClick={() => setLiteracyCategory(cat)}
-                  className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all ${literacyCategory === cat ? 'bg-emerald-700 border-emerald-600 text-white shadow-lg' : 'bg-white border-ink-200 text-ink-600 hover:border-ink-300'}`}
+                  className={`px-5 py-2 min-h-[44px] rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all ${literacyCategory === cat ? 'bg-emerald-700 border-emerald-600 text-white shadow-lg' : 'bg-white border-ink-200 text-ink-600 hover:border-ink-300'}`}
                  >
                    {cat}
                  </button>

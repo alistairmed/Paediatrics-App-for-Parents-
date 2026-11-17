@@ -15,10 +15,11 @@ import { isLockEnabled, isUnlocked, lockNow } from './utils/vault';
 
 const AUTO_LOCK_AFTER_MS = 5 * 60 * 1000;
 import { ViewType } from './types';
-import { AI_ENABLED } from './config/features';
+import { AI_ENABLED, PROMPT_TOOL_ENABLED } from './config/features';
 
 // Each screen is loaded on demand so the first page doesn't download the whole app.
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
+const PromptLab = lazy(() => import('./components/PromptLab').then(m => ({ default: m.PromptLab })));
 const WhenToGetHelp = lazy(() => import('./components/WhenToGetHelp').then(m => ({ default: m.WhenToGetHelp })));
 const GrowthTracker = lazy(() => import('./components/GrowthTracker').then(m => ({ default: m.GrowthTracker })));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
@@ -152,7 +153,8 @@ const AppContent: React.FC = () => {
       privacy: <PrivacyPolicy />,
       terms: <TermsOfUse />,
       summary: <PrintableSummary />,
-      sickday: <SickDayPlanView />
+      sickday: <SickDayPlanView />,
+      promptlab: PROMPT_TOOL_ENABLED ? <PromptLab /> : <DashboardView />
     };
     return views[activeView] || views.dashboard;
   }, [activeView]);
