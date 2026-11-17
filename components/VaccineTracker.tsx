@@ -1,3 +1,4 @@
+import { AiText } from './AiText';
 import React, { useState, useEffect, useMemo } from 'react';
 import { Vaccination } from '../types';
 import { getVaccineAdvice, AiError } from '../services/ai';
@@ -369,9 +370,7 @@ export const VaccineTracker: React.FC = () => {
               <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-terracotta-500 rounded-full opacity-5 blur-[100px]"></div>
               <button aria-label="Close" onClick={() => setInfo(null)} className="absolute top-8 right-8 text-ink-500 font-black text-2xl hover:text-terracotta-700 transition-colors">×</button>
               <h3 className="text-3xl font-black text-ink-800 mb-8 leading-tight">{info.name}</h3>
-              <div className="prose prose-slate prose-sm leading-relaxed whitespace-pre-wrap font-bold text-ink-600 border-l-4 border-ink-50 pl-8 mb-8">
-                {info.text}
-              </div>
+              <AiText text={info.text} className="space-y-3 text-sm leading-relaxed font-bold text-ink-600 border-l-4 border-ink-50 pl-8 mb-8" />
               
               {/* Display mandatory grounding sources when Google Search is used */}
               {info.sources.length > 0 && (

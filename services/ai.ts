@@ -4,11 +4,11 @@ export { withSafetyInstruction };
 import { AI_ENABLED, PREMIUM_ENABLED } from '../config/features';
 import { apiUrl } from '../config/platform';
 import { AI_FEATURES, AiFeature } from '../config/aiFeatures';
-import { ensureAiConsent, takeAiQuota, AI_DAILY_LIMIT, getPremiumCode } from './aiGuard';
+import { ensureAiConsent, takeAiQuota, refundAiQuota, AI_DAILY_LIMIT, getPremiumCode } from './aiGuard';
 import { deidentifiedSummary, SummaryInput } from './deidentify';
 import { Appointment, MedicalHistory } from '../types';
 
-export type AiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'CONSENT' | 'PREMIUM' | 'UNKNOWN';
+export type AiErrorType = 'RATE_LIMIT' | 'AUTH' | 'TIMEOUT' | 'NETWORK' | 'DISABLED' | 'CONSENT' | 'PREMIUM' | 'BUSY' | 'UNKNOWN';
 
 export class AiError extends Error {
   type: AiErrorType;
@@ -73,7 +73,7 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
         throw new AiError(
           tier === 'premium'
             ? "You've used this month's premium requests, or too many requests were sent. Please try again later."
-            : 'You have reached the AI limit for now. Please try again later.',
+            : 'The AI service is busy or over its limit right now. Please try again in a minute.',
           'RATE_LIMIT',
           429
         );
@@ -88,12 +88,17 @@ export async function callAi(payload: { feature: AiFeature; [key: string]: any }
       if (status === 401 || status === 403) {
         throw new AiError("The AI service couldn't be used right now.", 'AUTH', status);
       }
+      if (status === 503) {
+        throw new AiError('The AI service is busy right now. Please try again in a minute.', 'BUSY', 503);
+      }
       throw new AiError("The AI service couldn't answer. Please try again later.", 'UNKNOWN', status);
     }
 
     return await res.json();
   } catch (err: any) {
     clearTimeout(timeoutId);
+    // A request that failed doesn't count against today's cap.
+    refundAiQuota();
 
     if (err instanceof AiError) {
       console.error('[Paeds Pouch Error]', { type: err.type, status: err.status, message: err.message });

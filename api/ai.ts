@@ -2,7 +2,7 @@ import { withSafetyInstruction } from '../services/prompts.js';
 import { AI_AUDIO_MODEL, AI_FEATURES, AI_INPUT_LIMITS, AI_MODELS, isAiFeature } from '../config/aiFeatures.js';
 import { bearerToken, verifyEntitlementToken } from './_lib/entitlement.js';
 import { monthlyKey, MONTH_TTL_SECONDS, usageStore } from './_lib/usageStore.js';
-import { callClaude, callGemini, measureParts, ProviderError, toParts } from './_lib/providers.js';
+import { callClaude, callGeminiWithRetry, measureParts, ProviderError, toParts } from './_lib/providers.js';
 
 interface VercelRequest {
   method?: string;
@@ -187,7 +187,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error('[api/ai] GEMINI_API_KEY is not set.');
       return res.status(500).json({ error: UNAVAILABLE, status: 500 });
     }
-    const result = await callGemini({
+    const result = await callGeminiWithRetry({
       apiKey,
       model,
       parts,
@@ -199,7 +199,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json(result);
   } catch (err) {
     // Provider error text can describe keys, projects or accounts; keep it in the server log only.
-    console.error('[api/ai] Provider error', err instanceof ProviderError ? err.message : err);
+    console.error('[api/ai] Provider error', `feature=${feature} model=${model}`, err instanceof ProviderError ? err.message : err);
     if (err instanceof ProviderError) {
       const status = err.status >= 400 && err.status < 600 ? err.status : 502;
       return res.status(status).json({ error: 'The AI service could not answer this request.', status });

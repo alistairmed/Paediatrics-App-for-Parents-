@@ -48,6 +48,16 @@ export function takeAiQuota(now = new Date()): boolean {
   return true;
 }
 
+/** Gives back one request when it failed, so errors don't use up the day's cap. */
+export function refundAiQuota(now = new Date()): void {
+  try {
+    const saved = JSON.parse(read(AI_USAGE_KEY) || 'null');
+    if (saved?.date === today(now) && Number.isFinite(saved.count) && saved.count > 0) {
+      write(AI_USAGE_KEY, JSON.stringify({ date: saved.date, count: saved.count - 1 }));
+    }
+  } catch { /* nothing to refund */ }
+}
+
 export const PREMIUM_CODE_KEY = 'pedipulse_premium_code';
 
 /** The premium access code the parent entered (sent only with premium requests). */

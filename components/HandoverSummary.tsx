@@ -1,3 +1,4 @@
+import { AiText } from './AiText';
 import React, { useState, useMemo } from 'react';
 import { useMedicalHistory } from '../context/MedicalHistoryContext';
 import { useChildProfile } from '../context/ChildProfileContext';
@@ -148,9 +149,7 @@ export const HandoverSummary: React.FC = () => {
             {aiSummary && (
               <div className="bg-terracotta-50/50 p-6 rounded-2xl border border-terracotta-100 space-y-3">
                 <p className="text-xs font-black uppercase tracking-widest text-terracotta-700">Synthesized ISBAR Narrative</p>
-                <div className="text-ink-800 text-sm font-medium whitespace-pre-wrap leading-relaxed">
-                  {aiSummary.text}
-                </div>
+                <AiText text={aiSummary.text} className="space-y-3 text-ink-800 text-sm font-medium leading-relaxed" />
               </div>
             )}
 
@@ -195,9 +194,7 @@ export const HandoverSummary: React.FC = () => {
            {aiSummary && (
              <section className="space-y-4">
                 <h3 className="text-terracotta-600 font-black uppercase text-xs tracking-[0.3em] border-b border-terracotta-50 pb-2">AI ISBAR Narrative Synthesis</h3>
-                <div className="p-6 bg-terracotta-50/40 rounded-3xl border border-terracotta-100 text-ink-800 text-sm font-bold leading-relaxed whitespace-pre-wrap">
-                  {aiSummary.text}
-                </div>
+                <AiText text={aiSummary.text} className="space-y-3 p-6 bg-terracotta-50/40 rounded-3xl border border-terracotta-100 text-ink-800 text-sm font-bold leading-relaxed" />
              </section>
            )}
 
