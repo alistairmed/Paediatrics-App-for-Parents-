@@ -107,7 +107,6 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               : 'bg-ink-50 border-ink-200 text-ink-700 hover:bg-ink-100'
           }`}
         >
-          <span>📅</span>
           <span>{startDate || endDate ? 'Date Filtered' : 'Date Range'}</span>
           {startDate || endDate ? (
             <span className="w-2 h-2 rounded-full bg-terracotta-400"></span>
