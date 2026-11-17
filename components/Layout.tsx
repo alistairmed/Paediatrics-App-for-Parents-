@@ -127,7 +127,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
         <button
           type="button"
           aria-label="Paeds Pouch home"
-          className="flex items-center gap-3 mb-4 px-4 cursor-pointer group text-left"
+          className="flex items-center gap-3 mb-4 px-4 min-h-[44px] cursor-pointer group text-left"
           onClick={() => handleNav('dashboard')}
         >
           <span aria-hidden="true" className="w-12 h-12 bg-terracotta-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform border-4 border-white">👶</span>
@@ -179,7 +179,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
   return (
     <div className={`min-h-screen print:min-h-0 flex flex-col md:flex-row bg-cream print:bg-white`}>
       <header className="md:hidden print:hidden flex items-center justify-between gap-3 px-4 py-3 bg-white border-b border-ink-200 sticky top-0 z-50 shadow-xs">
-        <button onClick={() => handleNav('dashboard')} aria-label="Paeds Pouch home" className="flex items-center gap-3 min-w-0">
+        <button onClick={() => handleNav('dashboard')} aria-label="Paeds Pouch home" className="flex items-center gap-3 min-w-0 min-h-[44px]">
           <span className="w-10 h-10 shrink-0 bg-terracotta-600 rounded-xl flex items-center justify-center text-white text-xl shadow-md">👶</span>
           <span className="min-w-0 text-left">
             <span className="block text-xs font-black text-terracotta-600 uppercase tracking-widest leading-none truncate">{childProfile ? `Paeds Pouch · ${childProfile.name}` : 'Paeds Pouch'}</span>

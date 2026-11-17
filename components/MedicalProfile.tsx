@@ -871,7 +871,7 @@ export const MedicalProfile: React.FC = () => {
                await eraseAllData();
             }
           }}
-          className="text-xs font-black uppercase tracking-[0.4em] text-ink-500 hover:text-terracotta-700 transition-colors"
+          className="min-h-[44px] px-2 text-xs font-black uppercase tracking-[0.4em] text-ink-500 hover:text-terracotta-700 transition-colors"
         >
           Delete Everything on This Device 🗑️
         </button>

@@ -89,7 +89,7 @@ export const BackupRestore: React.FC = () => {
         </div>
         <p className="text-xs font-bold text-amber-800">You'll need this password to restore the backup. It can't be recovered.</p>
         {exportError && <p role="alert" className="text-sm font-bold text-terracotta-700">{exportError}</p>}
-        <button type="submit" disabled={busy} className="px-5 py-3 rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
+        <button type="submit" disabled={busy} className="px-5 py-3 min-h-[44px] rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
           {busy ? 'Working…' : 'Save Backup File'}
         </button>
       </form>

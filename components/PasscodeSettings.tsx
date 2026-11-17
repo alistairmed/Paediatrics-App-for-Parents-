@@ -134,7 +134,7 @@ export const PasscodeSettings: React.FC = () => {
                 <input type="password" autoComplete="current-password" value={bioPasscode} onChange={e => setBioPasscode(e.target.value)} className={inputClass} />
               </label>
               {bioError && <p role="alert" className="text-sm font-bold text-terracotta-700">{bioError}</p>}
-              <button type="submit" disabled={busy || !bioPasscode} className="px-5 py-3 rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
+              <button type="submit" disabled={busy || !bioPasscode} className="px-5 py-3 min-h-[44px] rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
                 Turn On Face ID or Fingerprint
               </button>
             </form>
@@ -162,7 +162,7 @@ export const PasscodeSettings: React.FC = () => {
             <span className="text-sm font-bold text-amber-950">I understand that if I forget this passcode, my records can't be recovered.</span>
           </label>
           {error && <p role="alert" className="text-sm font-bold text-terracotta-700">{error}</p>}
-          <button type="submit" disabled={busy} className="px-5 py-3 rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
+          <button type="submit" disabled={busy} className="px-5 py-3 min-h-[44px] rounded-xl bg-terracotta-600 text-white font-black text-xs uppercase tracking-widest disabled:bg-ink-400">
             {busy ? 'Encrypting…' : 'Turn On Passcode Lock'}
           </button>
         </form>

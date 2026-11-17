@@ -72,7 +72,7 @@ export const HandoverSummary: React.FC = () => {
         <div className="flex gap-2">
            <button 
             onClick={() => reviewStep === 'review' ? handleFinalize() : setReviewStep('review')} 
-            className={`px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-xl transition-all ${reviewStep === 'review' ? 'bg-terracotta-600 text-white hover:bg-terracotta-700' : 'bg-ink-900 text-white'}`}
+            className={`px-8 py-3 min-h-[44px] rounded-2xl font-black text-xs uppercase shadow-xl transition-all ${reviewStep === 'review' ? 'bg-terracotta-600 text-white hover:bg-terracotta-700' : 'bg-ink-900 text-white'}`}
           >
              {reviewStep === 'review' ? 'Finalize Handover' : 'Edit Selection'}
            </button>
