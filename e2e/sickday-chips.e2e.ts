@@ -15,3 +15,9 @@ test('Sick Day Log type buttons all fit on a small phone and are easy to tap', a
     expect(box!.x + box!.width).toBeLessThanOrEqual(375);
   }
 });
+
+test('Sick Day Log heading is in plain English', async ({ page }) => {
+  await openWithChild(page, 'acutelogs');
+  await expect(page.getByRole('heading', { level: 2, name: 'Sick day log' })).toBeVisible();
+  await expect(page.getByText('Surveillance')).toHaveCount(0);
+});

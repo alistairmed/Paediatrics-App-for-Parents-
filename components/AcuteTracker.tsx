@@ -150,7 +150,7 @@ export const AcuteTracker: React.FC = () => {
     <div className="space-y-10 pb-24 animate-in fade-in">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 px-1">
         <div>
-          <h2 className="text-4xl font-black text-ink-800 tracking-tight leading-none">Acute <span className="text-terracotta-700">Surveillance</span></h2>
+          <h2 className="text-4xl font-black text-ink-800 tracking-tight leading-none">Sick day <span className="text-terracotta-700">log</span></h2>
           <p className="text-ink-500 font-bold mt-2">Track recovery and comfort.</p>
         </div>
         <div className="flex gap-3">
