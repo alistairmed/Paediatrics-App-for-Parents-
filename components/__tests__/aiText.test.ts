@@ -19,4 +19,11 @@ describe('AiText', () => {
     expect(out).not.toContain('<img');
     expect(out).toContain('&lt;img');
   });
+
+  test('Drops stray asterisks and keeps italics', () => {
+    const out = html('*If your child has urgent symptoms, call 000.*\nA lone * mark and *italic words* here.');
+    expect(out).not.toContain('*');
+    expect(out).toContain('If your child has urgent symptoms, call 000.');
+    expect(out).toContain('<em>italic words</em>');
+  });
 });

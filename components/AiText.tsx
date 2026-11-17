@@ -9,7 +9,8 @@ const inline = (text: string): React.ReactNode[] =>
   text.split(/(\*\*[^*]+\*\*|\*[^*\s][^*]*\*)/g).filter(Boolean).map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>;
     if (part.startsWith('*') && part.endsWith('*') && part.length > 2) return <em key={i}>{part.slice(1, -1)}</em>;
-    return <React.Fragment key={i}>{part}</React.Fragment>;
+    // Any leftover asterisks are stray marks, not words.
+    return <React.Fragment key={i}>{part.replace(/\*+/g, '')}</React.Fragment>;
   });
 
 export const AiText: React.FC<{ text: string; className?: string }> = ({ text, className }) => {
