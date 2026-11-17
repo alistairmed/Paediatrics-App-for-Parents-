@@ -19,14 +19,23 @@ describe('Calming story', () => {
   });
 
   test('Only the theme goes in the request', async () => {
-    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ audio: 'AAAA' }), { status: 200 }));
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ text: 'Once upon a time, a little fox slept.' }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ audio: 'AAAA' }), { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
 
-    await generateCalmingStory('Gentle Forest');
+    const audio = await generateCalmingStory('Gentle Forest');
 
-    const body = String((fetchMock.mock.calls[0] as unknown[])[1] && ((fetchMock.mock.calls[0] as any)[1].body));
-    expect(body).toContain('Gentle Forest');
-    expect(body).toContain('young child');
-    expect(body).not.toMatch(/\{childName\}|\{theme\}/);
+    const first = JSON.parse((fetchMock.mock.calls[0] as any)[1].body);
+    expect(first.feature).toBe('calm-story-text');
+    expect(JSON.stringify(first.contents)).toContain('Gentle Forest');
+    expect(JSON.stringify(first.contents)).toContain('young child');
+    expect(JSON.stringify(first.contents)).not.toMatch(/\{childName\}|\{theme\}/);
+
+    // The speech step reads out the written story and nothing else.
+    const second = JSON.parse((fetchMock.mock.calls[1] as any)[1].body);
+    expect(second.feature).toBe('calm-story');
+    expect(JSON.stringify(second.contents)).toContain('little fox');
+    expect(audio).toBe('AAAA');
   });
 });

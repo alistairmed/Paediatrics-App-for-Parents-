@@ -8,6 +8,9 @@
  */
 export type AiTier = 'free' | 'premium';
 
+/** Google's speech model. Only the calming story may use it. */
+export const AI_AUDIO_MODEL = 'gemini-3.8-flash-tts';
+
 export interface AiFeatureConfig {
   tier: AiTier;
   /** Plain name shown to parents. */
@@ -16,11 +19,15 @@ export interface AiFeatureConfig {
   search?: boolean;
   /** Upper limit on the model's output for this feature. */
   maxOutputTokens: number;
+  /** Model this feature must use. Left out, the tier's default text model is used. */
+  model?: string;
 }
 
 export const AI_FEATURES = {
   'vaccine-information': { tier: 'free', label: 'Vaccine information', search: true, maxOutputTokens: 1500 },
-  'calm-story': { tier: 'free', label: 'Calming story', maxOutputTokens: 2000 },
+  // Two steps: the text model writes the story, then the speech model reads it aloud.
+  'calm-story-text': { tier: 'free', label: 'Calming story (writing)', maxOutputTokens: 1500 },
+  'calm-story': { tier: 'free', label: 'Calming story (reading aloud)', maxOutputTokens: 8000, model: AI_AUDIO_MODEL },
   'appointment-questions': { tier: 'free', label: 'Appointment questions', maxOutputTokens: 1000 },
   'parenting-tips': { tier: 'free', label: 'Short parenting tips', search: true, maxOutputTokens: 1200 },
   'medical-term': { tier: 'free', label: 'Explain a medical term', maxOutputTokens: 1200 },
@@ -39,7 +46,7 @@ export const featureConfig = (feature: AiFeature): AiFeatureConfig => AI_FEATURE
 
 /** Models each provider may be called with. */
 export const AI_MODELS = {
-  free: ['gemini-3.5-flash-lite'],
+  free: ['gemini-3.5-flash-lite', AI_AUDIO_MODEL],
   premium: ['claude-sonnet-5-5'],
 } as const satisfies Record<AiTier, readonly string[]>;
 

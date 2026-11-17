@@ -1,5 +1,5 @@
 import { withSafetyInstruction } from '../services/prompts.js';
-import { AI_FEATURES, AI_INPUT_LIMITS, AI_MODELS, isAiFeature } from '../config/aiFeatures.js';
+import { AI_AUDIO_MODEL, AI_FEATURES, AI_INPUT_LIMITS, AI_MODELS, isAiFeature } from '../config/aiFeatures.js';
 import { bearerToken, verifyEntitlementToken } from './_lib/entitlement.js';
 import { monthlyKey, MONTH_TTL_SECONDS, usageStore } from './_lib/usageStore.js';
 import { callClaude, callGemini, measureParts, ProviderError, toParts } from './_lib/providers.js';
@@ -120,7 +120,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(403).json({ error: `This feature needs the ${settings.tier} tier.` });
   }
 
-  const models: readonly string[] = AI_MODELS[tier];
+  // A feature with its own model (the speech step) may only use that model.
+  // Every other feature uses the tier's text models, never the speech model.
+  const forced = 'model' in settings ? settings.model : undefined;
+  const models: readonly string[] = forced ? [forced] : AI_MODELS[tier].filter(m => m !== AI_AUDIO_MODEL);
   const model = requestedModel ?? models[0];
   if (!models.includes(model)) {
     return res.status(400).json({ error: 'This model is not allowed.' });
