@@ -11,7 +11,7 @@ the server refuses a request whose tier doesn't match (`403`).
 
 | Tier | Provider and model | Features |
 | --- | --- | --- |
-| Free | Google Gemini 2.5 Flash | vaccine information, calming story, appointment questions, short parenting tips, explain a medical term, checklist summary, read a letter |
+| Free | Google Gemini 3.8 Flash | vaccine information, calming story, appointment questions, short parenting tips, explain a medical term, checklist summary, read a letter |
 | Premium | Anthropic Claude (`claude-sonnet-5-5`) | handover / GP letter summary, in-depth parenting guidance |
 
 Premium requests contain a **de-identified summary only**
@@ -33,7 +33,7 @@ dialog asks parents to leave them out.
 | Best-effort per-IP limit: 20 requests per 10 minutes per server instance. | `api/ai.ts` |
 | Safety system instruction forced on every request to either provider (no medical advice, no doses, 000 for emergencies). | `services/prompts.ts`, `api/ai.ts` |
 | Feature allow-list; the server sets the tier, model, and output-token cap per feature. | `config/aiFeatures.ts` |
-| Model allow-lists: `gemini-2.5-flash` (free), `claude-sonnet-5-5` (premium). | `config/aiFeatures.ts` |
+| Model allow-lists: `gemini-3.8-flash` (free), `claude-sonnet-5-5` (premium). | `config/aiFeatures.ts` |
 | Input caps: 24,000 characters of text, 4 MB of image data; larger requests get `413` before any provider call. | `config/aiFeatures.ts`, `api/ai.ts` |
 | Output caps: `maxOutputTokens` (Gemini) / `max_tokens` (Claude) from the feature map; a client can't raise them. | `config/aiFeatures.ts` |
 | Google Search grounding only for short parenting tips and vaccine information; never on the Claude route. Claude requests carry no tools and text only. | `api/ai.ts` |
