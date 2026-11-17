@@ -17,7 +17,7 @@ Read this instead of exploring the repo. Open only the files a task needs.
 - `config/` aiFeatures (which tier each AI feature needs), features (VITE_ flags), legal, platform
 - `api/` ai.ts plus `_lib/` entitlement, providers, usageStore
 - Tests: `__tests__/` beside each folder (Vitest); `e2e/` (Playwright + axe)
-- Docs: docs/AI_SAFEGUARDS.md, docs/REGULATORY_NOTES.md, docs/STORE_RELEASE.md
+- Docs: docs/HANDOVER.md (status, decisions, open items), docs/AI_SAFEGUARDS.md, docs/REGULATORY_NOTES.md, docs/STORE_RELEASE.md
 
 ## Commands
 - `npx tsc --noEmit` type check
