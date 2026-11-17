@@ -292,6 +292,7 @@ export const VIEW_TYPES = [
   'privacy',
   'terms',
   'summary',
+  'promptlab',
 ] as const;
 
 export type ViewType = typeof VIEW_TYPES[number];
