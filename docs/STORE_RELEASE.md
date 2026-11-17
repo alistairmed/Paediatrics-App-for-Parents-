@@ -137,10 +137,10 @@ The apps load from the phone, so they call the deployed site's `/api/ai`. Build 
 
 | Field | Draft | Length | Note |
 | --- | --- | --- | --- |
-| Title | Paeds Pouch: Child Health Record | 32 | **Over the 30-character limit on both stores.** Options: "Paeds Pouch: Child Health" (25), "Paeds Pouch: Child Records" (26) |
-| Subtitle (App Store) | Growth, vaccines, appointments | 30 | Fits |
-| Short description (Play) | Keep your child's growth, vaccines and appointments in one private place on your phone. | 87 | **Over Play's 80.** Option: "Your child's growth, vaccines and appointments, kept private on your phone." (75) |
-| Keywords (App Store) | child health record, growth chart, vaccine schedule, immunisation, baby tracker, Red Book, paediatric, milestones | 113 | **Over Apple's 100** (106 without spaces). Words in the title are already indexed, so drop "child health record": `growth chart,vaccine schedule,immunisation,baby tracker,Red Book,paediatric,milestones` (85) |
+| Title | Paeds Pouch: Child Health | 25 | Fits both stores (30 max) |
+| Subtitle (App Store) | Growth, vaccines, appointments | 30 | Fits (30 max) |
+| Short description (Play) | Your child's growth, vaccines and appointments, kept private on your phone. | 75 | Fits (80 max) |
+| Keywords (App Store) | growth chart,vaccine schedule,immunisation,baby tracker,Red Book,paediatric,milestones | 86 | Fits (100 max). Commas, no spaces. Words in the title ("child health") are already indexed, so they are left out |
 | Review note | Record-keeping and education app. No diagnosis, triage or dosing. Data stored on-device. AI features are optional and use de-identified text. | | Add: "AI features are switched off in this build." if true |
 
 **Full description (draft)**
