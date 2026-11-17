@@ -178,6 +178,7 @@ export const generateCalmingStory = async (theme: string) => {
   const story = (written.text || '').trim();
   if (!story) return undefined;
 
+  // Reading a story aloud takes longer than writing it, so this step gets 90 seconds.
   const spoken = await callAi({
     feature: 'calm-story',
     contents: [{ parts: [{ text: story }] }],
@@ -185,7 +186,7 @@ export const generateCalmingStory = async (theme: string) => {
       responseModalities: ['AUDIO'],
       speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
     },
-  });
+  }, 90000);
 
   return spoken.audio;
 };
