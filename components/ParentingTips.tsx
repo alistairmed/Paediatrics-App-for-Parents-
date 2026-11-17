@@ -1,3 +1,4 @@
+import { AiText } from './AiText';
 import React, { useState, useEffect } from 'react';
 import { getParentingAdvice, getParentingGuidance, explainMedicalTerm, AiError } from '../services/ai';
 import { PremiumComingSoon } from './PremiumNotice';
@@ -349,23 +350,7 @@ export const ParentingTips: React.FC<ParentingTipsProps> = ({ preselectedChallen
                </div>
                
                <div className="relative z-10 space-y-10">
-                  {aiTermExplanation.text.split('\n').map((line, idx) => {
-                    const isHeader = line.match(/^\d\./);
-                    return (
-                      <div key={idx} className={isHeader ? "mt-4" : ""}>
-                        {isHeader ? (
-                           <h5 className="text-xl text-emerald-900 not-italic font-black uppercase tracking-tighter flex items-center gap-3 border-b-2 border-emerald-50 pb-2">
-                             <span className="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs">{line.split('.')[0]}</span>
-                             {line.split('. ')[1]}
-                           </h5>
-                        ) : (
-                          <p className="text-ink-800 leading-relaxed font-bold border-l-4 border-ink-100 pl-8 text-lg mt-4">
-                            {line}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  })}
+                  <AiText text={aiTermExplanation.text} className="space-y-4 text-ink-800 leading-relaxed font-bold border-l-4 border-ink-100 pl-8 text-lg" />
                </div>
 
                {aiTermExplanation.sources.length > 0 && (

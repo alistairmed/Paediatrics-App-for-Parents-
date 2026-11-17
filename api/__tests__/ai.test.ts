@@ -183,6 +183,34 @@ describe('/api/ai', () => {
       expect((await call({ feature: 'calm-story', model: 'gemini-3.5-flash-lite', contents: 'x' })).status).toBe(400);
     });
 
+    test('A busy Google (503) is retried once, then succeeds', async () => {
+      upstream.mockReset();
+      upstream
+        .mockResolvedValueOnce({ ok: false, status: 503, text: async () => 'busy' })
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ candidates: [{ content: { parts: [{ text: 'ok' }] } }] }) });
+      const { status, json } = await call({ feature: 'medical-term', contents: 'x' });
+      expect(status).toBe(200);
+      expect(json.text).toBe('ok');
+      expect(upstream).toHaveBeenCalledTimes(2);
+    });
+
+    test('A 503 that continues is passed on after one retry, and the log names the model', async () => {
+      upstream.mockReset();
+      upstream.mockResolvedValue({ ok: false, status: 503, text: async () => 'busy' });
+      const { status, json } = await call({ feature: 'medical-term', contents: 'x' });
+      expect(status).toBe(503);
+      expect(json.error).not.toMatch(/busy/);
+      expect(upstream).toHaveBeenCalledTimes(2);
+      expect(log.mock.calls.flat().join(' ')).toContain('model=gemini-3.5-flash-lite');
+    });
+
+    test('A 429 is not retried', async () => {
+      upstream.mockReset();
+      upstream.mockResolvedValue({ ok: false, status: 429, text: async () => 'quota' });
+      expect((await call({ feature: 'medical-term', contents: 'x' })).status).toBe(429);
+      expect(upstream).toHaveBeenCalledTimes(1);
+    });
+
     test('Text features cannot use the speech model', async () => {
       expect((await call({ feature: 'medical-term', model: 'gemini-3.8-flash-tts', contents: 'x' })).status).toBe(400);
     });

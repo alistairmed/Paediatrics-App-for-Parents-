@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import {
-  ensureAiConsent, hasAiConsent, withdrawAiConsent, setAiConsentPrompt, takeAiQuota, AI_DAILY_LIMIT,
+  ensureAiConsent, hasAiConsent, withdrawAiConsent, setAiConsentPrompt, takeAiQuota, refundAiQuota, AI_DAILY_LIMIT,
 } from '../aiGuard';
 
 class MemoryStorage {
@@ -47,5 +47,23 @@ describe('AI daily cap', () => {
     for (let i = 0; i < AI_DAILY_LIMIT; i++) expect(takeAiQuota(day1)).toBe(true);
     expect(takeAiQuota(day1)).toBe(false);
     expect(takeAiQuota(new Date('2026-11-01T09:00:00Z'))).toBe(true);
+  });
+});
+
+describe('AI daily cap refund', () => {
+  test('A failed request gives its slot back', () => {
+    const now = new Date('2026-11-17T01:00:00Z');
+    expect(takeAiQuota(now)).toBe(true);
+    expect(takeAiQuota(now)).toBe(true);
+    refundAiQuota(now);
+    for (let i = 0; i < AI_DAILY_LIMIT - 1; i++) expect(takeAiQuota(now)).toBe(true);
+    expect(takeAiQuota(now)).toBe(false);
+  });
+
+  test('Refunding with nothing used does nothing', () => {
+    const now = new Date('2026-11-17T01:00:00Z');
+    refundAiQuota(now);
+    for (let i = 0; i < AI_DAILY_LIMIT; i++) expect(takeAiQuota(now)).toBe(true);
+    expect(takeAiQuota(now)).toBe(false);
   });
 });

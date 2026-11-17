@@ -80,6 +80,17 @@ export async function callGemini(req: GeminiRequest): Promise<AiResult> {
   };
 }
 
+/** Google answers 503 during busy spells. Waits a moment and tries once more. */
+export async function callGeminiWithRetry(req: GeminiRequest, delayMs = 800): Promise<AiResult> {
+  try {
+    return await callGemini(req);
+  } catch (err) {
+    if (!(err instanceof ProviderError) || err.status !== 503) throw err;
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+    return callGemini(req);
+  }
+}
+
 export interface ClaudeRequest {
   apiKey: string;
   model: string;
