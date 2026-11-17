@@ -192,7 +192,7 @@ FLUID REQS: ${p.fluidRequirements || 'Standard'}
                             <p className="text-xs font-black uppercase tracking-[0.2em]">{item.label}</p>
                         </div>
                         <input 
-                            className="w-full bg-transparent border-none outline-hidden font-black text-lg placeholder-white/20 text-white" 
+                            className="w-full min-h-[44px] bg-transparent border-none outline-hidden font-black text-lg placeholder-white/20 text-white" 
                             placeholder="..."
                             value={(history.sickDayPlan as any)[item.field]} 
                             onChange={e => updateSickDayField(item.field as any, e.target.value)} 

@@ -107,7 +107,6 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               : 'bg-ink-50 border-ink-200 text-ink-700 hover:bg-ink-100'
           }`}
         >
-          <span>📅</span>
           <span>{startDate || endDate ? 'Date Filtered' : 'Date Range'}</span>
           {startDate || endDate ? (
             <span className="w-2 h-2 rounded-full bg-terracotta-400"></span>
@@ -137,7 +136,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               <button
                 key={cat.value}
                 onClick={() => onCategoryChange && onCategoryChange(cat.value)}
-                className={`px-4 py-1.5 rounded-full font-black text-xs transition-all shrink-0 ${
+                className={`px-4 py-1.5 min-h-[44px] rounded-full font-black text-xs transition-all shrink-0 ${
                   isSelected
                     ? 'bg-terracotta-600 text-white shadow-xs scale-105'
                     : 'bg-ink-100 text-ink-600 hover:bg-ink-200'

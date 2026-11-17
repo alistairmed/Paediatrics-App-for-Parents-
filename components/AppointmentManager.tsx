@@ -79,7 +79,7 @@ export const AppointmentManager: React.FC = () => {
     return (
       <div className="space-y-3">
         {lines.map((line, i) => (
-          <label key={i} className="flex items-start gap-3 cursor-pointer group p-2 hover:bg-white/50 rounded-xl transition-all">
+          <label key={i} className="flex items-start gap-3 cursor-pointer group p-2 min-h-[44px] hover:bg-white/50 rounded-xl transition-all">
             <input type="checkbox" className="mt-1 w-4 h-4 rounded-sm text-terracotta-600 border-ink-300 focus:ring-terracotta-500" />
             <span className="text-sm font-black text-ink-900 group-hover:text-terracotta-700 transition-colors">
               {line.replace(/^[•-]\s*/, '')}

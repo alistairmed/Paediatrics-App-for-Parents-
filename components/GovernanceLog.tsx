@@ -32,7 +32,7 @@ export const GovernanceLog: React.FC = () => {
              onClick={async () => { if (await confirm({ title: 'Clear the activity log?', message: 'This removes every entry in the log on this device.', confirmLabel: 'Clear Log', danger: true })) clearLog(); }}
              className="px-6 py-2 bg-ink-100 text-ink-600 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-50 hover:text-terracotta-700 transition-all"
            >
-             Clear Audit Trail 🗑️
+             Clear Audit Trail
            </button>
         </div>
       </header>

@@ -483,7 +483,7 @@ export const MedicalProfile: React.FC = () => {
                    <div className="space-y-6">
                       <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-sky-100 shadow-xs">
                          <span className="text-xs font-black text-sky-600 uppercase tracking-widest">Normal Scans?</span>
-                         <input type="checkbox" aria-label="Normal scans" checked={history.developmentalHistory.prenatal.scansNormal} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, scansNormal: e.target.checked } } })} className="w-6 h-6 rounded-lg text-sky-600 border-sky-200" />
+                         <input type="checkbox" aria-label="Normal scans" checked={history.developmentalHistory.prenatal.scansNormal} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, prenatal: { ...history.developmentalHistory.prenatal, scansNormal: e.target.checked } } })} className="w-11 h-11 shrink-0 rounded-lg text-sky-600 border-sky-200" />
                       </div>
                       <div className="space-y-2">
                          <label htmlFor="medica-pregnancy-complications" className="text-xs font-black text-sky-700 uppercase tracking-widest ml-3">Pregnancy Complications</label>
@@ -524,11 +524,11 @@ export const MedicalProfile: React.FC = () => {
                    <div className="space-y-6">
                       <div className="grid grid-cols-2 gap-4">
                         <label className="flex items-center justify-center gap-3 p-4 bg-white rounded-2xl border border-emerald-100 shadow-xs cursor-pointer group hover:bg-emerald-50 transition-colors">
-                          <input type="checkbox" checked={history.developmentalHistory.neonatal.nicuStay} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, neonatal: { ...history.developmentalHistory.neonatal, nicuStay: e.target.checked } } })} className="w-5 h-5 rounded-lg text-emerald-700 focus:ring-emerald-500" />
+                          <input type="checkbox" checked={history.developmentalHistory.neonatal.nicuStay} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, neonatal: { ...history.developmentalHistory.neonatal, nicuStay: e.target.checked } } })} className="w-5 h-5 shrink-0 rounded-lg text-emerald-700 focus:ring-emerald-500" />
                           <span className="text-xs font-black uppercase text-emerald-800 tracking-widest">NICU</span>
                         </label>
                         <label className="flex items-center justify-center gap-3 p-4 bg-white rounded-2xl border border-emerald-100 shadow-xs cursor-pointer group hover:bg-emerald-50 transition-colors">
-                          <input type="checkbox" checked={history.developmentalHistory.neonatal.jaundice} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, neonatal: { ...history.developmentalHistory.neonatal, jaundice: e.target.checked } } })} className="w-5 h-5 rounded-lg text-emerald-700 focus:ring-emerald-500" />
+                          <input type="checkbox" checked={history.developmentalHistory.neonatal.jaundice} onChange={e => updateHistory({ developmentalHistory: { ...history.developmentalHistory, neonatal: { ...history.developmentalHistory.neonatal, jaundice: e.target.checked } } })} className="w-5 h-5 shrink-0 rounded-lg text-emerald-700 focus:ring-emerald-500" />
                           <span className="text-xs font-black uppercase text-emerald-800 tracking-widest">Jaundice</span>
                         </label>
                       </div>
@@ -871,9 +871,9 @@ export const MedicalProfile: React.FC = () => {
                await eraseAllData();
             }
           }}
-          className="text-xs font-black uppercase tracking-[0.4em] text-ink-500 hover:text-terracotta-700 transition-colors"
+          className="min-h-[44px] px-2 text-xs font-black uppercase tracking-[0.4em] text-ink-500 hover:text-terracotta-700 transition-colors"
         >
-          Delete Everything on This Device 🗑️
+          Delete Everything on This Device
         </button>
       </div>
     </div>

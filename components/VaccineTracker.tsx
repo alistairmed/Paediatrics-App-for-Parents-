@@ -247,16 +247,16 @@ export const VaccineTracker: React.FC = () => {
                           onClick={() => handleFetchInfo(vaccine.name)}
                           className="text-xs text-terracotta-600 font-black uppercase tracking-widest hover:underline flex items-center gap-1"
                         >
-                          <span>🧠</span> Learn More (AI)
+                          Learn More (AI)
                         </button>
                       ) : (
                         null
                       )}
                       <button 
                         onClick={() => setEditingId(isEditing ? null : vaccine.id)}
-                        className={`text-xs font-black uppercase tracking-widest transition-all ${isEditing ? 'text-terracotta-700' : 'text-ink-600 hover:text-terracotta-600'}`}
+                        className={`min-h-[44px] px-2 text-xs font-black uppercase tracking-widest transition-all ${isEditing ? 'text-terracotta-700' : 'text-ink-600 hover:text-terracotta-600'}`}
                       >
-                        {isEditing ? 'Close Details' : 'Add Details 📝'}
+                        {isEditing ? 'Close Details' : 'Add Details'}
                       </button>
                       {vaccine.status === 'completed' && !isSynced && (
                          <button 

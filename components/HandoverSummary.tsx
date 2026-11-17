@@ -72,7 +72,7 @@ export const HandoverSummary: React.FC = () => {
         <div className="flex gap-2">
            <button 
             onClick={() => reviewStep === 'review' ? handleFinalize() : setReviewStep('review')} 
-            className={`px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-xl transition-all ${reviewStep === 'review' ? 'bg-terracotta-600 text-white hover:bg-terracotta-700' : 'bg-ink-900 text-white'}`}
+            className={`px-8 py-3 min-h-[44px] rounded-2xl font-black text-xs uppercase shadow-xl transition-all ${reviewStep === 'review' ? 'bg-terracotta-600 text-white hover:bg-terracotta-700' : 'bg-ink-900 text-white'}`}
           >
              {reviewStep === 'review' ? 'Finalize Handover' : 'Edit Selection'}
            </button>
@@ -173,7 +173,7 @@ export const HandoverSummary: React.FC = () => {
               id="verify-handover"
               checked={isVerified}
               onChange={e => setIsVerified(e.target.checked)}
-              className="w-8 h-8 rounded-xl text-terracotta-600 border-terracotta-200 focus:ring-terracotta-500" 
+              className="w-11 h-11 shrink-0 rounded-xl text-terracotta-600 border-terracotta-200 focus:ring-terracotta-500" 
             />
              <label htmlFor="verify-handover" className="text-sm font-black text-terracotta-900 leading-relaxed cursor-pointer">
                "I have reviewed the clinical details above and verify they are an accurate representation of my child's current health status."
