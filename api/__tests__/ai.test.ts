@@ -167,12 +167,24 @@ describe('/api/ai', () => {
       expect(claudeCreate).not.toHaveBeenCalled();
     });
 
-    test('Free features go to Gemini 2.5 Flash', async () => {
-      const { status, json } = await call({ feature: 'calm-story', contents: 'x' });
+    test('Free features go to Gemini 3.5 Flash Lite', async () => {
+      const { status, json } = await call({ feature: 'medical-term', contents: 'x' });
       expect(status).toBe(200);
       expect(json).toEqual({ text: 'ok', sources: [], audio: undefined });
       expect(upstream.mock.calls[0][0]).toContain('/models/gemini-3.5-flash-lite:generateContent');
       expect(claudeCreate).not.toHaveBeenCalled();
+    });
+
+    test('The calming story speech step uses only the speech model, with no system instruction', async () => {
+      const { status } = await call({ feature: 'calm-story', contents: 'Once upon a time' });
+      expect(status).toBe(200);
+      expect(upstream.mock.calls[0][0]).toContain('/models/gemini-3.8-flash-tts:generateContent');
+      expect(JSON.parse(upstream.mock.calls[0][1].body).systemInstruction).toBeUndefined();
+      expect((await call({ feature: 'calm-story', model: 'gemini-3.5-flash-lite', contents: 'x' })).status).toBe(400);
+    });
+
+    test('Text features cannot use the speech model', async () => {
+      expect((await call({ feature: 'medical-term', model: 'gemini-3.8-flash-tts', contents: 'x' })).status).toBe(400);
     });
 
     test('Premium features go to Claude Sonnet 5.5 with no tools', async () => {

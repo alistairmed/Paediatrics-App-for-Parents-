@@ -159,20 +159,30 @@ export const analyzeMedicalProfile = async (input: SummaryInput) => {
   return { text: data.text || '', sources: data.sources || [] };
 };
 
-/** The child's name is never sent. The story is for "a young child". */
+/**
+ * The child's name is never sent. Two steps: the text model writes the story for
+ * "a young child", then the speech model reads it aloud. Each step counts as a request.
+ */
 export const generateCalmingStory = async (theme: string) => {
   const prompt = APP_PROMPTS.v1.calmingStory.replace('{theme}', theme);
 
-  const data = await callAi({
-    feature: 'calm-story',
+  const written = await callAi({
+    feature: 'calm-story-text',
     contents: [{ parts: [{ text: prompt }] }],
+  });
+  const story = (written.text || '').trim();
+  if (!story) return undefined;
+
+  const spoken = await callAi({
+    feature: 'calm-story',
+    contents: [{ parts: [{ text: story }] }],
     config: {
       responseModalities: ['AUDIO'],
       speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
     },
   });
 
-  return data.audio;
+  return spoken.audio;
 };
 
 export const getVaccineAdvice = async (vaccineName: string) => {

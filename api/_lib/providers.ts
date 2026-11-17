@@ -1,3 +1,4 @@
+import { AI_AUDIO_MODEL } from '../../config/aiFeatures.js';
 import Anthropic from '@anthropic-ai/sdk';
 
 /** What /api/ai returns to the app, whichever provider answered. */
@@ -52,9 +53,11 @@ export async function callGemini(req: GeminiRequest): Promise<AiResult> {
   }
   const body: Record<string, unknown> = {
     contents: [{ parts: req.parts }],
-    systemInstruction: { parts: [{ text: req.systemInstruction }] },
     generationConfig,
   };
+  // The speech model only reads out the text it is given, which the text model already
+  // wrote under the safety instruction, and it takes no system instruction.
+  if (req.model !== AI_AUDIO_MODEL) body.systemInstruction = { parts: [{ text: req.systemInstruction }] };
   if (req.search) body.tools = [{ googleSearch: {} }];
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${req.model}:generateContent`, {
