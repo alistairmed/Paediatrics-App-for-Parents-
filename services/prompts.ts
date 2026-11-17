@@ -36,7 +36,7 @@ export const APP_PROMPTS = {
       Explicitly spell out "degree Celsius" for any temperatures mentioned.
     `,
     calmingStory: `
-      Generate a 3-minute soothing story for a child named {childName}. 
+      Generate a 3-minute soothing story for a young child. 
       Theme: {theme}. 
       Integrate a 'bravery' sub-plot related to visiting a doctor or having a vaccination. 
       Maintain a slow, rhythmic pace suitable for Text-to-Speech conversion.

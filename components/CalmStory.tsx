@@ -42,13 +42,12 @@ export const CalmStory: React.FC = () => {
   const [showManualStory, setShowManualStory] = useState(false);
 
   const handleGenerate = async () => {
-    if (!childName) return;
     setLoading(true);
     setErrorMessage(null);
     setIsPlaying(false);
 
     try {
-      const base64Audio = await generateCalmingStory(childName, theme);
+      const base64Audio = await generateCalmingStory(theme);
       if (base64Audio) {
         // Initialize AudioContext for raw PCM playback
         const outputAudioContext = new (window.AudioContext ||
@@ -119,7 +118,7 @@ export const CalmStory: React.FC = () => {
         
         <div className="space-y-8 relative z-10">
           <div>
-            <label htmlFor="calmst-who-is-the-story-for" className="block text-xs font-black text-ink-600 uppercase tracking-[0.2em] mb-3 ml-2">Who is the story for?</label>
+            <label htmlFor="calmst-who-is-the-story-for" className="block text-xs font-black text-ink-600 uppercase tracking-[0.2em] mb-3 ml-2">Name for the read-aloud story (stays on your phone)</label>
             <input id="calmst-who-is-the-story-for" 
               type="text" 
               value={childName}
@@ -182,9 +181,9 @@ export const CalmStory: React.FC = () => {
           {AI_ENABLED ? (
               <button 
               onClick={handleGenerate}
-              disabled={loading || !childName}
+              disabled={loading}
               className={`w-full py-6 rounded-4xl font-black text-white shadow-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest hover:-translate-y-1 active:scale-95 ${
-                loading || !childName ? 'bg-ink-300' : 'bg-terracotta-600 hover:bg-terracotta-700'
+                loading ? 'bg-ink-300' : 'bg-terracotta-600 hover:bg-terracotta-700'
               }`}
             >
               {loading ? (

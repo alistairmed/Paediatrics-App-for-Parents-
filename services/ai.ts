@@ -159,10 +159,9 @@ export const analyzeMedicalProfile = async (input: SummaryInput) => {
   return { text: data.text || '', sources: data.sources || [] };
 };
 
-export const generateCalmingStory = async (childName: string, theme: string) => {
-  const prompt = APP_PROMPTS.v1.calmingStory
-    .replace('{childName}', childName)
-    .replace('{theme}', theme);
+/** The child's name is never sent. The story is for "a young child". */
+export const generateCalmingStory = async (theme: string) => {
+  const prompt = APP_PROMPTS.v1.calmingStory.replace('{theme}', theme);
 
   const data = await callAi({
     feature: 'calm-story',
