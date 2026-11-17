@@ -59,6 +59,26 @@ export const EthicsSafety: React.FC = () => {
         </section>
       </div>
 
+      <section aria-labelledby="find-us-heading" className="bg-white p-8 rounded-[3rem] border border-ink-100 space-y-4">
+        <h4 id="find-us-heading" className="text-2xl font-black text-ink-800 tracking-tighter">Find Paeds Pouch online</h4>
+        <p className="text-ink-600 text-sm font-medium leading-relaxed">
+          General information only. We can't answer questions about your child on social media. In an emergency, call 000.
+        </p>
+        <ul className="flex flex-wrap gap-3">
+          {[
+            ['Website', 'https://paedspouch.vercel.app'],
+            ['Instagram', 'https://www.instagram.com/paedspouch'],
+            ['Facebook', 'https://www.facebook.com/paedspouch'],
+          ].map(([name, url]) => (
+            <li key={name}>
+              <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center min-h-[44px] px-6 bg-terracotta-50 hover:bg-terracotta-100 text-terracotta-800 border-2 border-terracotta-100 rounded-2xl font-black text-xs uppercase tracking-widest transition-all">
+                {name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <PasscodeSettings />
 
       <BackupRestore />

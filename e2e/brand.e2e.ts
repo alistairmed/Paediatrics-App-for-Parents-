@@ -24,3 +24,20 @@ test('Headings use the self-hosted Fraunces font and nothing is fetched from Goo
   expect(await page.evaluate(() => document.fonts.check('700 24px Fraunces'))).toBe(true);
   expect(external).toEqual([]);
 });
+
+test('The About and Safety page links to the website, Instagram and Facebook', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openWithChild(page, 'ethics');
+  const section = page.getByRole('region', { name: 'Find Paeds Pouch online' });
+  await expect(section).toBeVisible();
+  for (const [name, url] of [
+    ['Website', 'https://paedspouch.vercel.app'],
+    ['Instagram', 'https://www.instagram.com/paedspouch'],
+    ['Facebook', 'https://www.facebook.com/paedspouch'],
+  ]) {
+    const link = section.getByRole('link', { name });
+    await expect(link).toHaveAttribute('href', url);
+    await expect(link).toHaveAttribute('rel', /noopener/);
+    expect((await link.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  }
+});
