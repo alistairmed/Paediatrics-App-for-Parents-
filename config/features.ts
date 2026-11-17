@@ -13,3 +13,10 @@ export const AI_ENABLED = import.meta.env.VITE_ENABLE_AI === 'true';
  * "Premium (coming soon)". There are no payments yet.
  */
 export const PREMIUM_ENABLED = AI_ENABLED && import.meta.env.VITE_PREMIUM_ENABLED === 'true';
+
+/**
+ * Developer tool: a hidden "Prompt generator" page at #/promptlab for writing Claude Code prompts.
+ * Off by default, so parents never see it. Turn on locally with VITE_ENABLE_PROMPT_TOOL=true.
+ * It holds no records and sends nothing anywhere.
+ */
+export const PROMPT_TOOL_ENABLED = import.meta.env.VITE_ENABLE_PROMPT_TOOL === 'true';
