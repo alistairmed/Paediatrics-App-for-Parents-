@@ -81,6 +81,13 @@ body {
   color: var(--color-ink);
 }
 
+/* Brand headings: Fraunces (self-hosted), as on the Paeds Pouch website. */
+h1,
+h2,
+.font-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
 /* Tailwind v4 gives buttons the default cursor; keep the v3 pointer. */
 @layer base {
   button:not(:disabled),
