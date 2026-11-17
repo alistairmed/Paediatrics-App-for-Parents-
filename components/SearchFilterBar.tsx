@@ -137,7 +137,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               <button
                 key={cat.value}
                 onClick={() => onCategoryChange && onCategoryChange(cat.value)}
-                className={`px-4 py-1.5 rounded-full font-black text-xs transition-all shrink-0 ${
+                className={`px-4 py-1.5 min-h-[44px] rounded-full font-black text-xs transition-all shrink-0 ${
                   isSelected
                     ? 'bg-terracotta-600 text-white shadow-xs scale-105'
                     : 'bg-ink-100 text-ink-600 hover:bg-ink-200'
