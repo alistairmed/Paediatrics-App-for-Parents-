@@ -20,8 +20,8 @@ async function smallControls(page: Page) {
 
 test.use({ viewport: { width: 375, height: 667 } }); // iPhone SE
 
-test('Buttons and links are at least 44px: header, growth tabs, helplines, backup, passcode, delete, chips and tabs', async ({ page }) => {
-  for (const view of ['dashboard', 'symptoms', 'growth', 'ethics', 'acutelogs', 'parenting', 'vaccines']) {
+test('Buttons and links are at least 44px: header, growth tabs, helplines, backup, passcode, delete, chips, tabs, checkboxes, inputs', async ({ page }) => {
+  for (const view of ['dashboard', 'symptoms', 'growth', 'ethics', 'acutelogs', 'parenting', 'vaccines', 'appointments', 'handover', 'developmental', 'sickday']) {
     await openWithChild(page, view);
     await page.waitForTimeout(300);
     expect(await smallControls(page), view).toEqual([]);

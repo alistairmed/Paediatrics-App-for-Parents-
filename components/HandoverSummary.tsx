@@ -173,7 +173,7 @@ export const HandoverSummary: React.FC = () => {
               id="verify-handover"
               checked={isVerified}
               onChange={e => setIsVerified(e.target.checked)}
-              className="w-8 h-8 rounded-xl text-terracotta-600 border-terracotta-200 focus:ring-terracotta-500" 
+              className="w-11 h-11 shrink-0 rounded-xl text-terracotta-600 border-terracotta-200 focus:ring-terracotta-500" 
             />
              <label htmlFor="verify-handover" className="text-sm font-black text-terracotta-900 leading-relaxed cursor-pointer">
                "I have reviewed the clinical details above and verify they are an accurate representation of my child's current health status."
