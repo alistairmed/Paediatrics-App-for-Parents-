@@ -12,3 +12,15 @@ test('The app header shows the kangaroo logo, not an emoji, and the favicon is t
   expect(res.status()).toBe(200);
   expect(res.headers()['content-type']).toContain('svg');
 });
+
+test('Headings use the self-hosted Fraunces font and nothing is fetched from Google', async ({ page }) => {
+  const external: string[] = [];
+  page.on('request', r => { if (!r.url().startsWith('http://localhost')) external.push(r.url()); });
+  await openWithChild(page, 'acutelogs');
+  await page.evaluate(() => document.fonts.load('700 24px Fraunces'));
+  const h = page.locator('main h2').first();
+  await expect(h).toBeVisible();
+  expect(await h.evaluate(el => getComputedStyle(el).fontFamily)).toContain('Fraunces');
+  expect(await page.evaluate(() => document.fonts.check('700 24px Fraunces'))).toBe(true);
+  expect(external).toEqual([]);
+});

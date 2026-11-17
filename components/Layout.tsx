@@ -133,7 +133,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
         >
           <span aria-hidden="true" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform border-2 border-terracotta-100"><Logo className="w-9 h-9" /></span>
           <span>
-            <span className="block text-xl font-black text-ink-800 tracking-tighter leading-none">Paeds Pouch</span>
+            <span className="block font-display text-xl font-black text-ink-800 tracking-tighter leading-none">Paeds Pouch</span>
             <span className="block text-xs font-black text-ink-600 uppercase tracking-widest mt-1">Child health records</span>
           </span>
         </button>
