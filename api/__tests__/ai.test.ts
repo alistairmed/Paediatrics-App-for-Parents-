@@ -103,7 +103,7 @@ describe('/api/ai', () => {
     test('Rejects models outside each allow-list', async () => {
       expect((await call({ model: 'gemini-3-pro', contents: 'x' })).status).toBe(400);
       expect((await premium({ model: 'claude-opus-5-5' })).status).toBe(400);
-      expect((await premium({ model: 'gemini-2.5-flash' })).status).toBe(400);
+      expect((await premium({ model: 'gemini-3.8-flash' })).status).toBe(400);
     });
 
     test('Refuses a missing or unknown feature', async () => {
@@ -171,7 +171,7 @@ describe('/api/ai', () => {
       const { status, json } = await call({ feature: 'calm-story', contents: 'x' });
       expect(status).toBe(200);
       expect(json).toEqual({ text: 'ok', sources: [], audio: undefined });
-      expect(upstream.mock.calls[0][0]).toContain('/models/gemini-2.5-flash:generateContent');
+      expect(upstream.mock.calls[0][0]).toContain('/models/gemini-3.8-flash:generateContent');
       expect(claudeCreate).not.toHaveBeenCalled();
     });
 

@@ -2,7 +2,7 @@
  * Which tier each AI feature needs. The server (api/ai.ts) enforces this map;
  * the app reads it only to label features and pick the tier it asks for.
  *
- * - free: Google Gemini 2.5 Flash
+ * - free: Google Gemini 3.8 Flash
  * - premium: Anthropic Claude, with an entitlement token, and only ever sent
  *   a de-identified summary (services/deidentify.ts)
  */
@@ -39,7 +39,7 @@ export const featureConfig = (feature: AiFeature): AiFeatureConfig => AI_FEATURE
 
 /** Models each provider may be called with. */
 export const AI_MODELS = {
-  free: ['gemini-2.5-flash'],
+  free: ['gemini-3.8-flash'],
   premium: ['claude-sonnet-5-5'],
 } as const satisfies Record<AiTier, readonly string[]>;
 
