@@ -5,6 +5,7 @@ import { useNavigation } from '../context/NavigationContext';
 import { useEnvironment } from '../context/EnvironmentContext';
 import { useChildProfile } from '../context/ChildProfileContext';
 import { ChildSwitcher } from './ChildSwitcher';
+import { Logo } from './Logo';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -130,7 +131,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
           className="flex items-center gap-3 mb-4 px-4 cursor-pointer group text-left"
           onClick={() => handleNav('dashboard')}
         >
-          <span aria-hidden="true" className="w-12 h-12 bg-terracotta-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform border-4 border-white">👶</span>
+          <span aria-hidden="true" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform border-2 border-terracotta-100"><Logo className="w-9 h-9" /></span>
           <span>
             <span className="block text-xl font-black text-ink-800 tracking-tighter leading-none">Paeds Pouch</span>
             <span className="block text-xs font-black text-ink-600 uppercase tracking-widest mt-1">Child health records</span>
@@ -180,7 +181,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate
     <div className={`min-h-screen print:min-h-0 flex flex-col md:flex-row bg-cream print:bg-white`}>
       <header className="md:hidden print:hidden flex items-center justify-between gap-3 px-4 py-3 bg-white border-b border-ink-200 sticky top-0 z-50 shadow-xs">
         <button onClick={() => handleNav('dashboard')} aria-label="Paeds Pouch home" className="flex items-center gap-3 min-w-0">
-          <span className="w-10 h-10 shrink-0 bg-terracotta-600 rounded-xl flex items-center justify-center text-white text-xl shadow-md">👶</span>
+          <span aria-hidden="true" className="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-md border border-terracotta-100"><Logo className="w-8 h-8" /></span>
           <span className="min-w-0 text-left">
             <span className="block text-xs font-black text-terracotta-600 uppercase tracking-widest leading-none truncate">{childProfile ? `Paeds Pouch · ${childProfile.name}` : 'Paeds Pouch'}</span>
             <span className="block text-lg font-black text-ink-800 tracking-tight truncate">{currentTitle}</span>

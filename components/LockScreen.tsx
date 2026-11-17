@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { unlock, eraseAllData } from '../utils/vault';
 import { biometricUnlockEnabled, unlockWithBiometrics } from '../services/biometricUnlock';
+import { Logo } from './Logo';
 
 /** Shown before the app loads when the passcode lock is on. */
 export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => {
@@ -48,7 +49,7 @@ export const LockScreen: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
     <div className="min-h-screen bg-cream flex items-center justify-center p-4">
       <div className="bg-white rounded-[2.5rem] max-w-md w-full p-8 sm:p-10 shadow-2xl space-y-6 border border-ink-100">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 bg-terracotta-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg mx-auto" aria-hidden="true">🔒</div>
+          <div className="w-16 h-16 bg-cream rounded-2xl flex items-center justify-center shadow-lg mx-auto" aria-hidden="true"><Logo className="w-12 h-12" /></div>
           <h1 className="text-2xl font-black text-ink-800 tracking-tight">Paeds Pouch is locked</h1>
           <p className="text-sm font-bold text-ink-600">Enter your passcode to open your child's records.</p>
         </div>
