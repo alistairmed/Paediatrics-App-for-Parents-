@@ -21,7 +21,7 @@ Status at 17 November 2026. Read `CLAUDE.md` first (map, commands, rules); this 
 - **CSP** has no `'unsafe-inline'`; `e2e/csp.e2e.ts` enforces it.
 
 ## Still open
-1. **Store text** in `docs/STORE_RELEASE.md` section 7: the title (32 characters), short description (87) and keywords (106) exceed store limits. Pick the shorter versions.
+1. **Store text** in `docs/STORE_RELEASE.md` section 7 now fits store limits (checked by `config/__tests__/storeText.test.ts`). Paste it into both consoles when the listings are set up.
 2. **Native builds:** build the AAB and the iOS archive on a Mac or PC with Android Studio and Xcode (`docs/STORE_RELEASE.md` section 2). Set `YOUR_TEAM_ID` in `ios/ExportOptions.plist` and the `PAEDS_POUCH_*` signing variables. Never commit keys.
 3. **iPad:** the iOS app targets iPhone and iPad (`TARGETED_DEVICE_FAMILY = 1,2`). Either provide 13" iPad screenshots or switch to iPhone-only.
 4. **Real-phone test:** `docs/STORE_RELEASE.md` section 8, especially Face ID or fingerprint, reminders and backup restore. These native paths are unit-tested but untested on devices.
