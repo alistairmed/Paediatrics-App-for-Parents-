@@ -141,6 +141,9 @@ export const MedicalProfile: React.FC = () => {
   const [aiAnalysis, setAiAnalysis] = useState<{ text: string; sources: any[] } | null>(null);
   
   const reportInputRef = useRef<HTMLInputElement>(null);
+  const letterPhotoRef = useRef<HTMLInputElement>(null);
+  // A letter typed in by hand, or a photo the parent chose not to send to the AI. Never sent anywhere.
+  const [letterDraft, setLetterDraft] = useState<{ specialist: string; summary: string; photo?: string } | null>(null);
 
   // Shared reusable styles to fix the "white on white" issue
   const inputClass = "w-full p-4 rounded-2xl bg-white border border-ink-300 font-bold text-ink-900 outline-hidden focus:ring-4 focus:ring-terracotta-50 transition-all placeholder:text-ink-600 shadow-xs";
@@ -339,9 +342,22 @@ export const MedicalProfile: React.FC = () => {
 
   const handleReportUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (file) {
-      setReportLoading(true);
       const base64 = await readImageAsCompressedDataUrl(file);
+      // Asked every time: a letter usually has the child's name, date of birth, address and Medicare number.
+      const send = await confirm({
+        title: 'Send this letter photo to an AI service?',
+        message: "Letters often show your child's name, date of birth, address and Medicare number. If you send it, Google's Gemini reads the whole photo and may process it outside Australia. " +
+          'If you would rather not, choose "Type it myself": the photo stays on this device and you add the details by hand.',
+        confirmLabel: 'Send to AI',
+        cancelLabel: 'Type it myself',
+      });
+      if (!send) {
+        setLetterDraft({ specialist: '', summary: '', photo: base64 });
+        return;
+      }
+      setReportLoading(true);
       try {
         const result = await analyzeMedicalReport(base64);
         if (result) {
@@ -367,6 +383,29 @@ export const MedicalProfile: React.FC = () => {
         setReportLoading(false);
       }
     }
+  };
+
+  const saveLetterDraft = () => {
+    if (!letterDraft) return;
+    const report: MedicalReport = {
+      id: crypto.randomUUID(),
+      date: new Date().toLocaleDateString('en-AU'),
+      specialist: letterDraft.specialist.trim() || 'Unknown specialist',
+      summary: letterDraft.summary.trim() || 'No details added.',
+      actionItems: [],
+      photoUrl: letterDraft.photo,
+    };
+    updateHistory({ medicalReports: [...(history.medicalReports || []), report] });
+    setLetterDraft(null);
+    showToast('Letter added to the record.');
+  };
+
+  const handleLetterPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    const photo = await readImageAsCompressedDataUrl(file);
+    setLetterDraft(d => (d ? { ...d, photo } : d));
   };
 
   const handleGenerateHandover = async () => {
@@ -796,15 +835,42 @@ export const MedicalProfile: React.FC = () => {
             <section className="space-y-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4">
                 <h3 className="text-3xl font-black text-ink-900 tracking-tight">Specialist Letters</h3>
-                {AI_ENABLED ? (
-                    <button onClick={() => reportInputRef.current?.click()} disabled={reportLoading} className="px-8 py-4 bg-terracotta-600 text-white rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-terracotta-700 transition-all active:scale-95">
-                    {reportLoading ? 'Analyzing Syntax...' : '+ Upload Specialist Letter'}
+                <div className="flex flex-wrap gap-3">
+                  <button onClick={() => setLetterDraft({ specialist: '', summary: '' })} className="px-8 py-4 min-h-11 bg-white text-terracotta-700 border-2 border-terracotta-200 rounded-4xl font-black text-xs uppercase tracking-widest hover:bg-terracotta-50 transition-all active:scale-95">
+                    Add a letter by hand
                   </button>
-                ) : (
-                  <AiOffNotice feature="Reading specialist letters" />
-                )}
-                <input type="file" ref={reportInputRef} onChange={handleReportUpload} accept="image/*" className="hidden" />
+                  {AI_ENABLED ? (
+                    <button onClick={() => reportInputRef.current?.click()} disabled={reportLoading} className="px-8 py-4 min-h-11 bg-terracotta-600 text-white rounded-4xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-terracotta-700 transition-all active:scale-95">
+                      {reportLoading ? 'Reading the letter...' : 'Read a letter photo with AI'}
+                    </button>
+                  ) : (
+                    <AiOffNotice feature="Reading specialist letters" />
+                  )}
+                </div>
+                <input type="file" ref={reportInputRef} onChange={handleReportUpload} accept="image/*" className="hidden" aria-label="Choose a letter photo to read with AI" />
               </div>
+              {letterDraft && (
+                <form onSubmit={e => { e.preventDefault(); saveLetterDraft(); }} className="mx-4 p-8 bg-white rounded-4xl border border-ink-200 space-y-5" aria-label="Add a letter by hand">
+                  <p className="text-sm font-bold text-ink-700">This stays on your phone. Nothing here is sent to an AI service.</p>
+                  <div>
+                    <label htmlFor="letter-specialist" className="block text-xs font-black text-ink-600 uppercase tracking-widest mb-2">Who wrote it</label>
+                    <input id="letter-specialist" className={inputClass} value={letterDraft.specialist} onChange={e => setLetterDraft({ ...letterDraft, specialist: e.target.value })} />
+                  </div>
+                  <div>
+                    <label htmlFor="letter-summary" className="block text-xs font-black text-ink-600 uppercase tracking-widest mb-2">What the letter says</label>
+                    <textarea id="letter-summary" rows={4} className={textAreaClass} value={letterDraft.summary} onChange={e => setLetterDraft({ ...letterDraft, summary: e.target.value })} />
+                  </div>
+                  {letterDraft.photo && <img src={letterDraft.photo} alt="Photo of the letter" className="max-h-48 rounded-2xl border border-ink-200" />}
+                  <div className="flex flex-wrap gap-3">
+                    <button type="button" onClick={() => letterPhotoRef.current?.click()} className="px-6 py-3 min-h-11 bg-white text-ink-700 border border-ink-300 rounded-2xl font-black text-xs uppercase tracking-widest">
+                      {letterDraft.photo ? 'Change photo' : 'Add a photo'}
+                    </button>
+                    <button type="submit" className="px-6 py-3 min-h-11 bg-terracotta-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Save letter</button>
+                    <button type="button" onClick={() => setLetterDraft(null)} className="px-6 py-3 min-h-11 bg-white text-ink-700 border border-ink-300 rounded-2xl font-black text-xs uppercase tracking-widest">Cancel</button>
+                  </div>
+                  <input type="file" ref={letterPhotoRef} onChange={handleLetterPhoto} accept="image/*" className="hidden" aria-label="Choose a photo of the letter to keep on this device" />
+                </form>
+              )}
               <div className="space-y-6">
                 {filteredReports.map(rep => (
                   <div key={rep.id} className="bg-ink-50 p-10 rounded-[3.5rem] border border-ink-100 flex flex-col md:flex-row gap-10 hover:shadow-md transition-all">

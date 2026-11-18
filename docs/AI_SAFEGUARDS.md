@@ -25,6 +25,7 @@ dialog asks parents to leave them out.
 
 | Safeguard | Where |
 | --- | --- |
+| Reading a letter photo asks for permission every time, because a letter often shows the child's name, date of birth, address and Medicare number. "Type it myself" keeps the photo on the device and adds the details by hand. "Add a letter by hand" never sends anything. | `components/MedicalProfile.tsx` |
 | Explicit consent before the first request; nothing is sent if the parent declines. Re-asked when `AI_CONSENT_VERSION` changes (now 2, for the second provider). Can be withdrawn in **Privacy, Backup & Lock**. | `services/aiGuard.ts`, `components/AiConsent.tsx` |
 | Daily cap of 20 requests per device (`AI_DAILY_LIMIT`). | `services/aiGuard.ts` |
 | `ENABLE_AI` switch: `503` for everything unless `true`. | `api/ai.ts` |
