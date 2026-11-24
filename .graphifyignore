@@ -1,0 +1,25 @@
+# Code only: no docs, images, PDFs, marketing site or agent notes
+docs/
+website/
+public/
+.claude/
+*.md
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+# Anything that could hold personal, roster or finance data
+**/*patient*
+**/*roster*
+**/*finance*
+**/*invoice*
+*.csv
+*.xlsx
+*.xls
+*.docx
+*.doc
+.env*

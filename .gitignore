@@ -41,3 +41,6 @@ keystore.properties
 android/key.properties
 google-services.json
 GoogleService-Info.plist
+
+# graphify output
+graphify-out/
